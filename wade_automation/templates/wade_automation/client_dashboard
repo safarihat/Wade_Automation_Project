@@ -1,0 +1,25 @@
+{% extends 'wade_automation/base.html' %}
+
+{% block title %}Your Dashboard - Wade Automation{% endblock %}
+
+{% block content %}
+  <main>
+    <h1>Welcome, {{ profile.user.first_name }} {{ profile.user.last_name }}</h1>
+    <p><strong>Username:</strong> {{ profile.user.username }}</p>
+    <p><strong>Company:</strong> {{ profile.company_name }}</p>
+
+    <section class="dashboard-section">
+      <h2>Your Dashboard Data</h2>
+      {% if profile.dashboard_data %}
+        <p>{{ profile.dashboard_data }}</p>
+      {% else %}
+        <p>No data available yet. We'll update this as your automation journey progresses.</p>
+      {% endif %}
+    </section>
+
+    <section class="dashboard-actions">
+      <a href="{% url 'contact' %}" class="cta-button">Contact Support</a>
+      <a href="{% url 'pathways' %}" class="cta-button">Explore Pathways</a>
+    </section>
+  </main>
+{% endblock %}

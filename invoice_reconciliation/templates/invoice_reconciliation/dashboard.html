@@ -1,0 +1,54 @@
+{% extends 'wade_automation/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+        <h2 style="margin:0;">Your Invoices</h2>
+        <div>
+            <a href="{% url 'upload_invoice' %}" class="btn btn-primary">Upload Invoice(s)</a>
+            <a href="{% url 'dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+        </div>
+    </div>
+
+    {% if invoices %}
+        <table class="table table-bordered mt-3">
+            <thead>
+                <tr>
+                    <th>Vendor</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for invoice in invoices %}
+                    <tr>
+                        <td>{{ invoice.vendor }}</td>
+                        <td>${{ invoice.amount }}</td>
+                        <td>{{ invoice.date }}</td>
+                        <td>{{ invoice.status }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="mt-4" style="display:flex; gap:8px; flex-wrap:wrap;">
+            <a href="{% url 'export_invoices_csv' %}" class="btn btn-success">Export CSV (with details)</a>
+            <a href="{% url 'push_invoices_to_xero' %}" class="btn btn-info">Push to Xero</a>
+            <form method="post" action="{% url 'clear_invoices' %}" onsubmit="return confirm('This will delete all your uploaded invoices. Continue?');" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Clear All</button>
+            </form>
+        </div>
+    {% else %}
+        <div class="mt-3" style="background:#fff; border:1px dashed #cfcfcf; border-radius:8px; padding:24px; text-align:center;">
+            <p style="margin:0 0 12px;">No invoices uploaded yet.</p>
+            <a href="{% url 'upload_invoice' %}" class="btn btn-primary">Upload your first invoice(s)</a>
+            <form method="post" action="{% url 'clear_invoices' %}" onsubmit="return confirm('This will delete all your uploaded invoices. Continue?');" style="display:inline; margin-left:8px;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Clear All</button>
+            </form>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

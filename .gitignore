@@ -1,0 +1,26 @@
+# Byte-code files
+*.pyc
+__pycache__/
+
+# Virtual environment
+venv/
+.venv/
+
+# Database
+db.sqlite3
+
+# Media files
+media/
+
+# Environment variables
+.env
+
+# IDE-specific files (example for VS Code)
+.vscode/
+
+# Django-specific
+*.log
+*.pot
+*.mo
+*.po
+local_settings.py

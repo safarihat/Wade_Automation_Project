@@ -1,0 +1,21 @@
+{% extends 'wade_automation/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Upload Invoice(s)</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+            {{ form.file.label_tag }}
+            {# Render input manually to add multiple attribute #}
+            <input type="file" name="file" id="id_file" class="form-control" multiple>
+            <div class="form-text">You can select multiple files. Accepted formats: PDF, PNG, JPG.</div>
+            {% if form.file.errors %}
+                <div class="text-danger">{{ form.file.errors }}</div>
+            {% endif %}
+        </div>
+        <button type="submit" class="btn btn-primary">Upload</button>
+        <a href="{% url 'invoice_dashboard' %}" class="btn btn-secondary">Back to Invoices</a>
+    </form>
+</div>
+{% endblock %}

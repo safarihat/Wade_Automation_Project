@@ -1,0 +1,613 @@
+{% extends 'wade_automation/base.html' %}
+{% load static %}
+
+{% block title %}Wade Automation | Smart Automation for NZ Businesses{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+  <div class="hero-image-container">
+    <div class="hero-overlay"></div>
+    <video autoplay muted playsinline class="hero-video" style="display: block;">
+      <source src="{% static 'wade_automation/images/nz1.mp4' %}" type="video/mp4">
+    </video>
+    <video muted playsinline class="hero-video" style="display: none;">
+    </video>
+  </div>
+  <div class="hero-text">
+    <h1>Stop Drowning in Admin. <br>Start Growing Your Business.</h1>
+    <div class="typed-wrapper">
+      <span id="hero-typed" class="typed"></span>
+    </div>
+    <a href="{% url 'pathways' %}" class="cta-button">Discover Your Automation Pathway</a>
+  </div>
+</section>
+
+<main class="home-main">
+
+  <!-- Pain Points Section -->
+  <section class="page-section text-center">
+    <div class="container">
+      <h2>Does this sound familiar?</h2>
+      <p class="lead">You know automation could help, but it feels complex and out of reach. You must be able to get more out of the team somehow.</p>
+      <div class="pain-points-grid">
+        <div class="pain-point reveal">
+          <!-- TODO: Replace with an icon, e.g. from FontAwesome: <i class="fas fa-file-invoice"></i> -->
+          <h3>Endless Paperwork</h3>
+          <p>Compliance, invoicing, reporting... it never ends.</p>
+        </div>
+        <div class="pain-point reveal">
+          <!-- TODO: Replace with an icon, e.g. <i class="fas fa-random"></i> -->
+          <h3>Disconnected Systems</h3>
+          <p>Manually copying data between your software is slow and error-prone.</p>
+        </div>
+        <div class="pain-point reveal">
+          <!-- TODO: Replace with an icon, e.g. <i class="fas fa-chart-line"></i> -->
+          <h3>Missed Opportunities</h3>
+          <p>You're too busy with admin to focus on growth and customer service.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Our Approach Section -->
+  <section class="page-section bg-light">
+    <div class="container">
+      <div class="approach-content reveal">
+        <div class="approach-text">
+          <h2>Start Small, Scale Smartly.</h2>
+          <p>We have a practical, down-to-earth approach. No jargon, no million-dollar projects. Start with a single, high-impact automation that solves a real problem for your business, fast.</p>
+          <p>Once you see the results, we can build from there, at your pace. It's automation that works for you, not the other way around.</p>
+          <a href="{% url 'about' %}" class="cta-button-secondary">Our Philosophy</a>
+        </div>
+        <div class="approach-image reveal">
+          <!-- TODO: Replace this with a friendly, professional photo of your team, office, or a process diagram. -->
+          <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=2832&auto=format&fit=crop" alt="Friendly automation consultation">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services Section -->
+  <section class="page-section">
+    <div class="container text-center">
+      <h2>What We Can Automate For You</h2>
+      <p class="lead">Here are a few ways we help Kiwi businesses like yours.</p>
+      <div class="service-grid">
+        <div class="service-card reveal">
+          <!-- TODO: Replace with an icon -->
+          <h3>Effortless Invoicing</h3>
+          <p>Automate invoice creation, sending, and follow-ups. Get paid faster and spend less time chasing.</p>
+        </div>
+        <div class="service-card reveal">
+          <!-- TODO: Replace with an icon -->
+          <h3>Streamlined Compliance</h3>
+          <p>Simplify compliance with ready-to-use templates for farming, marine, and safety cases.</p>
+        </div>
+        <div class="service-card reveal">
+          <!-- TODO: Replace with an icon -->
+          <h3>Seamless App Integration</h3>
+          <p>Connect your existing software (Xero, email, spreadsheets) to work together in perfect harmony.</p>
+        </div>
+        <div class="service-card reveal">
+          <!-- TODO: Replace with an icon -->
+          <h3>Custom Admin Bots</h3>
+          <p>Need something specific? We can build a custom bot to handle your unique, repetitive tasks.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonial Section -->
+  <section class="page-section bg-light">
+    <div class="container text-center">
+      <h2>Trusted by NZ Businesses</h2>
+      <div class="testimonial reveal">
+        <blockquote>
+          "Wade Automation took our invoicing process from a 5-hour weekly task to a 10-minute job. It's been a complete game-changer for our small business. We finally have time to focus on our customers."
+        </blockquote>
+        <cite>– Sarah K., Director, Coastal Adventures Ltd.</cite>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQs Section -->
+  <section class="page-section">
+    <div class="container faqs-container">
+      <h2 class="text-center">Frequently Asked Questions</h2>
+      <div class="faq-item reveal">
+        <details>
+          <summary>
+            <span>What does a small project typically cost?</span>
+            <span class="faq-icon"></span>
+          </summary>
+          <p>We focus on providing value. A small, focused automation project, like setting up automated invoicing, typically starts from a few hundred dollars. We provide a clear, upfront quote with no hidden fees and no ongoing obligations after our initial free consultation.</p>
+        </details>
+      </div>
+      <div class="faq-item reveal">
+        <details>
+          <summary>
+            <span>How long does it take to get started?</span>
+            <span class="faq-icon"></span>
+          </summary>
+          <p>For many of our starter automations, we can have you up and running in as little as a week. Our goal is to deliver quick wins so you can see the benefits immediately.</p>
+        </details>
+      </div>
+      <div class="faq-item reveal">
+        <details>
+          <summary>
+            <span>Do I need to be a tech expert?</span>
+            <span class="faq-icon"></span>
+          </summary>
+          <p>Absolutely not! That's what we're here for. We handle all the technical details. We'll explain everything in plain English and make sure you're comfortable every step of the way.</p>
+        </details>
+      </div>
+      <div class="faq-item reveal">
+        <details>
+          <summary>
+            <span>How are you different from platforms like Monday.com?</span>
+            <span class="faq-icon"></span>
+          </summary>
+          <p>Unlike large, complex platforms that require ongoing subscriptions and extensive setup, we focus on delivering targeted, bespoke automation solutions for specific tasks. You pay for the project, not a monthly fee, and you own the solution. Our goal is to solve a particular pain point efficiently, without locking you into a long-term commitment or overwhelming you with features you don't need.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA Section -->
+  <section class="page-section cta-final">
+    <div class="container text-center">
+      <h2>Ready to take the first step?</h2>
+      <p class="lead">Let's have a friendly, no-obligation chat about your business and see if automation is a good fit for you.</p>
+      <a href="{% url 'contact' %}" class="cta-button">Book a Free Consultation</a>
+    </div>
+  </section>
+
+</main>
+
+<!-- Login Modal -->
+<div id="loginModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>Login</h2>
+    <form method="post" action="{% url 'login' %}">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="cta-button">Login</button>
+    </form>
+  </div>
+</div>
+
+<!-- 
+  Styles for the new homepage design. 
+  For better performance and maintainability, I recommend moving these styles 
+  into your main CSS file: 'wade_automation/css/styles.css'
+-->
+<style>
+  /* General page structure */
+  .page-section {
+    padding: 80px 20px;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .text-center {
+    text-align: center;
+  }
+
+  .lead {
+    font-size: 1.15rem;
+    color: #555;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 40px;
+    line-height: 1.6;
+  }
+
+  h2 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #0a0a23;
+    font-weight: 600;
+  }
+
+  .bg-light {
+    background-color: #f8f9fa; /* A slightly off-white */
+  }
+
+  /* Hero Section Overhaul */
+  .hero {
+    position: relative;
+    color: #fff;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(10, 10, 35, 0.6); /* Dark blue overlay */
+    z-index: 1;
+  }
+
+  .hero-text {
+    position: relative;
+    z-index: 2;
+    padding: 20px;
+  }
+
+  .hero-text h1 {
+    font-size: 3rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  }
+
+  .typed-wrapper {
+    min-height: 50px; /* Give space for multiple lines */
+    margin: 1rem auto 2rem auto;
+    max-width: 550px;
+  }
+
+  .typed {
+    font-size: 1.25rem;
+    color: #e0e0e0;
+  }
+
+  .cta-button {
+    display: inline-block;
+    padding: 14px 28px;
+    background-color: #0a0a23;
+    color: #fff;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.3s, transform 0.3s;
+    border: 2px solid #fff;
+    background: rgba(255,255,255,0.1);
+  }
+
+  .cta-button:hover {
+    background-color: #fff;
+    color: #0a0a23;
+    transform: translateY(-3px);
+  }
+
+  .cta-button-secondary {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: transparent;
+    color: #0a0a23;
+    border: 2px solid #0a0a23;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.3s, color 0.3s;
+  }
+
+  .cta-button-secondary:hover {
+    background-color: #0a0a23;
+    color: #fff;
+  }
+
+  /* Pain Points Section */
+  .pain-points-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-top: 50px;
+  }
+
+  .pain-point {
+    padding: 30px;
+  }
+
+  .pain-point h3 {
+    margin-top: 15px;
+    margin-bottom: 10px;
+    color: #0a0a23;
+    font-size: 1.3rem;
+  }
+
+  /* Our Approach Section */
+  .approach-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+
+  .approach-image img {
+    width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  }
+
+  /* Services Section */
+  .service-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    margin-top: 50px;
+  }
+
+  .service-card {
+    background: #fff;
+    padding: 30px 25px;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    text-align: left;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .service-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.08);
+  }
+
+  .service-card h3 {
+    margin-top: 15px;
+    margin-bottom: 10px;
+    font-size: 1.25rem;
+  }
+
+  /* Testimonial Section */
+  .testimonial {
+    max-width: 750px;
+    margin: 0 auto;
+  }
+
+  .testimonial blockquote {
+    font-size: 1.25rem;
+    font-style: italic;
+    color: #333;
+    border-left: 4px solid #0a0a23;
+    padding-left: 25px;
+    margin: 0 0 20px 0;
+    line-height: 1.6;
+  }
+
+  .testimonial cite {
+    font-weight: 600;
+    color: #555;
+    font-style: normal;
+  }
+
+  /* FAQs Section */
+  .faqs-container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .faq-item {
+    margin-bottom: 1rem;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff;
+  }
+
+  .faq-item summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    outline: none;
+  }
+
+  .faq-item summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-item p {
+    padding: 0 1.5rem 1.5rem;
+    margin: 0;
+    line-height: 1.7;
+    color: #555;
+  }
+
+  .faq-icon {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    position: relative;
+    transition: transform 0.3s ease-in-out;
+    flex-shrink: 0;
+    margin-left: 1rem;
+  }
+
+  .faq-icon::before, .faq-icon::after {
+    content: '';
+    position: absolute;
+    background-color: #0a0a23;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .faq-icon::before { width: 16px; height: 2px; }
+  .faq-icon::after { width: 2px; height: 16px; }
+
+  details[open] > summary .faq-icon {
+    transform: rotate(135deg);
+  }
+
+  /* Final CTA */
+  .cta-final {
+    background-color: #0a0a23;
+    color: #fff;
+  }
+
+  .cta-final h2 { color: #fff; }
+  .cta-final .lead { color: #e0e0e0; }
+  .cta-final .cta-button {
+    background-color: #fff;
+    color: #0a0a23;
+    border-color: #fff;
+  }
+  .cta-final .cta-button:hover {
+    background-color: #f0f0f0;
+    color: #0a0a23;
+  }
+
+  /* Scroll Reveal Animation */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Modal styles (from original) */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.6);
+  }
+
+  .modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  }
+
+  .close {
+    float: right;
+    font-size: 24px;
+    cursor: pointer;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 992px) {
+    .hero-text h1 { font-size: 2.5rem; }
+    h2 { font-size: 2.2rem; }
+  }
+
+  @media (max-width: 768px) {
+    .page-section { padding: 60px 20px; }
+    h2 { font-size: 2rem; }
+    .hero-text h1 { font-size: 2.1rem; }
+    .typed { font-size: 1.15rem; }
+    .approach-content {
+      grid-template-columns: 1fr;
+      text-align: center;
+    }
+    .approach-image {
+      margin-top: 40px;
+    }
+    .approach-text {
+      text-align: center;
+    }
+  }
+</style>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Typed.js for hero section
+    new Typed("#hero-typed", {
+      strings: [
+        "Automate your invoicing and follow-ups.",
+        "Streamline your compliance paperwork.",
+        "Integrate your apps to work smarter.",
+        "Free up your time for what truly matters."
+      ],
+      typeSpeed: 40,
+      backSpeed: 20,
+      backDelay: 1500,
+      startDelay: 500,
+      loop: true,
+      showCursor: true,
+      cursorChar: '|'
+    });
+
+    // Intersection Observer for reveal animations
+    const revealElements = document.querySelectorAll('.reveal');
+
+    const revealObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.1
+    });
+
+    revealElements.forEach(el => {
+      revealObserver.observe(el);
+    });
+
+    const videoPlayers = document.querySelectorAll('.hero-video');
+    if (videoPlayers.length === 2) {
+      const videoSources = [
+        "{% static 'wade_automation/images/nz1.mp4' %}",
+        "{% static 'wade_automation/images/nz.mp4' %}",
+        "{% static 'wade_automation/images/NZ3.mp4' %}",
+        "{% static 'wade_automation/images/NZ5.mp4' %}"
+      ];
+
+      let currentVideoIndex = 0;
+      let activePlayer = videoPlayers[0];
+      let preloadPlayer = videoPlayers[1];
+
+      // The first video is already set via HTML, so we preload the second one.
+      preloadPlayer.src = videoSources[1];
+      preloadPlayer.load();
+
+      activePlayer.addEventListener('ended', playNext);
+
+      function playNext() {
+        // Swap players
+        [activePlayer, preloadPlayer] = [preloadPlayer, activePlayer];
+
+        // Switch visibility
+        activePlayer.style.display = 'block';
+        preloadPlayer.style.display = 'none';
+
+        activePlayer.play();
+
+        // Remove old event listener and add new one
+        preloadPlayer.removeEventListener('ended', playNext);
+        activePlayer.addEventListener('ended', playNext);
+
+        // Update video index
+        currentVideoIndex = (currentVideoIndex + 1) % videoSources.length;
+
+        // Preload the next video
+        const nextVideoIndex = (currentVideoIndex + 1) % videoSources.length;
+        preloadPlayer.src = videoSources[nextVideoIndex];
+        preloadPlayer.load();
+      }
+    }
+  });
+</script>
+{% endblock %}

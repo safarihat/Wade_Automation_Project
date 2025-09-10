@@ -1,0 +1,252 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Wade Automation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'wade_automation/css/styles.css' %}">
+    <link rel="icon" href="{% static 'wade_automation/images/favicon.ico' %}" type="image/x-icon">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding-top: var(--nav-height);
+            background-color: #f4f7f6;
+            color: #333;
+        }
+        .navbar {
+            background-color: #fff;
+            padding: 10px 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar .logo {
+            font-weight: 600;
+            font-size: 24px;
+            color: #0a0a23;
+            text-decoration: none;
+        }
+        .navbar .logo img {
+            height: 40px;
+            width: auto;
+            display: block;
+        }
+        /* Hide extra cursor from typed.js to avoid double caret (we use our own) */
+        .typed-cursor {
+            display: none !important;
+        }
+        .navbar .nav-links {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar .nav-links li {
+            margin-left: 20px;
+        }
+        .navbar .nav-links a,
+        .navbar .nav-links button {
+            color: #333;
+            text-decoration: none;
+            background: none;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 8px 12px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .navbar .nav-links a:hover,
+        .navbar .nav-links button:hover {
+            background-color: #0a0a23;
+            color: #fff;
+            border-radius: 4px;
+        }
+        .navbar .nav-links .logout-form {
+            display: inline;
+        }
+
+        /* Floating dashboard styles */
+        :root {
+            --fab-size: 56px;
+            --fd-bg: #fff;
+            --fd-accent: #0a0a23;
+            --fd-shadow: rgba(0, 0, 0, 0.15);
+        }
+        .floating-toggle {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            width: var(--fab-size);
+            height: var(--fab-size);
+            border-radius: 50%;
+            background: var(--fd-accent);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 14px var(--fd-shadow);
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+        }
+        .floating-panel {
+            position: fixed;
+            right: 20px;
+            bottom: calc(20px + var(--fab-size) + 10px);
+            width: 280px;
+            max-height: 70vh;
+            background: var(--fd-bg);
+            border-radius: 12px;
+            box-shadow: 0 12px 28px var(--fd-shadow);
+            padding: 12px;
+            transform: translateY(10px);
+            opacity: 0;
+            pointer-events: none;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+            z-index: 1000;
+        }
+        .floating-panel.open {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .floating-panel header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        .floating-panel header .title {
+            font-weight: 600;
+            font-size: 16px;
+            color: #0a0a23;
+        }
+        .floating-panel .nav {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .floating-panel .nav li a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 10px;
+            border-radius: 8px;
+            color: #333;
+            text-decoration: none;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .floating-panel .nav li a:hover {
+            background-color: #0a0a23;
+            color: #fff;
+        }
+        .floating-panel .nav li a.active {
+            background: #e8ecff;
+            color: #0a0a23;
+            font-weight: 600;
+        }
+        @media (max-width: 600px) {
+            .floating-panel {
+                right: 12px;
+                left: 12px;
+                width: auto;
+            }
+            .floating-toggle {
+                right: 12px;
+                bottom: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="{% url 'home' %}" class="logo"><img src="{% static 'wade_automation/images/logocolour.png' %}" alt="Wade Automation"></a>
+        <ul class="nav-links">
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'about' %}">About</a></li>
+            <li><a href="{% url 'doc_generator:template_list' %}">Doc Generator</a></li>
+            <li><a href="{% url 'contact' %}">Contact</a></li>
+            {% if user.is_authenticated %}
+                <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                <li><a href="{% url 'logout' %}">Logout</a></li>
+            {% else %}
+                <li><a href="{% url 'login' %}">Login</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    {% if messages %}
+    <div style="max-width:1100px; margin:12px auto 0; padding:0 20px;">
+        {% for message in messages %}
+            <div style="background:#f0f5ff; border:1px solid #d6e4ff; color:#1d39c4; padding:10px 12px; border-radius:6px; margin-bottom:8px;">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer>
+        <p style="text-align:center; padding:10px; font-size:14px; color:#555;">&copy; 2024 Wade Automation. All rights reserved.</p>
+    </footer>
+    {% if user.is_authenticated %}
+    <div id="floating-dashboard" class="floating-panel" aria-hidden="true">
+        <header>
+            <div class="title">Quick navigation</div>
+            <a href="{% url 'dashboard' %}" style="font-size:12px; text-decoration:none; color:#0a0a23;">Go to Dashboard</a>
+        </header>
+        <ul class="nav">
+            <li><a href="{% url 'dashboard' %}" data-path="{% url 'dashboard' %}">Dashboard</a></li>
+            <li><a href="{% url 'home' %}" data-path="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'doc_generator:template_list' %}" data-path="{% url 'doc_generator:template_list' %}">Doc Generator</a></li>
+            <li><a href="{% url 'pathways' %}" data-path="{% url 'pathways' %}">Pathways</a></li>
+            <li><a href="/invoices/dashboard/" data-path="/invoices/dashboard/">Invoices</a></li>
+            <li><a href="{% url 'contact' %}" data-path="{% url 'contact' %}">Contact</a></li>
+            <li><a href="{% url 'about' %}" data-path="{% url 'about' %}">About</a></li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+        </ul>
+    </div>
+    <button id="floating-toggle" class="floating-toggle" aria-expanded="false" aria-controls="floating-dashboard" title="Quick navigation">☰</button>
+    <script>
+    (function(){
+      const panel = document.getElementById('floating-dashboard');
+      const toggle = document.getElementById('floating-toggle');
+      if(!panel || !toggle) return;
+      function openPanel() {
+        panel.classList.add('open');
+        toggle.setAttribute('aria-expanded','true');
+        panel.setAttribute('aria-hidden','false');
+      }
+      function closePanel() {
+        panel.classList.remove('open');
+        toggle.setAttribute('aria-expanded','false');
+        panel.setAttribute('aria-hidden','true');
+      }
+      toggle.addEventListener('click', function(){
+        if(panel.classList.contains('open')){ closePanel(); } else { openPanel(); }
+      });
+      document.addEventListener('keydown', function(e){
+        if(e.key === 'Escape') closePanel();
+      });
+      document.addEventListener('click', function(e){
+        if(!panel.contains(e.target) && !toggle.contains(e.target)) closePanel();
+      });
+      const path = window.location.pathname.replace(/\/+$/,'') || '/';
+      panel.querySelectorAll('a[data-path]').forEach(a=>{
+        const ap = (a.getAttribute('data-path')||'').replace(/\/+$/,'') || '/';
+        if(ap === path) a.classList.add('active');
+      });
+    })();
+    </script>
+    {% endif %}
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

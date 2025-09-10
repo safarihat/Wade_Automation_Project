@@ -1,0 +1,159 @@
+{% extends 'wade_automation/base.html' %}
+
+{% block title %}Contact Us | Wade Automation{% endblock %}
+
+{% block content %}
+<main class="contact-main">
+  <div class="container">
+    <div class="contact-header text-center">
+      <h1>Let's Talk</h1>
+      <p class="lead">Ready to solve a problem? Fill out the form below or email us directly. We're here to help you take the first step towards a more efficient business.</p>
+    </div>
+
+    <div class="contact-content">
+      <div class="contact-info">
+        <h3>Contact Details</h3>
+        <p>We're based in New Zealand and are available for a chat during business hours.</p>
+        <ul>
+          <li><strong>Email:</strong> <a href="mailto:info@wadeautomation.co.nz">info@wadeautomation.co.nz</a></li>
+          <li><strong>Phone:</strong> (Optional: Add your phone number here)</li>
+        </ul>
+        <p>We aim to respond to all inquiries within one business day.</p>
+      </div>
+
+      <div class="contact-form-container">
+        {% if messages %}
+          <div class="messages">
+            {% for message in messages %}
+              <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+        <form action="{% url 'contact' %}" method="post" class="contact-form">
+          {% csrf_token %}
+          {{ form.non_field_errors }}
+          <div class="form-group">
+            <label for="{{ form.name.id_for_label }}">Your Name</label>
+            {{ form.name }}
+            {{ form.name.errors }}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.company_name.id_for_label }}">Company Name (Optional)</label>
+            {{ form.company_name }}
+            {{ form.company_name.errors }}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.email.id_for_label }}">Your Email</label>
+            {{ form.email }}
+            {{ form.email.errors }}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.issue.id_for_label }}">Describe the issue you'd like fixed</label>
+            {{ form.issue }}
+            {{ form.issue.errors }}
+          </div>
+          <button type="submit" class="cta-button">Send Message</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- 
+  Styles for the new contact page design. 
+  For better performance and maintainability, I recommend moving these styles 
+  into your main CSS file: 'wade_automation/css/styles.css'
+-->
+<style>
+  .contact-main .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+  }
+
+  .contact-header {
+    margin-bottom: 60px;
+  }
+
+  .contact-header h1 {
+    font-size: 3rem;
+    color: #0a0a23;
+  }
+
+  .contact-content {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 60px;
+    align-items: flex-start;
+  }
+
+  .contact-info h3 {
+    font-size: 1.5rem;
+    color: #0a0a23;
+    margin-bottom: 20px;
+  }
+
+  .contact-info p, .contact-info ul {
+    color: #555;
+    line-height: 1.7;
+  }
+
+  .contact-info ul { list-style: none; padding: 0; margin: 20px 0; }
+  .contact-info li { margin-bottom: 10px; }
+  .contact-info a { color: #0a0a23; text-decoration: none; font-weight: 600; }
+  .contact-info a:hover { text-decoration: underline; }
+
+  .contact-form-container {
+    background: #fff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.07);
+    border: 1px solid #e9ecef;
+  }
+
+  .messages {
+    margin-bottom: 20px;
+  }
+  .alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+  }
+  .alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+  }
+  .alert-error {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+  }
+
+  .form-group { margin-bottom: 20px; }
+  .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #333; font-size: 0.9rem; }
+  .form-group input, .form-group textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 5px; font-size: 1rem; font-family: 'Poppins', sans-serif; box-sizing: border-box; transition: border-color 0.3s, box-shadow 0.3s; }
+  .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #0a0a23; box-shadow: 0 0 0 3px rgba(10, 10, 35, 0.1); }
+  .form-group textarea { resize: vertical; min-height: 120px; }
+
+  .contact-form .cta-button { width: 100%; padding: 14px 28px; background-color: #0a0a23; color: #fff; border: none; border-radius: 5px; font-weight: 600; cursor: pointer; transition: background-color 0.3s, transform 0.3s; }
+  .contact-form .cta-button:hover { background-color: #333; transform: translateY(-2px); }
+
+  @media (max-width: 768px) {
+    .contact-content { grid-template-columns: 1fr; gap: 40px; }
+    .contact-form-container { padding: 30px; }
+  }
+
+  /* Style for form errors */
+  .errorlist {
+    list-style-type: none;
+    padding: 0;
+    margin: 5px 0 0;
+    color: #dc3545; /* A standard red for errors */
+    font-size: 0.85rem;
+  }
+</style>
+{% endblock %}
