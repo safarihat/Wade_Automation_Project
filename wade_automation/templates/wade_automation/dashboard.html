@@ -32,7 +32,7 @@
     {% else %}
       <div style="background:#fff; border:1px dashed #cfcfcf; border-radius:8px; padding:24px; text-align:center;">
         <p style="margin:0 0 12px;">No modules installed yet.</p>
-        <a href="{% url 'invoice_dashboard' %}" style="display:inline-block; padding:8px 12px; background:#0a0a23; color:#fff; border-radius:4px; text-decoration:none;">Try Invoice Reconciliation</a>
+        <a href="{% url 'invoices:invoice_dashboard' %}" style="display:inline-block; padding:8px 12px; background:#0a0a23; color:#fff; border-radius:4px; text-decoration:none;">Try Invoice Reconciliation</a>
       </div>
     {% endif %}
   </section>

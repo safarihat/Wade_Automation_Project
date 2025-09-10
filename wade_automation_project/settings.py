@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.gis', # Add for GeoDjango functionality
     'wade_automation',
     'doc_generator',
     'invoice_reconciliation',
@@ -68,11 +69,33 @@ WSGI_APPLICATION = 'wade_automation_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
+        # Switched to the SpatiaLite backend for GeoDjango
+        'ENGINE': 'django.contrib.gis.db.backends.spatialite',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
+# --- GeoDjango Configuration ---
+# On Windows, you often need to explicitly point to the GIS libraries.
+# This configuration is for a Conda environment.
+if os.name == 'nt':
+    import sys
+    # sys.prefix points to the root of the current Python environment.
+    # In a Conda env, the required DLLs are in 'Library/bin'.
+    conda_env_path = Path(sys.prefix)
+    lib_dir = conda_env_path / 'Library' / 'bin'
+
+    if lib_dir.is_dir():
+        # Add the library directory to the DLL search path. This is the modern
+        # and recommended way to handle DLL dependencies on Windows.
+        os.add_dll_directory(str(lib_dir))
+
+        # Explicitly set the paths for the main libraries. This is the most
+        # reliable way to ensure GeoDjango finds them, as it looks for these
+        # variables directly.
+        GDAL_LIBRARY_PATH = str(lib_dir / 'gdal.dll')
+        GEOS_LIBRARY_PATH = str(lib_dir / 'geos_c.dll')
+        SPATIALITE_LIBRARY_PATH = str(lib_dir / 'mod_spatialite.dll')
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -110,7 +133,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
+    BASE_DIR / 'static',
 ]
 
 # Media files

@@ -168,7 +168,7 @@
         <ul class="nav-links">
             <li><a href="{% url 'home' %}">Home</a></li>
             <li><a href="{% url 'about' %}">About</a></li>
-            <li><a href="{% url 'doc_generator:template_list' %}">Doc Generator</a></li>
+            <li><a href="{% url 'doc_generator:freshwater_plan_create' %}">Doc Generator</a></li>
             <li><a href="{% url 'contact' %}">Contact</a></li>
             {% if user.is_authenticated %}
                 <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
@@ -206,9 +206,9 @@
         <ul class="nav">
             <li><a href="{% url 'dashboard' %}" data-path="{% url 'dashboard' %}">Dashboard</a></li>
             <li><a href="{% url 'home' %}" data-path="{% url 'home' %}">Home</a></li>
-            <li><a href="{% url 'doc_generator:template_list' %}" data-path="{% url 'doc_generator:template_list' %}">Doc Generator</a></li>
+            <li><a href="{% url 'doc_generator:freshwater_plan_create' %}" data-path="{% url 'doc_generator:freshwater_plan_create' %}">Doc Generator</a></li>
             <li><a href="{% url 'pathways' %}" data-path="{% url 'pathways' %}">Pathways</a></li>
-            <li><a href="/invoices/dashboard/" data-path="/invoices/dashboard/">Invoices</a></li>
+            <li><a href="{% url 'invoices:invoice_dashboard' %}" data-path="{% url 'invoices:invoice_dashboard' %}">Invoices</a></li>
             <li><a href="{% url 'contact' %}" data-path="{% url 'contact' %}">Contact</a></li>
             <li><a href="{% url 'about' %}" data-path="{% url 'about' %}">About</a></li>
             <li><a href="{% url 'logout' %}">Logout</a></li>
