@@ -1,17 +1,78 @@
-<!-- doc_generator/templates/doc_generator/freshwater_plan_form.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Freshwater Plan</title>
-</head>
-<body>
+{% extends 'wade_automation/base.html' %}
+
+{% block title %}Create Freshwater Plan{% endblock %}
+
+{% block content %}
+<style>
+    .form-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .form-group {
+        margin-bottom: 15px;
+    }
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+    .btn {
+        background-color: #0a0a23;
+        color: #fff;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    .alert {
+        padding: 15px;
+        margin-bottom: 20px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+    }
+    .alert-info {
+        color: #31708f;
+        background-color: #d9edf7;
+        border-color: #bce8f1;
+    }
+</style>
+<div class="form-container">
     <h1>Create Freshwater Plan</h1>
+    <div class="alert alert-info">
+        <strong>How to get coordinates from Google Maps:</strong>
+        <ol>
+            <li>Open Google Maps.</li>
+            <li>Right-click on a location on the map.</li>
+            <li>The latitude and longitude will be in the menu that appears. Click on them to copy to your clipboard.</li>
+            <li>Paste the coordinates into the box below.</li>
+        </ol>
+    </div>
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Submit</button>
+        {% for field in form %}
+            <div class="form-group">
+                {{ field.label_tag }}
+                {{ field }}
+                {% if field.help_text %}
+                    <small style="color: grey">{{ field.help_text }}</small>
+                {% endif %}
+                {% for error in field.errors %}
+                    <p style="color: red">{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn">Submit</button>
     </form>
-</body>
-</html>
+</div>
+{% endblock %}

@@ -23,8 +23,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),  # Add this line
     path('', include('wade_automation.urls')),  # Routes to app's urls.py
-    path('invoices/', include('invoice_reconciliation.urls', namespace='invoices')),
-    path('doc-generator/', include('doc_generator.urls', namespace='doc_generator')),
+    path('invoices/', include('invoice_reconciliation.urls')),
+    path('doc-generator/', include('doc_generator.urls')),
 ]
 
 if settings.DEBUG:

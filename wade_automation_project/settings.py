@@ -160,13 +160,9 @@ load_dotenv()
 # LINZ API Key for Basemaps, loaded from .env file
 LINZ_API_KEY = os.environ.get('LINZ_API_KEY')
 
-# Configure Google Generative AI
-try:
-    import google.generativeai as genai
-    import os
-    if 'GOOGLE_API_KEY' in os.environ:
-        genai.configure(api_key=os.environ['GOOGLE_API_KEY'])
-    else:
-        print("Warning: GOOGLE_API_KEY not found in .env file. Generative AI features may not work.")
-except ImportError:
-    print("Warning: google.generativeai is not installed. Generative AI features will not be available.")
+# Groq API Key for AI, loaded from .env file
+GROQ_API_KEY = os.environ.get('GROQ_API_KEY')
+if not GROQ_API_KEY:
+    print("Warning: GROQ_API_KEY not found in .env file. Generative AI features may not work.")
+
+
