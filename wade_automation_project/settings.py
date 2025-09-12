@@ -1,19 +1,25 @@
-
 import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Load environment variables from .env file
+# It's good practice to do this at the top of the file.
+from dotenv import load_dotenv
+load_dotenv()
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-your-secret-key' # You should change this in production
+# Load from environment variable, with a fallback for development.
+# For production, ALWAYS set a unique, secret key in your environment.
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-your-secret-key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = ['*'] # Added for development
 
@@ -31,6 +37,7 @@ INSTALLED_APPS = [
     'wade_automation',
     'doc_generator',
     'invoice_reconciliation',
+    'django_celery_results',
 ]
 
 MIDDLEWARE = [
@@ -153,10 +160,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/'
 
-# Load environment variables
-from dotenv import load_dotenv
-load_dotenv()
-
 # LINZ API Key for Basemaps, loaded from .env file
 LINZ_API_KEY = os.environ.get('LINZ_API_KEY')
 
@@ -166,3 +169,15 @@ if not GROQ_API_KEY:
     print("Warning: GROQ_API_KEY not found in .env file. Generative AI features may not work.")
 
 
+# --- Celery Configuration ---
+# Use Redis for both development and production for reliability.
+# The 'sqla+sqlite' broker is unreliable, especially with eventlet.
+REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
+
+CELERY_BROKER_URL = REDIS_URL
+CELERY_RESULT_BACKEND = REDIS_URL
+
+CELERY_TIMEZONE = TIME_ZONE # Use Django's timezone
+CELERY_RESULT_EXTENDED = True # To store more metadata about tasks
+# This setting silences a deprecation warning and ensures connection retries on startup.
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True

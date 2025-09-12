@@ -1,5 +1,6 @@
 from django.shortcuts import render
 
+import logging
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse, FileResponse
@@ -10,57 +11,57 @@ from django.contrib import messages
 from django.utils.dateparse import parse_date
 import os
 import csv
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 from datetime import date
+from typing import Optional
 
 from .forms import InvoiceUploadForm
 from .models import Invoice, InvoiceLine
 from .services.parser import parse_invoice_file, parse_invoice_details
+from .decorators import user_has_access
 from .services.xero_exporter import push_to_xero
 
-# Check if user has access to this module
-# For now: allow superusers and any user with a ClientProfile
-# Replace with a stricter check (e.g., profile flag) when ready
+def _to_decimal(s: str) -> Optional[Decimal]:
+    """Safely convert a string to a Decimal, returning None on failure."""
+    try:
+        # Ensure the input is a string and not empty before converting
+        return Decimal(str(s)) if s else None
+    except (InvalidOperation, TypeError, ValueError):
+        return None
 
-def has_access(user):
-    if user.is_superuser:
-        return True
-    return hasattr(user, 'clientprofile')
+def _prepare_pending_invoice_data(file) -> dict:
+    """Saves an uploaded file, parses it, and returns a dictionary for session storage."""
+    saved_rel_path = default_storage.save(f'invoices/{file.name}', file)
+    abs_path = os.path.join(settings.MEDIA_ROOT, saved_rel_path)
+    details = parse_invoice_details(abs_path)
+
+    # Prepare line items text block for easy editing in the review form
+    line_items = details.get('line_items') or []
+    lines_text = "\n".join([
+        f"{(li.get('description') or '').replace('|','/')}|{li.get('quantity') or ''}|{li.get('unit_price') or ''}|{li.get('line_total') or ''}"
+        for li in line_items
+    ])
+
+    return {
+        'file_path': saved_rel_path,
+        'filename': os.path.basename(saved_rel_path),
+        'vendor': details.get('vendor') or 'Unknown Vendor',
+        'amount': str(details.get('amount')) if details.get('amount') is not None else '0.00',
+        'date': details.get('date').isoformat() if details.get('date') else '',
+        'subtotal': str(details.get('subtotal')) if details.get('subtotal') is not None else '',
+        'tax_total': str(details.get('tax_total')) if details.get('tax_total') is not None else '',
+        'lines_text': lines_text,
+    }
 
 @login_required
+@user_has_access
 def upload_invoice(request):
-    if not has_access(request.user):
-        return redirect('dashboard')
-
     if request.method == 'POST':
         form = InvoiceUploadForm(request.POST, request.FILES)
         if form.is_valid():
+            # request.FILES.getlist() correctly handles both single and multiple file uploads.
             files = request.FILES.getlist('file')
-            if not files and 'file' in request.FILES:
-                files = [request.FILES['file']]
-
-            pending = []
-            for file in files:
-                saved_rel_path = default_storage.save(f'invoices/{file.name}', file)
-                abs_path = os.path.join(settings.MEDIA_ROOT, saved_rel_path)
-                details = parse_invoice_details(abs_path)
-                # Prepare line items text block for easy editing
-                line_items = details.get('line_items') or []
-                lines_text = "\n".join([
-                    f"{(li.get('description') or '').replace('|','/')}|{li.get('quantity') or ''}|{li.get('unit_price') or ''}|{li.get('line_total') or ''}"
-                    for li in line_items
-                ])
-                pending.append({
-                    'file_path': saved_rel_path,
-                    'filename': os.path.basename(saved_rel_path),
-                    'vendor': details.get('vendor') or 'Unknown Vendor',
-                    'amount': str(details.get('amount')) if details.get('amount') is not None else '0.00',
-                    'date': details.get('date').isoformat() if details.get('date') else '',
-                    'subtotal': str(details.get('subtotal')) if details.get('subtotal') is not None else '',
-                    'tax_total': str(details.get('tax_total')) if details.get('tax_total') is not None else '',
-                    'lines_text': lines_text,
-                })
-            request.session['pending_invoices'] = pending
+            request.session['pending_invoices'] = [_prepare_pending_invoice_data(f) for f in files]
             return redirect('review_invoices')
     else:
         form = InvoiceUploadForm()
@@ -68,18 +69,14 @@ def upload_invoice(request):
     return render(request, 'invoice_reconciliation/upload.html', {'form': form})
 
 @login_required
+@user_has_access
 def invoice_dashboard(request):
-    if not has_access(request.user):
-        return redirect('dashboard')
-
     invoices = Invoice.objects.filter(user=request.user).order_by('-created_at')
     return render(request, 'invoice_reconciliation/dashboard.html', {'invoices': invoices})
 
 @login_required
+@user_has_access
 def export_invoices_csv(request):
-    if not has_access(request.user):
-        return redirect('dashboard')
-
     invoices = Invoice.objects.filter(user=request.user)
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="invoices.csv"'
@@ -89,35 +86,20 @@ def export_invoices_csv(request):
         'Vendor', 'Invoice Date', 'Subtotal', 'Tax Total', 'Grand Total', 'Status', 'Line Items (Description|Qty|Unit Price|Line Total; ...)'
     ])
     for inv in invoices:
-        # prefer persisted fields and persisted lines
-        subtotal = inv.subtotal
-        tax_total = inv.tax_total
-        line_items_qs = getattr(inv, 'lines', None)
-        line_items = []
-        if line_items_qs is not None:
-            for li in inv.lines.all().order_by('order', 'id'):
-                line_items.append({
-                    'description': li.description,
-                    'quantity': li.quantity,
-                    'unit_price': li.unit_price,
-                    'line_total': li.line_total,
-                })
-        if subtotal is None or tax_total is None or not line_items:
-            # fallback parse
-            details = parse_invoice_details(inv.file.path if hasattr(inv.file, 'path') else os.path.join(settings.MEDIA_ROOT, inv.file.name))
-            subtotal = subtotal if subtotal is not None else details.get('subtotal')
-            tax_total = tax_total if tax_total is not None else details.get('tax_total')
-            if not line_items:
-                line_items = details.get('line_items') or []
+        # Use the new model method to get all details, with fallback logic included.
+        details = inv.get_full_details()
+        
+        # Format the line items into a single string for the CSV.
         items_str = "; ".join([
             f"{(str(it.get('description') or '')).replace(';',' ').strip()}|{it.get('quantity') or ''}|{it.get('unit_price') or ''}|{it.get('line_total') or ''}"
-            for it in line_items
+            for it in details['line_items']
         ])
+
         writer.writerow([
             inv.vendor,
             inv.date,
-            subtotal or '',
-            tax_total or '',
+            details['subtotal'] or '',
+            details['tax_total'] or '',
             inv.amount,
             inv.status,
             items_str
@@ -126,9 +108,8 @@ def export_invoices_csv(request):
     return response
 
 @login_required
+@user_has_access
 def push_invoices_to_xero(request):
-    if not has_access(request.user):
-        return redirect('dashboard')
     if request.method != 'POST':
         messages.error(request, 'Invalid request method for push action.')
         return redirect('invoice_dashboard')
@@ -142,9 +123,8 @@ def push_invoices_to_xero(request):
     return redirect('invoice_dashboard')
 
 @login_required
+@user_has_access
 def clear_invoices(request):
-    if not has_access(request.user):
-        return redirect('dashboard')
     if request.method == 'POST':
         Invoice.objects.filter(user=request.user).delete()
         messages.success(request, 'All your invoices were deleted.')
@@ -153,23 +133,22 @@ def clear_invoices(request):
     return redirect('invoice_dashboard')
 
 @login_required
+@user_has_access
 def review_invoices(request):
-    if not has_access(request.user):
-        return redirect('dashboard')
     pending = request.session.get('pending_invoices', [])
     if not pending:
         messages.info(request, 'No uploaded invoices to review.')
         return redirect('invoice_dashboard')
     
     for p in pending:
-        p['file_url'] = os.path.join(settings.MEDIA_URL, p['file_path']).replace('\\', '/')
+        # Use string formatting for URL construction to avoid OS-specific path separators.
+        p['file_url'] = f"{settings.MEDIA_URL}{p['file_path']}"
 
     return render(request, 'invoice_reconciliation/review.html', {'pending': pending})
 
 @login_required
+@user_has_access
 def confirm_invoices(request):
-    if not has_access(request.user):
-        return redirect('dashboard')
     if request.method != 'POST':
         messages.error(request, 'Invalid request method.')
         return redirect('invoice_dashboard')
@@ -183,6 +162,13 @@ def confirm_invoices(request):
     taxes = request.POST.getlist('tax_total')
     lines_texts = request.POST.getlist('lines_text')
 
+    # Add a sanity check to ensure all form data lists are of the same length.
+    num_invoices = len(files)
+    if not all(len(lst) == num_invoices for lst in [vendors, amounts, dates, subtotals, taxes, lines_texts]):
+        messages.error(request, "There was a mismatch in the submitted invoice data. Please review and try again.")
+        # Redirect back to the review page, as the session data is still there.
+        return redirect('review_invoices')
+
     created_count = 0
     for i in range(len(files)):
         rel_path = files[i]
@@ -192,72 +178,41 @@ def confirm_invoices(request):
         tax_str = (taxes[i] or '').strip()
         dt_str = (dates[i] or '').strip()
 
-        try:
-            amt = Decimal(amt_str)
-        except Exception:
-            amt = Decimal('0.00')
-        sub = None
-        tax = None
-        try:
-            if sub_str:
-                sub = Decimal(sub_str)
-        except Exception:
-            sub = None
-        try:
-            if tax_str:
-                tax = Decimal(tax_str)
-        except Exception:
-            tax = None
+        # Use the helper for consistent and safe decimal conversion
+        amt = _to_decimal(amt_str) or Decimal('0.00') # Fallback to 0.00 for the main amount
+        sub = _to_decimal(sub_str)
+        tax = _to_decimal(tax_str)
         inv_date = parse_date(dt_str) or parse_date(str(dt_str))
         if inv_date is None:
             inv_date = date.today()
 
-        inv = Invoice.objects.create(
-            user=request.user,
-            file=rel_path,
-            vendor=vendor,
-            amount=amt,
-            date=inv_date,
-            subtotal=sub,
-            tax_total=tax,
-            status='Pending'
-        )
-        # Parse line items textarea
-        text_block = lines_texts[i] or ''
-        order = 1
-        for row in text_block.splitlines():
-            row = row.strip()
-            if not row:
-                continue
-            parts = row.split('|')
-            # Ensure 4 parts
-            while len(parts) < 4:
-                parts.append('')
-            desc = parts[0].strip()
-            q = parts[1].strip()
-            up = parts[2].strip()
-            lt = parts[3].strip()
-            def to_dec(s):
-                try:
-                    return Decimal(s) if s else None
-                except Exception:
-                    return None
-            InvoiceLine.objects.create(
-                invoice=inv,
-                description=desc[:512],
-                quantity=to_dec(q),
-                unit_price=to_dec(up),
-                line_total=to_dec(lt),
-                order=order
-            )
-            order += 1
-        created_count += 1
+        invoice_data = {
+            'file': rel_path,
+            'vendor': vendor,
+            'amount': amt,
+            'date': inv_date,
+            'subtotal': sub,
+            'tax_total': tax,
+            'status': 'Pending'
+        }
+        lines_text = lines_texts[i] or ''
+
+        try:
+            Invoice.objects.create_with_lines(request.user, invoice_data, lines_text)
+            created_count += 1
+        except Exception as e:
+            # Catch any error during the creation of a single invoice,
+            # log it, and inform the user, so the other invoices can still be processed.
+            logging.error(f"Failed to save invoice for vendor '{vendor}': {e}", exc_info=True)
+            messages.error(request, f"Could not save invoice for '{vendor}'. An unexpected error occurred.")
+            continue # Skip to the next invoice
 
     request.session['pending_invoices'] = []
     messages.success(request, f'{created_count} invoice(s) saved.')
     return redirect('invoice_dashboard')
 
 @login_required
+@user_has_access
 def download_invoice(request, invoice_id: int):
     try:
         inv = Invoice.objects.get(id=invoice_id, user=request.user)
@@ -271,6 +226,7 @@ def download_invoice(request, invoice_id: int):
     return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=os.path.basename(file_path))
 
 @login_required
+@user_has_access
 def delete_invoice(request, invoice_id: int):
     if request.method != 'POST':
         messages.error(request, 'Invalid request method for delete.')
@@ -283,4 +239,3 @@ def delete_invoice(request, invoice_id: int):
     inv.delete()
     messages.success(request, 'Invoice deleted.')
     return redirect('invoice_dashboard')
-
