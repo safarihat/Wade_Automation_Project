@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Freshwater Farm Plan - {{ plan.council }}</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 1.5cm;
+        }
+        body {
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            font-size: 11pt;
+            line-height: 1.5;
+            color: #333;
+        }
+        h1, h2, h3 {
+            font-family: 'Helvetica Neue', 'Arial', sans-serif;
+            color: #0a0a23;
+            font-weight: 600;
+        }
+        h1 {
+            font-size: 24pt;
+            text-align: center;
+            margin-bottom: 0.5cm;
+            border-bottom: 2px solid #0a0a23;
+            padding-bottom: 0.2cm;
+        }
+        h2 {
+            font-size: 16pt;
+            margin-top: 1cm;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 0.1cm;
+        }
+        .meta-info {
+            margin-bottom: 1cm;
+            padding: 0.5cm;
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+        }
+        .map-image {
+            width: 100%;
+            max-width: 600px; /* Adjust as needed */
+            margin: 1cm auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Freshwater Farm Plan</h1>
+    <div class="meta-info">
+        <strong>Regional Council:</strong> {{ plan.council }}<br>
+        <strong>Property Location (Lat/Lon):</strong> {{ plan.latitude }}, {{ plan.longitude }}<br>
+        <strong>Date Generated:</strong> {{ plan.updated_at|date:"d F Y" }}
+    </div>
+
+    {% if plan.map_image %}
+        <h2>Property Location Map</h2>
+        <img src="{{ plan.map_image.path }}" class="map-image" alt="Map of property location">
+    {% endif %}
+
+    {{ plan.generated_plan|linebreaks }}
+</body>
+</html>

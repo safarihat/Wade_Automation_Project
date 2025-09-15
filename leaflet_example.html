@@ -1,0 +1,98 @@
+{% extends 'wade_automation/base.html' %}
+{% block title %}Create Freshwater Plan with Leaflet Map{% endblock %}
+
+{% block content %}
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+
+<style>
+    #map {
+        height: 400px; /* Define a height for the map container */
+        width: 100%;
+        margin-top: 20px;
+        border-radius: 8px;
+    }
+    .form-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    .btn {
+        background-color: #0a0a23;
+        color: #fff;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+</style>
+
+<div class="form-container">
+    <h1>Create Freshwater Plan</h1>
+    <p>Paste coordinates from Google Maps to center the map.</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            {{ form.geolocation_paste.label_tag }}
+            {{ form.geolocation_paste }}
+        </div>
+        <button type="submit" class="btn">Submit</button>
+    </form>
+
+    <!-- Map Container -->
+    <div id="map"></div>
+</div>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // 1. Initialize the map with a default view (e.g., center of New Zealand)
+        //    The view will be updated dynamically when the user enters coordinates.
+        const map = L.map('map').setView([-41.2865, 174.7762], 5);
+        let marker = null;
+
+        // 2. Add the OpenStreetMap tile layer
+        //    You can change the tile URL to use other providers if needed.
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            // 3. Add proper attribution as required by OpenStreetMap's license.
+            attribution: '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+
+        // 4. Get the coordinate input field from the form.
+        //    Django renders the form field 'geolocation_paste' with the id 'id_geolocation_paste'.
+        const coordInput = document.getElementById('id_geolocation_paste');
+
+        // 5. Listen for changes in the input field to update the map.
+        coordInput.addEventListener('input', function () {
+            // 6. Read the value and parse the coordinates.
+            //    The input is expected to be a string like "-46.286, 168.020".
+            const coords = this.value.split(',').map(s => parseFloat(s.trim()));
+
+            if (coords.length === 2 && !isNaN(coords[0]) && !isNaN(coords[1])) {
+                const lat = coords[0];
+                const lon = coords[1];
+
+                // 7. Set the map view to the new coordinates with a chosen zoom level.
+                //    You can adjust the zoom level (e.g., 15 for a closer view).
+                const zoomLevel = 12;
+                map.setView([lat, lon], zoomLevel);
+
+                // Remove the old marker if it exists
+                if (marker) {
+                    map.removeLayer(marker);
+                }
+
+                // Add a new marker at the location
+                marker = L.marker([lat, lon]).addTo(map)
+                    .bindPopup(`Coordinates: ${lat.toFixed(5)}, ${lon.toFixed(5)}`)
+                    .openPopup();
+            }
+        });
+    });
+</script>
+{% endblock %}

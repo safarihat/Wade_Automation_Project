@@ -55,7 +55,11 @@ ROOT_URLCONF = 'wade_automation_project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'wade_automation' / 'templates' / 'wade_automation'],
+        # This is the standard configuration. It tells Django to look for a
+        # single 'templates' directory at the project's root level for any
+        # project-wide templates. 'APP_DIRS': True will handle finding
+        # templates inside individual app directories.
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -162,11 +166,18 @@ LOGOUT_REDIRECT_URL = '/'
 
 # LINZ API Key for Basemaps, loaded from .env file
 LINZ_API_KEY = os.environ.get('LINZ_API_KEY')
+if not LINZ_API_KEY:
+    print("Warning: LINZ_API_KEY not found in .env file. Map features may not work.")
 
 # Groq API Key for AI, loaded from .env file
 GROQ_API_KEY = os.environ.get('GROQ_API_KEY')
 if not GROQ_API_KEY:
     print("Warning: GROQ_API_KEY not found in .env file. Generative AI features may not work.")
+
+# MapTiler API Key for client-side maps
+MAPTILER_API_KEY = os.environ.get('MAPTILER_API_KEY')
+if not MAPTILER_API_KEY:
+    print("Warning: MAPTILER_API_KEY not found in .env file. Client-side maps may not work.")
 
 
 # --- Celery Configuration ---

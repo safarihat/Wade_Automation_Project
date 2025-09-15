@@ -1,0 +1,131 @@
+{% extends 'wade_automation/base.html' %}
+{% block title %}Create Freshwater Plan with MapLibre GL JS Map{% endblock %}
+
+{% block content %}
+<!-- MapLibre GL JS CSS -->
+<link href='https://unpkg.com/maplibre-gl@4.1.2/dist/maplibre-gl.css' rel='stylesheet' />
+
+<style>
+    #map {
+        height: 400px; /* Define a height for the map container */
+        width: 100%;
+        margin-top: 20px;
+        border-radius: 8px;
+    }
+    .form-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    .btn {
+        background-color: #0a0a23;
+        color: #fff;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+</style>
+
+<div class="form-container">
+    <h1>Create Freshwater Plan</h1>
+    <p>Paste coordinates from Google Maps to center the map.</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            {{ form.geolocation_paste.label_tag }}
+            {{ form.geolocation_paste }}
+        </div>
+        <button type="submit" class="btn">Submit</button>
+    </form>
+
+    <!-- Map Container -->
+    <div id="map"></div>
+</div>
+
+<!-- MapLibre GL JS -->
+<script src='https://unpkg.com/maplibre-gl@4.1.2/dist/maplibre-gl.js'></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // --- Step 1: Add your MapTiler API Key ---
+        // Replace this with the key from your MapTiler account.
+        // The key is now passed from the Django view context.
+        // The 'safe' filter prevents Django from escaping special characters.
+        const maptilerApiKey = '{{ MAPTILER_API_KEY|safe }}';
+
+        if (!maptilerApiKey || maptilerApiKey === 'YOUR_MAPTILER_API_KEY_HERE') {
+            document.getElementById('map').innerHTML = '<div style="padding: 20px; text-align: center; color: #6c757d;">Map cannot be displayed: MapTiler API Key is not configured.</div>';
+            console.error("MapTiler API Key is missing. Please add it to the maplibre_example.html file.");
+            return;
+        }
+
+        // --- Step 2: Initialize the map using a MapTiler style ---
+        // This URL points to a complete vector map style that includes water bodies.
+        const map = new maplibregl.Map({
+            container: 'map', // container id
+            style: `https://api.maptiler.com/maps/streets-v2/style.json?key=${maptilerApiKey}`,
+            center: [174.7762, -41.2865], // Default center [lon, lat]
+            zoom: 4 // Default zoom
+        });
+
+        let marker = null;
+
+        // --- Step 3 (Optional): Add custom layers to highlight freshwater ---
+        // This waits for the map style to load before adding our custom layers on top.
+        map.on('load', function () {
+            // The MapTiler "streets-v2" style uses the "maptiler" source.
+            // The data for water is in the 'water' source-layer.
+            map.addLayer({
+                'id': 'freshwater-highlight',
+                'type': 'fill',
+                'source': 'maptiler', // Use the source from the MapTiler style
+                'source-layer': 'water',
+                'filter': [
+                    'any',
+                    ['==', 'class', 'lake'],
+                    ['==', 'class', 'river']
+                ],
+                'paint': {
+                    'fill-color': '#005f99', // A darker, more prominent blue
+                    'fill-opacity': 0.6
+                }
+            }, 'water'); // This places our new layer just above the original 'water' layer.
+        });
+
+        // 4. Get the coordinate input field from the form.
+        const coordInput = document.getElementById('id_geolocation_paste');
+
+        // 5. Listen for changes in the input field.
+        coordInput.addEventListener('input', function () {
+            // 6. Read the value and parse coordinates [lat, lon].
+            const coords = this.value.split(',').map(s => parseFloat(s.trim()));
+
+            if (coords.length === 2 && !isNaN(coords[0]) && !isNaN(coords[1])) {
+                const lat = coords[0];
+                const lon = coords[1];
+
+                // 7. Set the map view to the new coordinates with a chosen zoom level.
+                //    You can adjust the zoom level here.
+                const zoomLevel = 11; // Mapbox/MapLibre zoom is slightly different from Leaflet
+                map.flyTo({
+                    center: [lon, lat], // Note: Mapbox/MapLibre use [lon, lat]
+                    zoom: zoomLevel
+                });
+
+                // Remove the old marker if it exists
+                if (marker) {
+                    marker.remove();
+                }
+
+                // Add a new marker at the location
+                marker = new maplibregl.Marker()
+                    .setLngLat([lon, lat])
+                    .addTo(map);
+            }
+        });
+    });
+</script>
+{% endblock %}

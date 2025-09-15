@@ -1,12 +1,17 @@
 # invoice_reconciliation/services/parser.py
 import os
+import logging
 import re
 from decimal import Decimal, InvalidOperation
 from datetime import datetime, date
-from typing import Optional, List, Tuple, Dict, Any
+from typing import Optional, List, Tuple, Dict, Any, Pattern, TYPE_CHECKING
 
 # External libraries (all optional at runtime)
 # Install with: pip install pdfplumber pytesseract pillow pdf2image opencv-python-headless numpy
+
+if TYPE_CHECKING:
+    from PIL.Image import Image as PILImage
+
 try:
     import pdfplumber  # type: ignore
 except Exception:
@@ -76,7 +81,7 @@ STOP_WORDS_VENDOR = {
 
 # ------------------ OCR helpers ------------------
 
-def _pil_preprocess(img: "Image.Image") -> "Image.Image":
+def _pil_preprocess(img: "PILImage") -> "PILImage":
     if Image is None:
         return img
     # Convert to grayscale; try adaptive threshold when OpenCV is available
@@ -91,7 +96,7 @@ def _pil_preprocess(img: "Image.Image") -> "Image.Image":
     return img
 
 
-def _ocr_image(img: "Image.Image") -> str:
+def _ocr_image(img: "PILImage") -> str:
     if pytesseract is None or Image is None:
         return ""
     try:
@@ -154,27 +159,20 @@ def _normalize_amount_string(s: str) -> Optional[str]:
     if s.startswith("(") and s.endswith(")"):
         negative = True
         s = s[1:-1]
-    # If both , and . exist, decide decimal by last occurrence
-    if "," in s and "." in s:
-        last_comma = s.rfind(",")
-        last_dot = s.rfind(".")
-        if last_comma > last_dot:
-            # comma as decimal: remove dots
-            s = s.replace(".", "")
-            s = s.replace(",", ".")
-        else:
-            # dot as decimal: remove commas
-            s = s.replace(",", "")
+
+    # Use regex to find the last separator (comma or dot) followed by exactly two digits.
+    # If found, that separator is the decimal point.
+    m = re.search(r"([.,])(\d{2})$", s)
+    if m:
+        # A decimal separator was found. Replace it with a dot and remove all other separators.
+        decimal_separator = m.group(1)
+        s = s.replace(decimal_separator, '.')
+        other_separator = ',' if decimal_separator == '.' else '.'
+        s = s.replace(other_separator, '')
     else:
-        # Only comma present: if exactly two digits after last comma, treat comma as decimal
-        if "," in s:
-            idx = s.rfind(",")
-            if len(s) - idx - 1 == 2:
-                s = s.replace(",", ".")
-            else:
-                s = s.replace(",", "")
-        # Only dots or none: leave as-is (remove grouping spaces handled above)
-    # Remove any stray currency symbols again
+        # No clear decimal separator found, so remove all of them as they are thousand separators.
+        s = s.replace(",", "").replace(".", "")
+
     s = _strip_currency_tokens(s)
     if negative and not s.startswith("-"):
         s = "-" + s
@@ -349,7 +347,7 @@ def _parse_vendor(text: str) -> Optional[str]:
 def _pick_best_amount(
     lines: List[str],
     score_func: Any,
-    avoid_keywords_re: Optional[re.Pattern] = None,
+    avoid_keywords_re: Optional[Pattern] = None,
     debug_key: Optional[str] = None,
     debug: Optional[Dict[str, Any]] = None,
 ) -> Optional[Decimal]:
@@ -499,19 +497,29 @@ def _extract_line_items(text: str) -> List[Dict[str, Optional[str]]]:
                 except Exception:
                     continue
             if values:
+                # If 3 or more values, check if qty * unit_price is close to total
                 if len(values) >= 3:
-                    # Assume [qty, unit_price, line_total]
-                    qty = str(values[0])
-                    unit_price = str(values[-2])
-                    line_total = str(values[-1])
-                elif len(values) == 2:
-                    # If first looks like integer, treat as qty
-                    if values[0] == values[0].to_integral_value():
+                    # Check the last 3 values, as they are most likely to be qty, price, total
+                    v1, v2, v3 = values[-3], values[-2], values[-1]
+                    # Check if v1 * v2 is close to v3 (e.g., qty * price = total)
+                    if abs(v1 * v2 - v3) < Decimal('0.05'):
+                        qty = str(v1)
+                        unit_price = str(v2)
+                        line_total = str(v3)
+                    # Check if v2 * v1 is close to v3 (e.g., price * qty = total)
+                    elif abs(v2 * v1 - v3) < Decimal('0.05'):
+                        qty = str(v2)
+                        unit_price = str(v1)
+                        line_total = str(v3)
+                    else: # Fallback to original assumption
                         qty = str(values[0])
-                        line_total = str(values[1])
-                    else:
-                        unit_price = str(values[0])
-                        line_total = str(values[1])
+                        unit_price = str(values[-2])
+                        line_total = str(values[-1])
+                elif len(values) == 2:
+                    # Assume the last value is the line total.
+                    # The other could be quantity or unit price.
+                    qty = str(values[0]) # Assume first is quantity-like
+                    line_total = str(values[1])
                 else:
                     line_total = str(values[0])
         # Ignore lines that have no description and no amounts
@@ -601,28 +609,28 @@ def parse_invoice_details(file_path: str) -> Dict[str, Any]:
     if text:
         try:
             vendor = _parse_vendor(text)
-        except Exception as e:
-            print(f"Error parsing vendor: {e}")
+        except Exception:
+            logging.error("Error during invoice vendor parsing.", exc_info=True)
             pass
         try:
             amount = _pick_total_amount(text)
-        except Exception as e:
-            print(f"Error parsing amount: {e}")
+        except Exception:
+            logging.error("Error during invoice amount parsing.", exc_info=True)
             pass
         try:
             inv_date = _parse_date(text)
-        except Exception as e:
-            print(f"Error parsing date: {e}")
+        except Exception:
+            logging.error("Error during invoice date parsing.", exc_info=True)
             pass
         try:
             subtotal, tax_total = _pick_subtotal_and_tax(text)
-        except Exception as e:
-            print(f"Error parsing subtotal/tax: {e}")
+        except Exception:
+            logging.error("Error during invoice subtotal/tax parsing.", exc_info=True)
             pass
         try:
             line_items = _extract_line_items(text)
-        except Exception as e:
-            print(f"Error parsing line items: {e}")
+        except Exception:
+            logging.error("Error during invoice line item parsing.", exc_info=True)
             pass
 
     if vendor is None or vendor.strip() == "":

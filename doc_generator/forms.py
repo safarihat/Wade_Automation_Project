@@ -26,6 +26,16 @@ class FreshwaterPlanForm(forms.ModelForm):
             'longitude': forms.HiddenInput(),
         }
 
+    def __init__(self, *args, **kwargs):
+        """
+        Override the init method to make latitude and longitude not required
+        at the form level. This allows our custom clean() method to run and
+        populate them from the 'geolocation_paste' field before final validation.
+        """
+        super().__init__(*args, **kwargs)
+        self.fields['latitude'].required = False
+        self.fields['longitude'].required = False
+
     def clean(self):
         cleaned_data = super().clean()
         geoloc_string = cleaned_data.get('geolocation_paste')

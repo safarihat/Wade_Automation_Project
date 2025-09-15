@@ -1,6 +1,9 @@
 import os
 import io
 import logging
+import sys
+from contextlib import contextmanager
+import requests
 from celery import shared_task
 from django.conf import settings
 from django.template.loader import render_to_string
@@ -9,7 +12,7 @@ from .models import FreshwaterPlan
 
 # PDF and Watermarking libraries
 try:
-    from weasyprint import HTML
+    from xhtml2pdf import pisa
     from pypdf import PdfReader, PdfWriter
     from reportlab.pdfgen import canvas
     from reportlab.lib.units import inch
@@ -20,7 +23,7 @@ except ImportError as e:
     # but the task will fail if called.
     raise ImportError(
         f"PDF generation libraries not found: {e}. "
-        "Please install them with: pip install weasyprint pypdf reportlab"
+        "Please install them with: pip install xhtml2pdf pypdf reportlab"
     ) from e
 
 # LangChain components for RAG
@@ -82,6 +85,9 @@ def generate_plan_task(self, freshwater_plan_id):
         # --- Part 1: Generate Plan Text using RAG ---
         _generate_plan_text(freshwater_plan)
 
+        # --- Part 1.5: Generate Static Map Image ---
+        # _generate_static_map_image(freshwater_plan)
+
         # --- Part 2: Generate Watermarked PDF Preview ---
         _generate_pdf_preview(freshwater_plan)
 
@@ -104,7 +110,10 @@ def _generate_plan_text(freshwater_plan: FreshwaterPlan):
 
     logger.info(f"[1/3] Initializing RAG components for plan ID: {freshwater_plan.pk}")
     model_name = "sentence-transformers/all-MiniLM-L6-v2"
-    embeddings = HuggingFaceEmbeddings(model_name=model_name)
+    # Explicitly set the device to 'cpu' to avoid "meta tensor" errors
+    # that can occur with newer versions of torch and sentence-transformers.
+    model_kwargs = {'device': 'cpu'}
+    embeddings = HuggingFaceEmbeddings(model_name=model_name, model_kwargs=model_kwargs)
 
     vector_store_path = os.path.join(settings.BASE_DIR, 'vector_store')
     vector_store = Chroma(persist_directory=vector_store_path, embedding_function=embeddings)
@@ -114,7 +123,10 @@ def _generate_plan_text(freshwater_plan: FreshwaterPlan):
     # retriever = vector_store.as_retriever(search_kwargs={'k': 5, 'filter': {'council': freshwater_plan.council}})
     retriever = vector_store.as_retriever(search_kwargs={'k': 5})
 
-    llm = ChatGroq(model_name="llama3-8b-8192", groq_api_key=settings.GROQ_API_KEY)
+    # The model 'llama3-8b-8192' has been decommissioned by Groq.
+    # We are updating to a current, recommended model.
+    # See: https://console.groq.com/docs/models
+    llm = ChatGroq(model_name="llama-3.1-8b-instant", groq_api_key=settings.GROQ_API_KEY)
 
     template = """
     You are an expert assistant for creating New Zealand Freshwater Farm Plans.
@@ -155,6 +167,63 @@ def _generate_plan_text(freshwater_plan: FreshwaterPlan):
     freshwater_plan.save(update_fields=['generated_plan', 'updated_at'])
     logger.info(f"Plan text generation complete for ID: {freshwater_plan.pk}")
 
+def _generate_static_map_image(freshwater_plan: FreshwaterPlan):
+    """
+    Fetches a static map image from the LINZ Data Service (LDS) WMS
+    and saves it to the FreshwaterPlan's map_image field.
+    """
+    if freshwater_plan.map_image:
+        logger.info(f"Map image for ID {freshwater_plan.pk} already exists. Skipping generation.")
+        return
+
+    logger.info(f"Generating static map image for plan ID: {freshwater_plan.pk}")
+
+    # 1. Transform coordinates to NZTM (EPSG:2193) as required by many LINZ services for BBOX.
+    center_point_wgs84 = freshwater_plan.location
+    center_point_nztm = center_point_wgs84.transform(2193, clone=True)
+
+    # 2. Define a 1km x 1km bounding box around the center point.
+    half_size = 500  # meters
+    bbox_nztm = (
+        center_point_nztm.x - half_size,
+        center_point_nztm.y - half_size,
+        center_point_nztm.x + half_size,
+        center_point_nztm.y + half_size,
+    )
+
+    # 3. Construct the LINZ WMS GetMap request using the correct Basemaps service endpoint.
+    # The API key is passed as a standard query parameter.
+    wms_url = "https://basemaps.linz.govt.nz/v1/wms"
+    params = {
+        'key': settings.LINZ_API_KEY,
+        'service': 'WMS',
+        'request': 'GetMap',
+        'layers': 'nz_topo_50',  # The correct layer name for the Topo50 map on this service.
+        'styles': '',
+        'format': 'image/png',
+        'transparent': 'true',
+        'version': '1.3.0', # Using a more current WMS version
+        'width': 800,
+        'height': 800,
+        'crs': 'EPSG:2193', # WMS 1.3.0 uses 'crs' instead of 'srs'
+        'bbox': ','.join(map(str, bbox_nztm)),
+    }
+
+    try:
+        # Manually construct the full URL to prevent `requests` from encoding the semicolon in the path.
+        query_string = "&".join([f"{k}={v}" for k, v in params.items() if v is not None])
+        full_url = f"{wms_url}?{query_string}"
+        response = requests.get(full_url, timeout=30) # Pass the fully constructed URL
+        response.raise_for_status()  # Raise an exception for bad status codes
+
+        file_name = f"map_plan_{freshwater_plan.pk}.png"
+        # Use save=False and a separate model save for consistency
+        freshwater_plan.map_image.save(file_name, ContentFile(response.content), save=False)
+        freshwater_plan.save(update_fields=['map_image', 'updated_at'])
+        logger.info(f"Saved static map image for plan ID: {freshwater_plan.pk}")
+    except requests.exceptions.RequestException as e:
+        logger.warning(f"Could not fetch static map for plan ID {freshwater_plan.pk}: {e}")
+
 def _generate_pdf_preview(freshwater_plan: FreshwaterPlan):
     """Renders the plan to HTML, converts to PDF, and stamps a watermark."""
     # If PDF already exists, skip regeneration to make the task idempotent.
@@ -168,14 +237,28 @@ def _generate_pdf_preview(freshwater_plan: FreshwaterPlan):
     # We'll need a dedicated template for the PDF.
     html_string = render_to_string('doc_generator/pdf_template.html', {'plan': freshwater_plan})
 
-    # 2. Convert the HTML to a PDF in memory.
-    pdf_bytes = HTML(string=html_string).write_pdf()
+    # 2. Convert the HTML to a PDF in memory using xhtml2pdf.
+    pdf_stream = io.BytesIO()
+    pisa_status = pisa.CreatePDF(
+        io.StringIO(html_string),  # The HTML source
+        dest=pdf_stream             # The PDF destination
+    )
+    if pisa_status.err:
+        raise Exception(f"PDF generation failed with xhtml2pdf: {pisa_status.err}")
+    pdf_bytes = pdf_stream.getvalue()
 
     # 3. Create the watermark and stamp it onto the PDF.
     watermark = _create_watermark_pdf()
     final_pdf_stream = _stamp_pdf(pdf_bytes, watermark)
 
     # 4. Save the final watermarked PDF to the model's FileField.
+    # With the 'prefork' worker, we no longer need the eventlet tpool workaround
+    # and can use the standard Django save method directly.
     file_name = f"preview_plan_{freshwater_plan.pk}.pdf"
-    freshwater_plan.pdf_preview.save(file_name, ContentFile(final_pdf_stream.read()), save=True)
+    file_content = final_pdf_stream.read()
+    # The first save attaches the file to the model field in memory.
+    freshwater_plan.pdf_preview.save(file_name, ContentFile(file_content), save=False)
+    # The second save persists only the changed fields to the database.
+    freshwater_plan.save(update_fields=['pdf_preview', 'updated_at'])
+
     logger.info(f"Saved watermarked PDF preview for plan ID: {freshwater_plan.pk}")

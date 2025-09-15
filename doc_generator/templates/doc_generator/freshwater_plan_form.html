@@ -1,31 +1,21 @@
 {% extends 'wade_automation/base.html' %}
-
-{% block title %}Create Freshwater Plan{% endblock %}
+{% block title %}Create Freshwater Plan with MapLibre GL JS Map{% endblock %}
 
 {% block content %}
+<!-- MapLibre GL JS CSS -->
+<link href='https://unpkg.com/maplibre-gl@4.1.2/dist/maplibre-gl.css' rel='stylesheet' />
+
 <style>
+    #map {
+        height: 400px; /* Define a height for the map container */
+        width: 100%;
+        margin-top: 20px;
+        border-radius: 8px;
+    }
     .form-container {
-        max-width: 600px;
+        max-width: 800px;
         margin: 0 auto;
         padding: 20px;
-        background-color: #f9f9f9;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    .form-group {
-        margin-bottom: 15px;
-    }
-    .form-group label {
-        display: block;
-        margin-bottom: 5px;
-        font-weight: bold;
-    }
-    .form-group input,
-    .form-group select {
-        width: 100%;
-        padding: 8px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
     }
     .btn {
         background-color: #0a0a23;
@@ -34,45 +24,67 @@
         border: none;
         border-radius: 4px;
         cursor: pointer;
-    }
-    .alert {
-        padding: 15px;
-        margin-bottom: 20px;
-        border: 1px solid transparent;
-        border-radius: 4px;
-    }
-    .alert-info {
-        color: #31708f;
-        background-color: #d9edf7;
-        border-color: #bce8f1;
+        margin-top: 10px;
     }
 </style>
+
 <div class="form-container">
     <h1>Create Freshwater Plan</h1>
-    <div class="alert alert-info">
-        <strong>How to get coordinates from Google Maps:</strong>
-        <ol>
-            <li>Open Google Maps.</li>
-            <li>Right-click on a location on the map.</li>
-            <li>The latitude and longitude will be in the menu that appears. Click on them to copy to your clipboard.</li>
-            <li>Paste the coordinates into the box below.</li>
-        </ol>
-    </div>
+    <p>Paste coordinates from Google Maps to center the map.</p>
+
     <form method="post">
         {% csrf_token %}
-        {% for field in form %}
-            <div class="form-group">
-                {{ field.label_tag }}
-                {{ field }}
-                {% if field.help_text %}
-                    <small style="color: grey">{{ field.help_text }}</small>
-                {% endif %}
-                {% for error in field.errors %}
-                    <p style="color: red">{{ error }}</p>
-                {% endfor %}
-            </div>
-        {% endfor %}
+        <div class="form-group">
+            {{ form.geolocation_paste.label_tag }}
+            {{ form.geolocation_paste }}
+        </div>
         <button type="submit" class="btn">Submit</button>
     </form>
+
+    <!-- Map Container -->
+    <div id="map"></div>
 </div>
+
+<!-- MapLibre GL JS -->
+<script src='https://unpkg.com/maplibre-gl@4.1.2/dist/maplibre-gl.js'></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const map = new maplibregl.Map({
+            container: 'map', // container id
+            style: {
+                'version': 8,
+                'sources': {
+                    'osm-tiles': {
+                        'type': 'raster',
+                        'tiles': ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+                        'tileSize': 256,
+                        'attribution': '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                    }
+                },
+                'layers': [
+                    { 'id': 'osm-layer', 'type': 'raster', 'source': 'osm-tiles' }
+                ]
+            },
+            center: [174.7762, -41.2865], // Default center [lon, lat]
+            zoom: 4 // Default zoom
+        });
+
+        let marker = null;
+        const coordInput = document.getElementById('id_geolocation_paste');
+
+        coordInput.addEventListener('input', function () {
+            const coords = this.value.split(',').map(s => parseFloat(s.trim()));
+            if (coords.length === 2 && !isNaN(coords[0]) && !isNaN(coords[1])) {
+                const lat = coords[0];
+                const lon = coords[1];
+                const zoomLevel = 12; // Reset to a general zoom level
+                map.flyTo({ center: [lon, lat], zoom: zoomLevel });
+
+                if (marker) marker.remove();
+                marker = new maplibregl.Marker().setLngLat([lon, lat]).addTo(map);
+            }
+        });
+    });
+</script>
 {% endblock %}

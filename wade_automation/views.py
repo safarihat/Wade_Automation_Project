@@ -82,12 +82,13 @@ def customer_dashboard(request):
     # Build a list of installed modules for this user. Keep minimal coupling by importing lazily.
     installed_modules = []
 
+    from django.urls import reverse
     # Add Document Generator module to the dashboard
     installed_modules.append({
         'key': 'doc_generator',
         'name': 'Document Generator',
         'description': 'Create regulatory documents using AI-powered templates.',
-        'url': '/documents/',
+        'url': reverse('doc_generator:freshwater_plan_create'), # Use reverse lookup for consistency
         'icon': None,
     })
 

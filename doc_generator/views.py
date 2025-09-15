@@ -8,6 +8,7 @@ from django.conf import settings
 from .models import FreshwaterPlan, RegionalCouncil
 from .forms import FreshwaterPlanForm
 # Assuming generate_plan_task is defined in doc_generator/tasks.py
+from django.shortcuts import render
 from .tasks import generate_plan_task # This import assumes tasks.py exists
 
 import logging
@@ -18,6 +19,15 @@ class FreshwaterPlanCreateView(LoginRequiredMixin, CreateView):
     model = FreshwaterPlan
     form_class = FreshwaterPlanForm
     template_name = 'doc_generator/freshwater_plan_form.html' # Assuming this template path
+
+    def get_context_data(self, **kwargs):
+        """
+        Passes the LINZ API key to the template context so it can be used
+        by client-side mapping libraries if needed.
+        """
+        context = super().get_context_data(**kwargs)
+        context['LINZ_API_KEY'] = settings.LINZ_API_KEY
+        return context
 
     def get_success_url(self):
         # Redirect to the preview page of the object that was just created
@@ -32,15 +42,14 @@ class FreshwaterPlanCreateView(LoginRequiredMixin, CreateView):
         # Create a GEOS Point object for the spatial query
         location_point = Point(lon, lat, srid=4326) if lat is not None and lon is not None else None
 
-        # Perform the spatial query to find the containing council.
-        try:
-            council = RegionalCouncil.objects.get(geom__contains=location_point)
-        except RegionalCouncil.DoesNotExist:
+        # Perform the spatial query to find the containing council. Using .first()
+        # gracefully handles both cases where no council is found (returns None)
+        # or multiple are found (returns the first one).
+        council = RegionalCouncil.objects.filter(geom__contains=location_point).first()
+
+        if not council:
             messages.error(self.request, "Could not find a regional council for the provided coordinates. Please check the location.")
             return self.form_invalid(form)
-        except RegionalCouncil.MultipleObjectsReturned:
-            # This can happen with overlapping polygons; we'll just take the first one.
-            council = RegionalCouncil.objects.filter(geom__contains=location_point).first()
 
         # Set the user, council, and location on the form instance before saving.
         # The default ModelForm.save() will now handle saving all fields correctly.
@@ -58,6 +67,16 @@ class FreshwaterPlanCreateView(LoginRequiredMixin, CreateView):
     def form_invalid(self, form):
         logger.error(f"Form is invalid. Errors: {form.errors.as_json()}")
         return super().form_invalid(form)
+
+def maplibre_test_view(request):
+    """
+    A simple view to render the MapLibre example map and pass the
+    MapTiler API key to the template context.
+    """
+    context = {
+        'MAPTILER_API_KEY': settings.MAPTILER_API_KEY
+    }
+    return render(request, 'doc_generator/maplibre_example.html', context)
 
 class FreshwaterPlanPreviewView(LoginRequiredMixin, DetailView):
     model = FreshwaterPlan

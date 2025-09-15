@@ -1,15 +1,99 @@
-<!-- doc_generator/templates/doc_generator/freshwater_plan_preview.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Freshwater Plan Preview</title>
-</head>
-<body>
-    <h1>Freshwater Plan Preview</h1>
-    <p>Your plan is being generated in the background. You will be notified when it's ready.</p>
-    <p>This is a placeholder preview page.</p>
-    <a href="{% url 'freshwater_plan_create' %}">Create another plan</a>
-</body>
-</html>
+{% extends 'wade_automation/base.html' %}
+{% load static %}
+
+{% block title %}Freshwater Plan Preview - {{ plan.council }}{% endblock %}
+
+{% block extra_head %}
+    <!-- Leaflet.js for mapping -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+{% endblock %}
+
+{% block content %}
+<main class="page-section">
+    <div class="container">
+        <h1 class="text-center">Freshwater Plan Preview</h1>
+        <p class="lead text-center">
+            This is a preliminary plan generated for your property in the <strong>{{ plan.council }}</strong> region.
+        </p>
+
+        <div class="plan-container">
+            {% if plan.generated_plan %}
+                <div class="plan-content">
+                    <!-- The 'safe' filter allows rendering of HTML/Markdown if the LLM produces it -->
+                    <!-- The 'linebreaks' filter converts newlines to <p> and <br> tags -->
+                    {{ plan.generated_plan|linebreaks }}
+                </div>
+            {% else %}
+                <div class="text-center" id="plan-pending-indicator">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p>Your plan is currently being generated. This may take a moment.</p>
+                    <p>This page will automatically refresh when it's ready.</p>
+                </div>
+            {% endif %}
+
+            <div class="plan-details">
+                <h3>Plan Details</h3>
+                <ul>
+                    <li><strong>Council:</strong> {{ plan.council }}</li>
+                    <li><strong>Coordinates:</strong> {{ plan.latitude }}, {{ plan.longitude }}</li>
+                    <li><strong>Generated On:</strong> {{ plan.updated_at|date:"d M Y, H:i" }}</li>
+                    {% if plan.pdf_preview %}
+                    <li style="margin-top: 15px;">
+                        <a href="{{ plan.pdf_preview.url }}" class="cta-button-secondary" download>Download PDF Preview</a>
+                    </li>
+                    {% endif %}
+                </ul>
+                <!-- Map container -->
+                <div id="map" style="height: 300px; background-color: #e9ecef; border-radius: 8px; margin-top: 20px;"></div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    // Auto-refresh logic for pending plans.
+    // This script will only run if the pending indicator is present on the page.
+    const pendingIndicator = document.getElementById('plan-pending-indicator');
+    if (pendingIndicator) {
+        const checkStatus = () => {
+            // Reload the page to check for the updated content.
+            // A more advanced implementation could use fetch() to check an API endpoint
+            // to avoid a full page reload, but this is simple and effective.
+            window.location.reload(true); // Pass true to force a reload from the server
+        };
+        setTimeout(checkStatus, 5000); // Check after 5 seconds
+    }
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Get coordinates and API key from Django template
+    const lat = {{ plan.latitude }};
+    const lon = {{ plan.longitude }};
+    // Note: It's generally safer to pass keys via a context processor or dedicated API endpoint,
+    // but for this internal tool, embedding it is acceptable.
+    const linzApiKey = "{{ LINZ_API_KEY }}";
+
+    if (!linzApiKey) {
+        document.getElementById('map').innerHTML = '<div style="padding: 20px; text-align: center; color: #6c757d;">Map cannot be displayed: LINZ API Key is not configured.</div>';
+        return;
+    }
+
+    // Initialize the map
+    const map = L.map('map').setView([lat, lon], 15);
+
+    // Add the LINZ Topo50 basemap layer
+    L.tileLayer(
+        `https://tiles-cdn.koordinates.com/services;key=${linzApiKey}/tiles/v4/layer=50767/EPSG:3857/{z}/{x}/{y}.png`, {
+            attribution: 'NZ Topo50 by <a href="https://www.linz.govt.nz/data/licensing-and-using-data/attributing-linz-data">LINZ</a>, | &copy; <a href="https://www.koordinates.com">Koordinates</a>'
+        }
+    ).addTo(map);
+
+    // Add a marker for the property location
+    L.marker([lat, lon]).addTo(map).bindPopup('Property Location').openPopup();
+});
+</script>
+{% endblock %}
