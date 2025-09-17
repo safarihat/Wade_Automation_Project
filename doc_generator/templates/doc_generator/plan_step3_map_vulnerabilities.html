@@ -1,0 +1,279 @@
+{% extends 'wade_automation/base.html' %}
+{% load static %}
+
+{% block title %}Step 3: Map Inherent Vulnerabilities{% endblock %}
+
+{% block extra_head %}
+    <!-- MapLibre GL CSS -->
+    <link href='https://unpkg.com/maplibre-gl@4.1.2/dist/maplibre-gl.css' rel='stylesheet' />
+    <!-- Mapbox GL Draw CSS (compatible with MapLibre) -->
+    <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.4.0/mapbox-gl-draw.css' type='text/css' />
+    <style>
+        .map-wrapper { display: flex; gap: 1rem; }
+        #map { height: 70vh; flex-grow: 1; border-radius: 8px; }
+        .sidebar { flex-basis: 320px; flex-shrink: 0; padding: 1rem; background-color: #f8f9fa; border-radius: 8px; }
+        .form-group { margin-bottom: 1rem; }
+        #feature-editor { display: none; margin-top: 1rem; border-top: 1px solid #dee2e6; padding-top: 1rem; }
+        .legend-item { display: flex; align-items: center; margin-bottom: 0.5rem; }
+        .legend-color { width: 20px; height: 20px; margin-right: 10px; border: 1px solid #ccc; }
+        .sidebar .stat { font-size: 0.95rem; color: #333; margin: 0.25rem 0 1rem; }
+    </style>
+{% endblock %}
+
+{% block content %}
+<main class="page-section">
+    <div class="container">
+        <h1 class="text-center">Step 3: Map Inherent Vulnerabilities</h1>
+        <p class="lead text-center">
+            Use the drawing tools to identify areas on your farm with inherent risks to freshwater. Select a feature on the map to categorize it.
+        </p>
+
+        <div class="map-wrapper mt-4">
+            <div id="map"></div>
+            <div class="sidebar">
+                <h5>Map Legend & Controls</h5>
+                <p class="stat">Computed Area (drawn polygons): <strong id="total-area">0.00 ha</strong></p>
+                <div id="legend"></div>
+
+                <div id="feature-editor">
+                    <h6>Edit Selected Feature</h6>
+                    <div class="form-group">
+                        <label for="vulnerability-type">Vulnerability Type</label>
+                        <select id="vulnerability-type" class="form-select">
+                            <option value="uncategorized">Uncategorized</option>
+                            <option value="farm_boundary">Farm Boundary</option>
+                            <option value="leased_land">Leased Land</option>
+                            <option value="land_use_zone">Land Use Zone</option>
+                            <option value="land_unit">Land Unit</option>
+                            <option value="soil_type">Soil Type</option>
+                            <option value="surface_water_body">Surface / Artificial Water Body</option>
+                            <option value="slope_landform">Slope / Landform</option>
+                            <option value="iwg_zone">Intensive Winter Grazing</option>
+                            <option value="critical_source_area">Critical Source Area</option>
+                            <option value="drainage_system">Drainage System</option>
+                            <option value="irrigation_infra">Irrigation / Frost Protection</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="feature-description">Description</label>
+                        <textarea id="feature-description" class="form-control" rows="3"></textarea>
+                    </div>
+                    <button id="save-feature-properties" class="btn btn-sm btn-secondary">Save Properties</button>
+                    <button id="export-geojson" class="btn btn-sm btn-outline-secondary" style="margin-left:8px;">Export GeoJSON</button>
+                </div>
+            </div>
+        </div>
+
+        <form method="post" class="mt-3">
+            {% csrf_token %}
+            <input type="hidden" name="vulnerability_features" id="id_vulnerability_features">
+            <button type="submit" class="btn btn-primary">Save and Continue</button>
+            <a href="{% url 'doc_generator:plan_wizard_details' pk=plan.pk %}" class="btn btn-outline-secondary">Back to Details</a>
+        </form>
+    </div>
+
+    <!-- Data container for JS -->
+    <div id="map-data"
+         data-lat="{{ plan.latitude|default:'' }}"
+         data-lon="{{ plan.longitude|default:'' }}"
+         data-maptiler-key="{{ MAPTILER_API_KEY|safe }}"
+         data-linz-key="{{ LINZ_API_KEY|safe }}"
+         data-existing-features="{{ vulnerability_features_json|escapejs }}"
+         style="display:none;"></div>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<!-- MapLibre GL JS -->
+<script src='https://unpkg.com/maplibre-gl@4.1.2/dist/maplibre-gl.js'></script>
+<!-- Mapbox GL Draw (works with MapLibre) -->
+<script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.4.0/mapbox-gl-draw.js'></script>
+<!-- Turf.js for geospatial computations -->
+<script src='https://unpkg.com/@turf/turf@6/turf.min.js'></script>
+
+<script>
+(function(){
+    const dataEl = document.getElementById('map-data');
+    const lat = parseFloat(dataEl.dataset.lat) || -41.2865; // Fallback: Wellington lat
+    const lon = parseFloat(dataEl.dataset.lon) || 174.7762; // Fallback: Wellington lon
+    const maptilerKey = dataEl.dataset.maptilerKey || '';
+    const linzKey = dataEl.dataset.linzKey || '';
+    const existingFeatures = (function(){
+        try { return JSON.parse(dataEl.dataset.existingFeatures || 'null'); } catch(e) { return null; }
+    })();
+
+    const hiddenInput = document.getElementById('id_vulnerability_features');
+    const totalAreaEl = document.getElementById('total-area');
+
+    const vulnerabilityTypes = {
+        'farm_boundary': { color: '#e60049', name: 'Farm Boundary' },
+        'leased_land': { color: '#9b19f5', name: 'Leased Land' },
+        'land_use_zone': { color: '#0bb4ff', name: 'Land Use Zone' },
+        'land_unit': { color: '#50e991', name: 'Land Unit' },
+        'soil_type': { color: '#ffa300', name: 'Soil Type' },
+        'surface_water_body': { color: '#00bfa0', name: 'Surface/Artificial Water' },
+        'slope_landform': { color: '#e6d800', name: 'Slope/Landform' },
+        'iwg_zone': { color: '#ffb3e6', name: 'Winter Grazing' },
+        'critical_source_area': { color: '#7e7d7e', name: 'Critical Source Area' },
+        'drainage_system': { color: '#a349a4', name: 'Drainage System' },
+        'irrigation_infra': { color: '#2a7fff', name: 'Irrigation/Frost' },
+        'uncategorized': { color: '#999999', name: 'Uncategorized' }
+    };
+
+    // Initialize MapLibre
+    const styleUrl = maptilerKey
+        ? `https://api.maptiler.com/maps/hybrid/style.json?key=${maptilerKey}`
+        : 'https://demotiles.maplibre.org/style.json';
+
+    const map = new maplibregl.Map({
+        container: 'map',
+        style: styleUrl,
+        center: [lon, lat],
+        zoom: 14
+    });
+
+    // Drawing controls
+    const draw = new MapboxDraw({
+        displayControlsDefault: false,
+        controls: { point: true, line_string: true, polygon: true, trash: true },
+        defaultMode: 'draw_polygon',
+        styles: [
+            { id: 'gl-draw-polygon-fill', type: 'fill', filter: ['all', ['==', '$type', 'Polygon'], ['!=', 'mode', 'static']], paint: { 'fill-color': ['get', 'color'], 'fill-opacity': 0.4 }},
+            { id: 'gl-draw-polygon-stroke-active', type: 'line', filter: ['all', ['==', '$type', 'Polygon'], ['==', 'active', 'true']], layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': '#fbb03b', 'line-width': 3 }},
+            { id: 'gl-draw-line', type: 'line', filter: ['all', ['==', '$type', 'LineString'], ['!=', 'mode', 'static']], layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': ['get', 'color'], 'line-width': 3 }},
+            { id: 'gl-draw-point', type: 'circle', filter: ['all', ['==', '$type', 'Point'], ['!=', 'mode', 'static']], paint: { 'circle-radius': 5, 'circle-color': ['get', 'color'], 'circle-stroke-width': 1, 'circle-stroke-color': '#fff' }}
+        ]
+    });
+    map.addControl(draw);
+
+    function updateFormAndArea() {
+        const data = draw.getAll();
+        // Save to hidden input
+        hiddenInput.value = data.features.length ? JSON.stringify(data) : '';
+        // Compute total area of all polygons in hectares
+        let sqm = 0;
+        for (const f of data.features) {
+            if (f.geometry && (f.geometry.type === 'Polygon' || f.geometry.type === 'MultiPolygon')) {
+                try { sqm += turf.area(f); } catch (e) {}
+            }
+        }
+        const ha = sqm / 10000.0;
+        totalAreaEl.textContent = ha.toFixed(2) + ' ha';
+    }
+
+    function applyDefaultPropertiesOnCreate(feature) {
+        const defaultType = 'uncategorized';
+        draw.setFeatureProperty(feature.id, 'vulnerability_type', defaultType);
+        draw.setFeatureProperty(feature.id, 'description', feature.properties && feature.properties.description ? feature.properties.description : '');
+        draw.setFeatureProperty(feature.id, 'color', vulnerabilityTypes[defaultType].color);
+    }
+
+    map.on('load', () => {
+        // LINZ Topo raster overlay for context
+        if (linzKey) {
+            map.addSource('linz-topo', {
+                type: 'raster',
+                tiles: [
+                    `https://basemaps.linz.govt.nz/v1/tiles/topo50/EPSG:3857/{z}/{x}/{y}.png?key=${linzKey}`
+                ],
+                scheme: 'xyz',
+                tileSize: 256,
+                attribution: '<a href="https://www.linz.govt.nz/data/linz-data-service/basemaps">Sourced from LINZ</a>'
+            });
+
+            map.addLayer({
+                id: 'linz-topo-layer',
+                type: 'raster',
+                source: 'linz-topo',
+                minzoom: 0,
+                maxzoom: 22
+            }, 'building'); // Add before the 'building' layer from the MapTiler style
+        }
+
+        // Load existing features if any
+        if (existingFeatures && existingFeatures.features && existingFeatures.features.length > 0) {
+            for (const f of existingFeatures.features) {
+                const t = (f.properties && f.properties.vulnerability_type) || 'uncategorized';
+                const color = (vulnerabilityTypes[t] || vulnerabilityTypes['uncategorized']).color;
+                if (!f.properties) f.properties = {};
+                f.properties.color = color;
+            }
+            draw.set(existingFeatures);
+            // Fit to features
+            try {
+                const bbox = turf.bbox(existingFeatures);
+                map.fitBounds([[bbox[0], bbox[1]], [bbox[2], bbox[3]]], { padding: 40, duration: 600 });
+            } catch (e) {}
+        } else {
+            // If keys missing, map still renders with demo style
+        }
+
+        updateFormAndArea();
+    });
+
+    // Events
+    map.on('draw.create', (e) => {
+        if (e.features && e.features[0]) applyDefaultPropertiesOnCreate(e.features[0]);
+        updateFormAndArea();
+    });
+    map.on('draw.update', updateFormAndArea);
+    map.on('draw.delete', updateFormAndArea);
+
+    // Selection editor
+    const editor = document.getElementById('feature-editor');
+    map.on('draw.selectionchange', (e) => {
+        if (e.features && e.features.length > 0) {
+            const feat = e.features[0];
+            document.getElementById('vulnerability-type').value = (feat.properties && feat.properties.vulnerability_type) || 'uncategorized';
+            document.getElementById('feature-description').value = (feat.properties && feat.properties.description) || '';
+            editor.style.display = 'block';
+        } else {
+            editor.style.display = 'none';
+        }
+    });
+
+    document.getElementById('save-feature-properties').addEventListener('click', () => {
+        const selected = draw.getSelected();
+        if (selected.features.length > 0) {
+            const id = selected.features[0].id;
+            const type = document.getElementById('vulnerability-type').value;
+            const desc = document.getElementById('feature-description').value;
+            const color = (vulnerabilityTypes[type] || vulnerabilityTypes['uncategorized']).color;
+            draw.setFeatureProperty(id, 'vulnerability_type', type);
+            draw.setFeatureProperty(id, 'description', desc);
+            draw.setFeatureProperty(id, 'color', color);
+            updateFormAndArea();
+        }
+    });
+
+    // Legend
+    const legendContainer = document.getElementById('legend');
+    Object.keys(vulnerabilityTypes).forEach((key) => {
+        const item = document.createElement('div');
+        item.className = 'legend-item';
+        const colorBox = document.createElement('div');
+        colorBox.className = 'legend-color';
+        colorBox.style.backgroundColor = vulnerabilityTypes[key].color;
+        const label = document.createElement('span');
+        label.textContent = vulnerabilityTypes[key].name;
+        item.appendChild(colorBox);
+        item.appendChild(label);
+        legendContainer.appendChild(item);
+    });
+
+    // Export drawn data as GeoJSON file
+    document.getElementById('export-geojson').addEventListener('click', () => {
+        const data = draw.getAll();
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `vulnerabilities-plan-{{ plan.pk }}.geojson`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+    });
+})();
+</script>
+{% endblock %}
