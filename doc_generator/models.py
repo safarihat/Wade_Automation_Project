@@ -6,11 +6,7 @@ class RegionalCouncil(models.Model):
     Represents the geographic boundaries of a New Zealand Regional Council,
     loaded from a shapefile.
     """
-    # These field names should match the attributes in your shapefile.
-    # I'm using common names as placeholders.
     name = models.CharField(max_length=100, help_text="Name of the regional council.")
-    
-    # The geographic boundary of the council. SRID 4326 is standard WGS84 (lat/lon).
     geom = models.MultiPolygonField(srid=4326)
 
     def __str__(self):
@@ -24,21 +20,65 @@ class FreshwaterPlan(models.Model):
         PENDING = 'pending', 'Pending'
         PAID = 'paid', 'Paid'
 
+    class GenerationStatus(models.TextChoices):
+        PENDING = 'pending', 'Pending'
+        READY = 'ready', 'Ready'
+        FAILED = 'failed', 'Failed'
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='freshwater_plans')
     latitude = models.FloatField()
     longitude = models.FloatField()
     location = models.PointField(srid=4326, help_text="Geographic coordinates (Point) of the plan's location.")
-    map_image = models.ImageField(upload_to='map_images/', blank=True, null=True, help_text="Generated map image for the plan.")
-    council = models.CharField(max_length=255, help_text="The council associated with the plan.")
-    generated_plan = models.TextField(help_text="The generated content of the freshwater plan.")
+
+    # Optional, populated artifacts
+    map_image = models.ImageField(upload_to='map_images/', blank=True, null=True, help_text="Generated map image for the plan.") # Optional, populated artifacts
+
+    # Basic plan metadata/content
+    council = models.CharField(max_length=255, blank=True, null=True, help_text="The council associated with the plan.")
+    generated_plan = models.TextField(blank=True, null=True, help_text="The generated content of the freshwater plan.")
+
+    # --- Fields for Step 2: Administrative Details ---
+    # These are all optional at the database level to allow for progressive population.
+    operator_name = models.CharField(max_length=255, blank=True, null=True, help_text="Name of the farm operator.")
+    operator_contact_details = models.TextField(blank=True, null=True, help_text="Contact details for the operator.")
+    operator_nzbn = models.CharField(max_length=50, blank=True, null=True, help_text="New Zealand Business Number (if applicable).")
+
+    owner_name = models.CharField(max_length=255, blank=True, null=True, help_text="Name of the land owner, if different.")
+    owner_contact_details = models.TextField(blank=True, null=True, help_text="Contact details for the owner.")
+
+    plan_preparer_name = models.CharField(max_length=255, blank=True, null=True, help_text="Name of the person who prepared the plan.")
+
+    farm_address = models.TextField(blank=True, null=True, help_text="Physical address of the farm.")
+    legal_land_titles = models.TextField(blank=True, null=True, help_text="Legal land titles and parcels.")
+
+    total_farm_area_ha = models.FloatField(blank=True, null=True, help_text="Total farm area in hectares.")
+    leased_area_ha = models.FloatField(blank=True, null=True, help_text="Leased or licensed area in hectares.")
+
+    land_use = models.CharField(max_length=255, blank=True, null=True, help_text="Primary land use of the farm.")
+    resource_consents = models.TextField(blank=True, null=True, help_text="Current relevant resource consents.")
+
+
+    # PDF outputs
     pdf_preview = models.FileField(upload_to='previews/', blank=True, null=True, help_text="A PDF preview of the generated plan.")
     pdf_final = models.FileField(upload_to='finals/', blank=True, null=True, help_text="The final PDF of the generated plan.")
+
+    # Workflow/status + map-drawn feature storage used by views
+    generation_status = models.CharField(
+        max_length=20,
+        choices=GenerationStatus.choices,
+        default=GenerationStatus.PENDING,
+        help_text="Status of admin details pre-population/generation pipeline."
+    )
+    vulnerability_features = models.JSONField(blank=True, null=True, help_text="User-drawn vulnerability features (GeoJSON).")
+    activity_features = models.JSONField(blank=True, null=True, help_text="User-drawn activity features (GeoJSON).")
+
     payment_status = models.CharField(
         max_length=20,
         choices=PaymentStatus.choices,
         default=PaymentStatus.PENDING,
         help_text="The payment status of the plan."
     )
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

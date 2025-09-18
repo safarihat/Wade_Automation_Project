@@ -1,0 +1,55 @@
+{% extends 'wade_automation/base.html' %}
+
+{% block title %}Loading Plan Details...{% endblock %}
+
+{% block content %}
+<main class="page-section">
+    <div class="container text-center" style="padding-top: 5rem; padding-bottom: 5rem;">
+        <div id="loading-indicator">
+            <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <h1 class="mt-3">Preparing Your Plan Details</h1>
+            <p class="lead">
+                We're fetching administrative data for your location. This may take a moment.
+            </p>
+            <p>This page will automatically continue when ready.</p>
+        </div>
+
+        <div id="error-indicator" style="display: none;">
+            <h1 class="mt-3 text-danger">An Error Occurred</h1>
+            <p class="lead">
+                We were unable to retrieve the details for your plan.
+            </p>
+            <a href="{% url 'doc_generator:plan_wizard_start' %}" class="btn btn-primary">Try Again</a>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function() {
+    const statusUrl = "{% url 'doc_generator:check_plan_status' pk=plan.pk %}";
+    const loadingIndicator = document.getElementById('loading-indicator');
+    const errorIndicator = document.getElementById('error-indicator');
+
+    const checkStatus = async () => {
+        try {
+            // Add a unique timestamp as a query parameter to prevent the browser from caching the request.
+            // This is a more robust cache-busting technique.
+            const urlWithCacheBuster = `${statusUrl}?t=${new Date().getTime()}`;
+            const response = await fetch(urlWithCacheBuster);
+            const data = await response.json();
+            if (data.status === 'ready') window.location.reload();
+            else if (data.status === 'failed') throw new Error("Task failed on server.");
+        } catch (error) {
+            clearInterval(checkInterval);
+            loadingIndicator.style.display = 'none';
+            errorIndicator.style.display = 'block';
+        }
+    };
+    const checkInterval = setInterval(checkStatus, 3000);
+})();
+</script>
+{% endblock %}

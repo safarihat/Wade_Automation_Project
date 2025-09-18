@@ -1,10 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.models import User
+
 from django.contrib.auth import logout as auth_logout
 from .models import ClientProfile
-from django.shortcuts import render, redirect
 from django.core.mail import send_mail
 from django.contrib import messages
 from django.conf import settings
@@ -71,7 +70,8 @@ def pathways_view(request):
 @login_required
 def customer_dashboard(request):
     if request.user.is_superuser:
-        return redirect('/admin/')  # Superusers go to Django admin
+        from django.urls import reverse
+        return redirect(reverse('admin:index'))  # Superusers go to Django admin
 
     # Ensure the user has a ClientProfile; create one automatically if missing
     profile, _ = ClientProfile.objects.get_or_create(
@@ -88,7 +88,7 @@ def customer_dashboard(request):
         'key': 'doc_generator',
         'name': 'Document Generator',
         'description': 'Create regulatory documents using AI-powered templates.',
-        'url': reverse('doc_generator:freshwater_plan_create'), # Use reverse lookup for consistency
+        'url': reverse('doc_generator:plan_wizard_start'), # Prefer the new wizard entrypoint
         'icon': None,
     })
 

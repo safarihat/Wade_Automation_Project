@@ -12,9 +12,9 @@ class Command(BaseCommand):
             self.stdout.write(self.style.ERROR("LINZ_API_KEY is not set in your environment. Cannot proceed."))
             return
         
-        # The modern, correct endpoint for LINZ WMS services is on the basemaps.linz.govt.nz domain.
-        base_wms_url = "https://basemaps.linz.govt.nz/v1/wms/"
-        target_layer_name = 'nz_topo_50' # The layer name for Topo50 on this service is 'nz_topo_50'
+        # The WMS endpoint for NZTopo50 on data.linz.govt.nz.
+        base_wms_url = "https://data.linz.govt.nz/services/wms/"
+        target_layer_name = 'layer-50767' # The layer ID for NZTopo50 on data.linz.govt.nz WMS.
         target_crs = 'EPSG:2193'
 
         # --- 1. Fetch and Parse GetCapabilities ---

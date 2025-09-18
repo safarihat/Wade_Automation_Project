@@ -2,6 +2,8 @@ import re
 from django import forms
 from django.contrib.gis.geos import Point
 from .models import FreshwaterPlan
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Fieldset, Row, Column
 
 class FreshwaterPlanForm(forms.ModelForm):
     """
@@ -59,3 +61,72 @@ class FreshwaterPlanForm(forms.ModelForm):
             self.add_error('geolocation_paste', "Could not parse coordinates. Please use the format 'latitude, longitude'.")
 
         return cleaned_data
+
+
+class LocationForm(forms.Form):
+    """
+    Lightweight form used in the Step 1 wizard page to accept a pasted
+    coordinate string (latitude, longitude). The page script parses this
+    and fills hidden fields used on submit.
+    """
+    geolocation_paste = forms.CharField(
+        label="Paste Google Maps Location",
+        required=True,
+        widget=forms.TextInput(attrs={
+            'placeholder': 'e.g., -41.2865, 174.7762'
+        })
+    )
+
+
+class AdminDetailsForm(forms.ModelForm):
+    """
+    Form for Step 2 of the wizard, allowing users to review and edit
+    the administrative details of their farm plan.
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.layout = Layout(
+            Fieldset(
+                'People & Business',
+                Row(
+                    Column('operator_name', css_class='form-group col-md-6 mb-3'),
+                    Column('operator_nzbn', css_class='form-group col-md-6 mb-3'),
+                ),
+                'operator_contact_details',
+                Row(
+                    Column('owner_name', css_class='form-group col-md-6 mb-3'),
+                    Column('plan_preparer_name', css_class='form-group col-md-6 mb-3'),
+                ),
+                'owner_contact_details',
+            ),
+            Fieldset(
+                'Farm & Land Information',
+                'farm_address',
+                'legal_land_titles',
+                Row(
+                    Column('total_farm_area_ha', css_class='form-group col-md-6 mb-3'),
+                    Column('leased_area_ha', css_class='form-group col-md-6 mb-3'),
+                ),
+                'land_use',
+                'resource_consents',
+            )
+        )
+
+    class Meta:
+        model = FreshwaterPlan
+        fields = [
+            'operator_name',
+            'operator_contact_details',
+            'operator_nzbn',
+            'owner_name',
+            'owner_contact_details',
+            'plan_preparer_name',
+            'farm_address',
+            'legal_land_titles',
+            'total_farm_area_ha',
+            'leased_area_ha',
+            'land_use',
+            'resource_consents',
+        ]

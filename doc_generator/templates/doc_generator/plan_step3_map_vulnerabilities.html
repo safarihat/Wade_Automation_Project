@@ -96,7 +96,6 @@
     const dataEl = document.getElementById('map-data');
     const lat = parseFloat(dataEl.dataset.lat) || -41.2865; // Fallback: Wellington lat
     const lon = parseFloat(dataEl.dataset.lon) || 174.7762; // Fallback: Wellington lon
-    const maptilerKey = dataEl.dataset.maptilerKey || '';
     const linzKey = dataEl.dataset.linzKey || '';
     const existingFeatures = (function(){
         try { return JSON.parse(dataEl.dataset.existingFeatures || 'null'); } catch(e) { return null; }
@@ -121,13 +120,40 @@
     };
 
     // Initialize MapLibre
-    const styleUrl = maptilerKey
-        ? `https://api.maptiler.com/maps/hybrid/style.json?key=${maptilerKey}`
-        : 'https://demotiles.maplibre.org/style.json';
-
     const map = new maplibregl.Map({
         container: 'map',
-        style: styleUrl,
+        style: {
+            "version": 8,
+            "sources": {
+                "linz-topo50": {
+                    "type": "raster",
+                        "tiles": [ `https://tiles-cdn.koordinates.com/services;key=${linzKey}/tiles/v4/layer=52343,style=auto/EPSG:3857/{z}/{x}/{y}.png` ],
+                    "tileSize": 256,
+                    "attribution": "© LINZ"
+                    },
+                    "linz-parcels": {
+                        "type": "raster",
+                        "tiles": [ `https://tiles-cdn.koordinates.com/services;key=${linzKey}/tiles/v4/layer=50772,style=auto/EPSG:3857/{z}/{x}/{y}.png` ],
+                        "tileSize": 256
+                }
+            },
+            "layers": [
+                {
+                    "id": "linz-topo50-layer",
+                    "type": "raster",
+                    "source": "linz-topo50",
+                    "minzoom": 0,
+                        "maxzoom": 22
+                    },
+                    {
+                        "id": "linz-parcels-layer",
+                        "type": "raster",
+                        "source": "linz-parcels",
+                        "paint": { "raster-opacity": 0.75 }
+                }
+            ]
+        },
+        // style: styleUrl, // Removed MapTiler/demo style
         center: [lon, lat],
         zoom: 14
     });
@@ -171,15 +197,14 @@
     map.on('load', () => {
         // LINZ Topo raster overlay for context
         if (linzKey) {
-            map.addSource('linz-topo', {
+            // The base style already includes linz-topo50, so we don't need to add it again.
+            // If you wanted additional LINZ layers, you would add them here.
+            /* map.addSource('linz-additional-layer', {
                 type: 'raster',
-                tiles: [
-                    `https://basemaps.linz.govt.nz/v1/tiles/topo50/EPSG:3857/{z}/{x}/{y}.png?key=${linzKey}`
-                ],
+                tiles: [ `https://data.linz.govt.nz/services;key=${linzKey}/wmts/1.0.0/{LayerIdentifier}/{TileMatrixSet}/{z}/{y}/{x}.png` ],
                 scheme: 'xyz',
                 tileSize: 256,
-                attribution: '<a href="https://www.linz.govt.nz/data/linz-data-service/basemaps">Sourced from LINZ</a>'
-            });
+                attribution: '© LINZ' });
 
             map.addLayer({
                 id: 'linz-topo-layer',
@@ -187,7 +212,7 @@
                 source: 'linz-topo',
                 minzoom: 0,
                 maxzoom: 22
-            }, 'building'); // Add before the 'building' layer from the MapTiler style
+            }); */
         }
 
         // Load existing features if any

@@ -4,6 +4,7 @@ import logging
 import sys
 from contextlib import contextmanager
 import requests
+import eventlet
 from celery import shared_task
 from django.conf import settings
 from django.template.loader import render_to_string
@@ -11,6 +12,7 @@ from django.core.files.base import ContentFile
 from .models import FreshwaterPlan
 
 # PDF and Watermarking libraries
+PDF_DEPS_AVAILABLE = True
 try:
     from xhtml2pdf import pisa
     from pypdf import PdfReader, PdfWriter
@@ -19,12 +21,14 @@ try:
     from reportlab.lib import colors
     from reportlab.lib.pagesizes import letter
 except ImportError as e:
-    # This allows the app to load even if these are not installed,
-    # but the task will fail if called.
-    raise ImportError(
-        f"PDF generation libraries not found: {e}. "
-        "Please install them with: pip install xhtml2pdf pypdf reportlab"
-    ) from e
+    PDF_DEPS_AVAILABLE = False
+    pisa = None
+    PdfReader = None
+    PdfWriter = None
+    canvas = None
+    inch = None
+    colors = None
+    letter = None
 
 # LangChain components for RAG
 from langchain_community.vectorstores import Chroma
@@ -157,7 +161,15 @@ def _generate_plan_text(freshwater_plan: FreshwaterPlan):
     logger.info(f"RAG components initialized for plan ID: {freshwater_plan.pk}")
 
     logger.info(f"[2/3] Invoking RAG chain for plan ID: {freshwater_plan.pk}")
-    question_for_llm = f"Generate a preliminary freshwater farm plan for a property located at latitude {freshwater_plan.latitude}, longitude {freshwater_plan.longitude} within the {freshwater_plan.council} region. Focus on identifying key environmental risks and suggesting initial mitigation strategies based on the provided context."
+    # Enhance the question with the dynamic data fetched in the previous step.
+    question_for_llm = f"""
+    Generate a preliminary freshwater farm plan for a property with the following details:
+    - Address: {freshwater_plan.farm_address}
+    - Legal Land Titles: {freshwater_plan.legal_land_titles}
+    - Regional Council: {freshwater_plan.council}
+
+    Focus on identifying key environmental risks and suggesting initial mitigation strategies based on the provided context.
+    """
     generated_content = rag_chain.invoke(question_for_llm)
     logger.info(f"RAG chain invocation complete for plan ID: {freshwater_plan.pk}")
 
@@ -192,13 +204,13 @@ def _generate_static_map_image(freshwater_plan: FreshwaterPlan):
     )
 
     # 3. Construct the LINZ WMS GetMap request using the correct Basemaps service endpoint.
-    # The API key is passed as a standard query parameter.
-    wms_url = "https://basemaps.linz.govt.nz/v1/wms"
+    # The API key is passed as a standard query parameter. We use the data.linz.govt.nz WMS.
+    wms_url = "https://data.linz.govt.nz/services/wms/"
     params = {
         'key': settings.LINZ_API_KEY,
         'service': 'WMS',
         'request': 'GetMap',
-        'layers': 'nz_topo_50',  # The correct layer name for the Topo50 map on this service.
+        'layers': 'layer-50767',  # The layer ID for NZTopo50 on data.linz.govt.nz WMS.
         'styles': '',
         'format': 'image/png',
         'transparent': 'true',
@@ -229,6 +241,10 @@ def _generate_pdf_preview(freshwater_plan: FreshwaterPlan):
     # If PDF already exists, skip regeneration to make the task idempotent.
     if freshwater_plan.pdf_preview:
         logger.info(f"PDF preview for ID {freshwater_plan.pk} already exists. Skipping generation.")
+        return
+
+    if not PDF_DEPS_AVAILABLE:
+        logger.warning("PDF generation libraries not installed; skipping PDF preview generation.")
         return
 
     logger.info(f"Generating PDF preview for plan ID: {freshwater_plan.pk}")
@@ -262,3 +278,93 @@ def _generate_pdf_preview(freshwater_plan: FreshwaterPlan):
     freshwater_plan.save(update_fields=['pdf_preview', 'updated_at'])
 
     logger.info(f"Saved watermarked PDF preview for plan ID: {freshwater_plan.pk}")
+
+def _get_address_from_coords(lat: float, lon: float) -> str:
+    """
+    Performs a reverse geocoding lookup to get an address from coordinates.
+    Uses the free Nominatim service from OpenStreetMap.
+    """
+    # Nominatim requires a specific User-Agent header for its usage policy.
+    # See: https://operations.osmfoundation.org/policies/nominatim/
+    headers = {
+        'User-Agent': 'WadeAutomation/1.0 (contact@example.com)' # Replace with a real contact
+    }
+    url = f"https://nominatim.openstreetmap.org/reverse?format=json&lat={lat}&lon={lon}"
+    try:
+        response = requests.get(url, headers=headers, timeout=10)
+        response.raise_for_status()
+        data = response.json()
+        address = data.get('display_name')
+        if not address:
+            logger.warning(f"Reverse geocoding for lat={lat}, lon={lon} returned no address.")
+            return "Address not found."
+        return address
+    except requests.RequestException as e:
+        logger.warning(f"Reverse geocoding request failed for lat={lat}, lon={lon}: {e}")
+        return "Could not retrieve address due to a network error."
+    except Exception as e:
+        logger.error(f"An unexpected error occurred during reverse geocoding: {e}", exc_info=True)
+        return "An error occurred while retrieving the address."
+
+def _get_parcel_details_from_linz(lat: float, lon: float) -> dict:
+    """
+    Queries the LINZ WFS for the NZ Primary Parcels layer to get details
+    for the parcel at the given coordinates.
+    """
+    wfs_url = f"https://data.linz.govt.nz/services;key={settings.LINZ_API_KEY}/wfs"
+    params = {
+        'service': 'WFS',
+        'version': '2.0.0',
+        'request': 'GetFeature',
+        'typeNames': 'layer-50772', # Layer ID for NZ Primary Parcels
+        'outputFormat': 'application/json',
+        # Use a CQL filter to find the parcel that intersects the point
+        'cql_filter': f"INTERSECTS(shape, SRID=4326;POINT({lon} {lat}))"
+    }
+    try:
+        response = requests.get(wfs_url, params=params, timeout=20)
+        response.raise_for_status()
+        data = response.json()
+        if data and data.get('features'):
+            properties = data['features'][0].get('properties', {})
+            # Extract relevant details. 'appellation' is the legal description.
+            legal_titles = properties.get('appellation', 'Not found')
+            return {'legal_land_titles': legal_titles}
+        else:
+            logger.warning(f"WFS query for lat={lat}, lon={lon} returned no features.")
+            return {'legal_land_titles': 'No parcel information found at this location.'}
+    except requests.RequestException as e:
+        logger.warning(f"WFS request for parcel details failed: {e}")
+        return {'legal_land_titles': 'Could not retrieve parcel information due to a network error.'}
+    except Exception as e:
+        logger.error(f"An unexpected error occurred during WFS query: {e}", exc_info=True)
+        return {'legal_land_titles': 'An error occurred while retrieving parcel information.'}
+
+@shared_task(bind=True, max_retries=0)
+def populate_admin_details_task(self, freshwater_plan_id):
+    """Populates administrative details for a plan, including reverse geocoding the coordinates to get a farm address."""
+    try:
+        plan = FreshwaterPlan.objects.get(pk=freshwater_plan_id)
+        
+        # Spawn green threads to run the network calls concurrently,
+        # taking advantage of the eventlet worker pool.
+        address_thread = eventlet.spawn(_get_address_from_coords, plan.latitude, plan.longitude)
+        parcel_thread = eventlet.spawn(_get_parcel_details_from_linz, plan.latitude, plan.longitude)
+
+        # Wait for both threads to complete and retrieve their results.
+        plan.farm_address = address_thread.wait()
+        parcel_details = parcel_thread.wait()
+        plan.legal_land_titles = parcel_details.get('legal_land_titles')
+
+        plan.generation_status = FreshwaterPlan.GenerationStatus.READY
+        plan.save(update_fields=['farm_address', 'legal_land_titles', 'generation_status', 'updated_at'])
+        logger.info(f"populate_admin_details_task completed for plan ID: {freshwater_plan_id}")
+    except FreshwaterPlan.DoesNotExist:
+        logger.warning(f"populate_admin_details_task: plan ID {freshwater_plan_id} does not exist")
+    except Exception as e:
+        logger.error(f"populate_admin_details_task failed for ID {freshwater_plan_id}: {e}", exc_info=True)
+        # Ensure the plan status is updated to FAILED so the UI can react.
+        plan.generation_status = FreshwaterPlan.GenerationStatus.FAILED
+        plan.save(update_fields=['generation_status', 'updated_at'])
+        # Re-raise the exception to mark the Celery task as failed.
+        raise

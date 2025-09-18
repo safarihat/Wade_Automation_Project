@@ -27,17 +27,22 @@ ALLOWED_HOSTS = ['*'] # Added for development
 # Application definition
 
 INSTALLED_APPS = [
+    # Django built-in apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.gis', # Add for GeoDjango functionality
+    'django.contrib.gis',
+    # Third-party apps
+    'crispy_forms',
+    'crispy_bootstrap5',
+    'django_celery_results',
+    # Local apps
     'wade_automation',
     'doc_generator',
     'invoice_reconciliation',
-    'django_celery_results',
 ]
 
 MIDDLEWARE = [
@@ -174,10 +179,10 @@ GROQ_API_KEY = os.environ.get('GROQ_API_KEY')
 if not GROQ_API_KEY:
     print("Warning: GROQ_API_KEY not found in .env file. Generative AI features may not work.")
 
-# MapTiler API Key for client-side maps
-MAPTILER_API_KEY = os.environ.get('MAPTILER_API_KEY')
-if not MAPTILER_API_KEY:
-    print("Warning: MAPTILER_API_KEY not found in .env file. Client-side maps may not work.")
+
+# Email settings for contact form
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'webmaster@localhost')
+ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', 'admin@example.com')
 
 
 # --- Celery Configuration ---
@@ -192,3 +197,7 @@ CELERY_TIMEZONE = TIME_ZONE # Use Django's timezone
 CELERY_RESULT_EXTENDED = True # To store more metadata about tasks
 # This setting silences a deprecation warning and ensures connection retries on startup.
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+
+# --- Crispy Forms Configuration ---
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"

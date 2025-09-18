@@ -1,0 +1,136 @@
+{% extends 'wade_automation/base.html' %}
+{% block title %}Step 1: Confirm Your Location{% endblock %}
+
+{% block content %}
+<!-- MapLibre GL JS -->
+<link href='https://unpkg.com/maplibre-gl@4.1.2/dist/maplibre-gl.css' rel='stylesheet' />
+
+<style>
+    #map {
+        height: 500px;
+        width: 100%;
+        margin-top: 20px;
+        border-radius: 8px;
+        background-color: #e9ecef;
+    }
+    .form-container {
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 20px;
+    }
+    .confirmation-section {
+        display: none; /* Hidden by default */
+        margin-top: 20px;
+        text-align: center;
+    }
+    .btn-confirm {
+        background-color: #28a745;
+        color: white;
+    }
+</style>
+
+<div class="form-container">
+    <h1>Step 1: Confirm Your Farm's Location</h1>
+    <p>Paste your property's coordinates from Google Maps to center the map. Review the aerial imagery to ensure it is the correct location.</p>
+    
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            {{ form.geolocation_paste.label_tag }}
+            {{ form.geolocation_paste }}
+            {% if form.geolocation_paste.errors %}
+                <div class="alert alert-danger mt-2">
+                    {% for error in form.geolocation_paste.errors %}{{ error }}{% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        
+        <input type="hidden" name="latitude" id="id_latitude" value="{{ form.latitude.value|default:'' }}">
+        <input type="hidden" name="longitude" id="id_longitude" value="{{ form.longitude.value|default:'' }}">
+        
+        <!-- Map Container -->
+        <div id="map"></div>
+        
+        <div id="confirmation-section" class="confirmation-section">
+            <p class="lead">Is this the correct location for your farm?</p>
+            <button type="submit" class="btn btn-confirm">Yes, Continue to Next Step</button>
+            <a href="{% url 'doc_generator:plan_wizard_start' %}" class="btn btn-secondary">No, Re-enter Coordinates</a>
+        </div>
+    </form>
+</div>
+
+<!-- MapLibre GL JS -->
+<script src='https://unpkg.com/maplibre-gl@4.1.2/dist/maplibre-gl.js'></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const linzApiKey = '{{ LINZ_API_KEY|safe }}';
+
+    if (!linzApiKey) {
+        document.getElementById('map').innerHTML = '<p class="text-center">Map cannot be displayed: API Key is not configured.</p>';
+        return;
+    }
+
+    const map = new maplibregl.Map({
+        container: 'map',
+        style: {
+            "version": 8,
+            "sources": {
+                "linz-topo50": {
+                    "type": "raster",
+                        "tiles": [ `https://tiles-cdn.koordinates.com/services;key=${linzApiKey}/tiles/v4/layer=52343,style=auto/EPSG:3857/{z}/{x}/{y}.png` ],
+                    "tileSize": 256,
+                    "attribution": "© LINZ"
+                    },
+                    "linz-parcels": {
+                        "type": "raster",
+                        "tiles": [ `https://tiles-cdn.koordinates.com/services;key=${linzApiKey}/tiles/v4/layer=50772,style=auto/EPSG:3857/{z}/{x}/{y}.png` ],
+                        "tileSize": 256
+                }
+            },
+            "layers": [
+                {
+                    "id": "linz-topo50-layer",
+                    "type": "raster",
+                        "source": "linz-topo50"
+                    },
+                    {
+                        "id": "linz-parcels-layer",
+                        "type": "raster",
+                        "source": "linz-parcels",
+                        "paint": { "raster-opacity": 0.75 }
+                },
+            ]
+        },
+        center: [174.7762, -41.2865], // Default to Wellington
+        zoom: 4
+    });
+    let marker = null;
+
+    const coordInput = document.getElementById('id_geolocation_paste');
+    coordInput.addEventListener('input', function () {
+        const coords = this.value.split(',').map(s => parseFloat(s.trim()));
+
+        if (coords.length === 2 && !isNaN(coords[0]) && !isNaN(coords[1])) {
+            const lat = coords[0];
+            const lon = coords[1];
+            if (lat >= -90 && lat <= 90 && lon >= -180 && lon <= 180) {
+                map.flyTo({ center: [lon, lat], zoom: 15 });
+
+                if (marker) marker.remove();
+                marker = new maplibregl.Marker({color: '#FF0000'}).setLngLat([lon, lat]).addTo(map);
+
+                // Populate hidden fields and show confirmation
+                document.getElementById('id_latitude').value = lat;
+                document.getElementById('id_longitude').value = lon;
+                document.getElementById('confirmation-section').style.display = 'block';
+            } else {
+                document.getElementById('confirmation-section').style.display = 'none';
+            }
+        } else {
+            document.getElementById('confirmation-section').style.display = 'none';
+        }
+    });
+});
+</script>
+{% endblock %}

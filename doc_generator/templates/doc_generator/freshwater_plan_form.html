@@ -1,19 +1,19 @@
 {% extends 'wade_automation/base.html' %}
-{% block title %}Create Freshwater Plan with MapLibre GL JS Map{% endblock %}
+{% block title %}Create Freshwater Plan with Interactive Map{% endblock %}
 
 {% block content %}
-<!-- MapLibre GL JS CSS -->
+<!-- MapLibre GL JS -->
 <link href='https://unpkg.com/maplibre-gl@4.1.2/dist/maplibre-gl.css' rel='stylesheet' />
 
 <style>
     #map {
-        height: 400px; /* Define a height for the map container */
+        height: 600px; /* Taller map for drawing */
         width: 100%;
         margin-top: 20px;
         border-radius: 8px;
     }
     .form-container {
-        max-width: 800px;
+        max-width: 900px;
         margin: 0 auto;
         padding: 20px;
     }
@@ -29,8 +29,8 @@
 </style>
 
 <div class="form-container">
-    <h1>Create Freshwater Plan</h1>
-    <p>Paste coordinates from Google Maps to center the map.</p>
+    <h1>Confirm Your Location</h1>
+    <p>Paste your property's coordinates to center the map. Review the map to ensure it is the correct location before proceeding.</p>
 
     <form method="post">
         {% csrf_token %}
@@ -38,7 +38,11 @@
             {{ form.geolocation_paste.label_tag }}
             {{ form.geolocation_paste }}
         </div>
-        <button type="submit" class="btn">Submit</button>
+
+        {{ form.latitude }}
+        {{ form.longitude }}
+
+        <button type="submit" class="btn">Generate Plan</button>
     </form>
 
     <!-- Map Container -->
@@ -50,36 +54,53 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        const linzApiKey = '{{ LINZ_API_KEY|safe }}';
+
+        if (!linzApiKey) {
+            document.getElementById('map').innerHTML = '<div style="padding: 20px; text-align: center; color: #6c757d;">Map cannot be displayed: API Key is not configured.</div>';
+            console.error("LINZ API Key is missing.");
+            return;
+        }
+
         const map = new maplibregl.Map({
-            container: 'map', // container id
+            container: 'map',
             style: {
-                'version': 8,
-                'sources': {
-                    'osm-tiles': {
-                        'type': 'raster',
-                        'tiles': ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
-                        'tileSize': 256,
-                        'attribution': '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                "version": 8,
+                "sources": {
+                    "linz-topo50": {
+                        "type": "raster",
+                        "tiles": [ `https://tiles-cdn.koordinates.com/services;key=${linzApiKey}/tiles/v4/layer=52343,style=auto/EPSG:3857/{z}/{x}/{y}.png` ],
+                        "tileSize": 256,
+                        "attribution": "© LINZ"
                     }
                 },
-                'layers': [
-                    { 'id': 'osm-layer', 'type': 'raster', 'source': 'osm-tiles' }
+                "layers": [
+                    {
+                        "id": "linz-topo50-layer",
+                        "type": "raster",
+                        "source": "linz-topo50"
+                    },
                 ]
             },
-            center: [174.7762, -41.2865], // Default center [lon, lat]
-            zoom: 4 // Default zoom
+            center: [174.7762, -41.2865],
+            zoom: 4
         });
 
         let marker = null;
+
+        // --- Coordinate paste functionality ---
         const coordInput = document.getElementById('id_geolocation_paste');
+        const latInput = document.getElementById('id_latitude');
+        const lonInput = document.getElementById('id_longitude');
 
         coordInput.addEventListener('input', function () {
             const coords = this.value.split(',').map(s => parseFloat(s.trim()));
             if (coords.length === 2 && !isNaN(coords[0]) && !isNaN(coords[1])) {
                 const lat = coords[0];
                 const lon = coords[1];
-                const zoomLevel = 12; // Reset to a general zoom level
-                map.flyTo({ center: [lon, lat], zoom: zoomLevel });
+                latInput.value = lat;
+                lonInput.value = lon;
+                map.flyTo({ center: [lon, lat], zoom: 15 });
 
                 if (marker) marker.remove();
                 marker = new maplibregl.Marker().setLngLat([lon, lat]).addTo(map);

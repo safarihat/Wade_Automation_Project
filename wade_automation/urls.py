@@ -9,7 +9,7 @@ urlpatterns = [
     path('contact/', views.contact, name='contact'),
     path('pathways/', views.pathways_view, name='pathways'),
     path('dashboard/', customer_dashboard, name='dashboard'),
-    path('accounts/', include('django.contrib.auth.urls')),
+    
 
     # Authentication URLs
     path('login/', auth_views.LoginView.as_view(template_name='wade_automation/registration/login.html'), name='login'),

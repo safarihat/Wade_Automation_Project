@@ -1,0 +1,33 @@
+{% extends 'wade_automation/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Step 2: Administrative Details{% endblock %}
+
+{% block content %}
+<main class="page-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h1 class="text-center">Step 2: Administrative Details</h1>
+                <p class="lead text-center">
+                    Please review and complete the administrative details for your farm plan.
+                    Some fields may have been pre-populated for your convenience.
+                </p>
+
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <form method="post">
+                            {% csrf_token %}
+                            {% crispy form %}
+                            <div class="d-grid gap-2 mt-4">
+                                <button type="submit" class="btn btn-primary btn-lg">Save and Continue</button>
+                                <a href="{% url 'doc_generator:plan_wizard_start' %}" class="btn btn-outline-secondary">Back to Location</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

@@ -4,9 +4,30 @@
 {% block title %}Freshwater Plan Preview - {{ plan.council }}{% endblock %}
 
 {% block extra_head %}
-    <!-- Leaflet.js for mapping -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <!-- MapLibre GL Draw for drawing tools -->
+    <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.4.0/mapbox-gl-draw.css' type='text/css' />
+    <!-- MapLibre GL JS for mapping -->
+    <link href='https://unpkg.com/maplibre-gl@4.1.2/dist/maplibre-gl.css' rel='stylesheet' />
+    <style>
+        .map-container {
+            height: 450px;
+            width: 100%;
+            border-radius: 8px;
+            margin-top: 1rem;
+            margin-bottom: 2rem;
+            background-color: #e9ecef;
+        }
+        .btn-save-works {
+            background-color: #0a0a23;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            display: block;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
@@ -16,6 +37,33 @@
         <p class="lead text-center">
             This is a preliminary plan generated for your property in the <strong>{{ plan.council }}</strong> region.
         </p>
+
+        <div class="plan-details">
+            <h3>Plan Details</h3>
+            <ul style="list-style-type: none; padding-left: 0;">
+                <li><strong>Council:</strong> {{ plan.council }}</li>
+                <li><strong>Coordinates:</strong> {{ plan.latitude }}, {{ plan.longitude }}</li>
+                <li><strong>Generated On:</strong> {{ plan.updated_at|date:"d M Y, H:i" }}</li>
+                {% if plan.farm_address %}<li><strong>Farm Address:</strong> {{ plan.farm_address }}</li>{% endif %}
+                {% if plan.legal_land_titles %}<li><strong>Legal Land Titles:</strong> {{ plan.legal_land_titles }}</li>{% endif %}
+                <hr style="margin: 1rem 0;">
+                {% if plan.operator_name %}<li><strong>Farm Operator:</strong> {{ plan.operator_name }}</li>{% endif %}
+                {% if plan.operator_contact_details %}<li><strong>Operator Contact:</strong> {{ plan.operator_contact_details|linebreaksbr }}</li>{% endif %}
+                {% if plan.operator_nzbn %}<li><strong>NZBN:</strong> {{ plan.operator_nzbn }}</li>{% endif %}
+                {% if plan.owner_name %}<li><strong>Land Owner:</strong> {{ plan.owner_name }}</li>{% endif %}
+                <hr style="margin: 1rem 0;">
+                {% if plan.total_farm_area_ha %}<li><strong>Total Farm Area:</strong> {{ plan.total_farm_area_ha }} ha</li>{% endif %}
+                {% if plan.leased_area_ha %}<li><strong>Leased Area:</strong> {{ plan.leased_area_ha }} ha</li>{% endif %}
+                {% if plan.land_use %}<li><strong>Primary Land Use:</strong> {{ plan.land_use }}</li>{% endif %}
+                {% if plan.resource_consents %}<li><strong>Resource Consents:</strong> {{ plan.resource_consents|linebreaksbr }}</li>{% endif %}
+                {% if plan.pdf_preview %}
+                <li style="margin-top: 15px;">
+                    <a href="{{ plan.pdf_preview.url }}" class="cta-button-secondary" download>Download PDF Preview</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+
 
         <div class="plan-container">
             {% if plan.generated_plan %}
@@ -34,21 +82,29 @@
                 </div>
             {% endif %}
 
-            <div class="plan-details">
-                <h3>Plan Details</h3>
-                <ul>
-                    <li><strong>Council:</strong> {{ plan.council }}</li>
-                    <li><strong>Coordinates:</strong> {{ plan.latitude }}, {{ plan.longitude }}</li>
-                    <li><strong>Generated On:</strong> {{ plan.updated_at|date:"d M Y, H:i" }}</li>
-                    {% if plan.pdf_preview %}
-                    <li style="margin-top: 15px;">
-                        <a href="{{ plan.pdf_preview.url }}" class="cta-button-secondary" download>Download PDF Preview</a>
-                    </li>
-                    {% endif %}
-                </ul>
-                <!-- Map container -->
-                <div id="map" style="height: 300px; background-color: #e9ecef; border-radius: 8px; margin-top: 20px;"></div>
-            </div>
+            <!-- Map Section -->
+            <h2 style="margin-top: 2rem;">Map 1: Features related to inherent vulnerabilities</h2>
+            <p>This map shows public data related to your property, including topography, property boundaries, and water bodies. Review these features for accuracy.</p>
+            <div id="map-vulnerabilities" class="map-container"></div>
+
+            <h2 style="margin-top: 2rem;">Map 2: Features related to farming/growing activities</h2>
+            <p>This map shows the farm infrastructure you drew in the previous step.</p>
+            <div id="map-activities" class="map-container"></div>
+
+            <h2 style="margin-top: 2rem;">Map 3: Catchment context information</h2>
+            <p>This map provides additional context about the wider catchment, such as land cover.</p>
+            <div id="map-catchment" class="map-container"></div>
+
+            <h2 style="margin-top: 2rem;">Map 4: New physical works</h2>
+            <p>Use the drawing tools on this map to plan out any new works, such as new fences, riparian planting, or infrastructure.</p>
+            <form method="post">
+                {% csrf_token %}
+                <!-- Hidden field to store the GeoJSON from the drawing tool -->
+                <input type="hidden" name="planned_works_features" id="id_planned_works_features">
+                <div id="map-new-works" class="map-container"></div>
+                <button type="submit" class="btn-save-works">Save Planned Works</button>
+            </form>
+
         </div>
     </div>
 </main>
@@ -68,32 +124,252 @@
     }
 </script>
 
+<!-- MapLibre GL JS -->
+<script src='https://unpkg.com/maplibre-gl@4.1.2/dist/maplibre-gl.js'></script>
+<!-- MapLibre GL Draw -->
+<script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.4.0/mapbox-gl-draw.js'></script>
+
 <script>
-document.addEventListener('DOMContentLoaded', function () {
+(async function initMaps() {
     // Get coordinates and API key from Django template
     const lat = {{ plan.latitude }};
     const lon = {{ plan.longitude }};
-    // Note: It's generally safer to pass keys via a context processor or dedicated API endpoint,
-    // but for this internal tool, embedding it is acceptable.
-    const linzApiKey = "{{ LINZ_API_KEY }}";
+    const linzApiKey = "{{ LINZ_API_KEY|safe }}";
+    const drawnFeatures = JSON.parse('{{ drawn_features_json|escapejs }}');
+    const plannedWorksFeatures = JSON.parse('{{ planned_works_features_json|escapejs }}');
+
+    // Helper to fetch and parse LINZ WMTS capabilities and return correct layer + matrix set
+    async function getLinzTopo50WmtsConfig(apiKey) {
+        const capabilitiesUrl = `https://data.linz.govt.nz/services;key=${apiKey}/wmts/1.0.0/WMTSCapabilities.xml`;
+        try {
+            const resp = await fetch(capabilitiesUrl);
+            if (!resp.ok) throw new Error(`Failed to fetch WMTS Capabilities: ${resp.status}`);
+            const xmlText = await resp.text();
+            const doc = new DOMParser().parseFromString(xmlText, 'application/xml');
+
+            const layers = Array.from(doc.getElementsByTagNameNS('*', 'Layer'));
+            // Find the Layer matching dataset 50767 (NZ Topo50 Maps)
+            let layerIdentifier = null;
+            let tileMatrixSet = null;
+
+            for (const layer of layers) {
+                const idEl = layer.getElementsByTagNameNS('*', 'Identifier')[0];
+                const titleEl = layer.getElementsByTagNameNS('*', 'Title')[0];
+                const idTxt = idEl ? idEl.textContent.trim() : '';
+                const titleTxt = titleEl ? titleEl.textContent.trim() : '';
+
+                const looksLikeTopo50 = /topo\s*50|topo50/i.test(titleTxt) || /50767/.test(idTxt);
+                if (!looksLikeTopo50) continue;
+
+                // Determine a valid TileMatrixSet from the TileMatrixSetLink(s)
+                const tmsLinks = Array.from(layer.getElementsByTagNameNS('*', 'TileMatrixSetLink'));
+                const tmsIds = tmsLinks
+                    .map(l => (l.getElementsByTagNameNS('*', 'TileMatrixSet')[0] || {}).textContent)
+                    .filter(Boolean);
+
+                // Prefer EPSG:3857 if present, otherwise the first one
+                const preferred = tmsIds.find(v => /3857/.test(v)) || tmsIds[0] || 'EPSG:3857';
+
+                layerIdentifier = idTxt; // Use exactly as provided in capabilities
+                tileMatrixSet = preferred;
+                break;
+            }
+
+            if (!layerIdentifier) throw new Error('NZ Topo50 WMTS layer not found in capabilities.');
+
+            // Construct the WMTS tile URL format with correct order {TileMatrix}/{TileRow}/{TileCol}
+            const tileUrlTemplate = `https://data.linz.govt.nz/services;key=${apiKey}/wmts/1.0.0/${layerIdentifier}/${tileMatrixSet}/{z}/{y}/{x}.png`;
+            return { layerIdentifier, tileMatrixSet, tileUrlTemplate };
+        } catch (e) {
+            console.error(e);
+            // Fallback to the known correct URL structure from the capabilities document.
+            const fallbackUrl = `https://tiles-cdn.koordinates.com/services;key=${apiKey}/tiles/v4/layer=52343,style=auto/EPSG:3857/{z}/{x}/{y}.png`;
+            const fallbackMatrixSet = 'EPSG:3857';
+            return {
+                layerIdentifier: '52343', // The layer ID from the URL
+                tileMatrixSet: fallbackMatrixSet,
+                tileUrlTemplate: fallbackUrl
+            };
+        }
+    }
 
     if (!linzApiKey) {
-        document.getElementById('map').innerHTML = '<div style="padding: 20px; text-align: center; color: #6c757d;">Map cannot be displayed: LINZ API Key is not configured.</div>';
+        document.getElementById('map-vulnerabilities').innerHTML = '<p class="text-center">Map cannot be displayed: API Key is not configured.</p>';
+        document.getElementById('map-activities').innerHTML = '<p class="text-center">Map cannot be displayed: API Key is not configured.</p>';
+        document.getElementById('map-catchment').innerHTML = '<p class="text-center">Map cannot be displayed: API Key is not configured.</p>';
+        document.getElementById('map-new-works').innerHTML = '<p class="text-center">Map cannot be displayed: API Key is not configured.</p>';
         return;
     }
 
-    // Initialize the map
-    const map = L.map('map').setView([lat, lon], 15);
+    const { tileUrlTemplate } = await getLinzTopo50WmtsConfig(linzApiKey);
 
-    // Add the LINZ Topo50 basemap layer
-    L.tileLayer(
-        `https://tiles-cdn.koordinates.com/services;key=${linzApiKey}/tiles/v4/layer=50767/EPSG:3857/{z}/{x}/{y}.png`, {
-            attribution: 'NZ Topo50 by <a href="https://www.linz.govt.nz/data/licensing-and-using-data/attributing-linz-data">LINZ</a>, | &copy; <a href="https://www.koordinates.com">Koordinates</a>'
+    // --- Initialize Map 1: Vulnerabilities ---
+    const map1 = new maplibregl.Map({
+        container: 'map-vulnerabilities',
+        style: {
+            "version": 8,
+            "sources": {
+                "linz-topo50": {
+                    "type": "raster",
+                    "tiles": [ tileUrlTemplate ],
+                    "tileSize": 256,
+                    "attribution": "© LINZ"
+                }
+            },
+            "layers": [
+                {
+                    "id": "linz-topo50-layer",
+                    "type": "raster",
+                    "source": "linz-topo50"
+                },
+            ]
+        },
+        center: [lon, lat],
+        zoom: 14
+    });
+
+    // --- Initialize Map 2: Activities ---
+    const map2 = new maplibregl.Map({
+        container: 'map-activities',
+        style: {
+            "version": 8,
+            "sources": {
+                "linz-topo50": {
+                    "type": "raster",
+                    "tiles": [ tileUrlTemplate ],
+                    "tileSize": 256,
+                    "attribution": "© LINZ"
+                }
+            },
+            "layers": [
+                {
+                    "id": "linz-topo50-layer",
+                    "type": "raster",
+                    "source": "linz-topo50"
+                },
+            ]
+        },
+        center: [lon, lat],
+        zoom: 14
+    });
+    map2.on('load', () => {
+        if (drawnFeatures) {
+            map2.addSource('drawn-data', {
+                'type': 'geojson',
+                'data': drawnFeatures
+            });
+
+            // Add a layer for the polygons (e.g., riparian areas, buildings)
+            map2.addLayer({
+                'id': 'drawn-polygons',
+                'type': 'fill',
+                'source': 'drawn-data',
+                'filter': ['==', '$type', 'Polygon'],
+                'paint': {
+                    'fill-color': '#088',
+                    'fill-opacity': 0.5
+                }
+            });
+
+            // Add a layer for the lines (e.g., fences, tracks)
+            map2.addLayer({
+                'id': 'drawn-lines',
+                'type': 'line',
+                'source': 'drawn-data',
+                'filter': ['==', '$type', 'LineString'],
+                'paint': {
+                    'line-color': '#888',
+                    'line-width': 2
+                }
+            });
+
+            // Add a layer for the points (e.g., bores, pits)
+            map2.addLayer({
+                'id': 'drawn-points',
+                'type': 'circle',
+                'source': 'drawn-data',
+                'filter': ['==', '$type', 'Point'],
+                'paint': { 'circle-radius': 6, 'circle-color': '#B42222' }
+            });
         }
-    ).addTo(map);
+    });
 
-    // Add a marker for the property location
-    L.marker([lat, lon]).addTo(map).bindPopup('Property Location').openPopup();
-});
+    // --- Initialize Map 3: Catchment Context ---
+    const map3 = new maplibregl.Map({
+        container: 'map-catchment',
+        style: {
+            "version": 8,
+            "sources": {
+                "linz-topo50": {
+                    "type": "raster",
+                    "tiles": [ tileUrlTemplate ],
+                    "tileSize": 256,
+                    "attribution": "© LINZ"
+                }
+            },
+            "layers": [
+                {
+                    "id": "linz-topo50-layer",
+                    "type": "raster",
+                    "source": "linz-topo50"
+                },
+            ]
+        },
+        center: [lon, lat],
+        zoom: 12 // Zoom out a bit for catchment context
+    });
+
+    // --- Initialize Map 4: New Physical Works (with drawing) ---
+    const map4 = new maplibregl.Map({
+        container: 'map-new-works',
+        style: {
+            "version": 8,
+            "sources": {
+                "linz-topo50": {
+                    "type": "raster",
+                    "tiles": [ tileUrlTemplate ],
+                    "tileSize": 256,
+                    "attribution": "© LINZ"
+                }
+            },
+            "layers": [
+                {
+                    "id": "linz-topo50-layer",
+                    "type": "raster",
+                    "source": "linz-topo50"
+                },
+            ]
+        },
+        center: [lon, lat],
+        zoom: 14
+    });
+    const drawControls = new MapboxDraw({
+        displayControlsDefault: false,
+        controls: {
+            point: true,
+            line_string: true,
+            polygon: true,
+            trash: true
+        }
+    });
+    map4.addControl(drawControls);
+
+    // Hidden form field for planned works
+    const plannedWorksInput = document.getElementById('id_planned_works_features');
+
+    function updatePlannedWorksData() {
+        const data = drawControls.getAll();
+        if (data.features.length > 0) {
+            plannedWorksInput.value = JSON.stringify(data);
+        } else {
+            plannedWorksInput.value = ''; // Send empty string if all cleared
+        }
+    }
+
+    map4.on('draw.create', updatePlannedWorksData);
+    map4.on('draw.delete', updatePlannedWorksData);
+    map4.on('draw.update', updatePlannedWorksData);
+
+})();
 </script>
 {% endblock %}

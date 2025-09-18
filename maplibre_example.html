@@ -50,65 +50,48 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // --- Step 1: Add your MapTiler API Key ---
-        // Replace this with the key from your MapTiler account.
-        // The key is now passed from the Django view context.
-        // The 'safe' filter prevents Django from escaping special characters.
-        const maptilerApiKey = '{{ MAPTILER_API_KEY|safe }}';
+        const linzApiKey = '{{ LINZ_API_KEY|safe }}';
 
-        if (!maptilerApiKey || maptilerApiKey === 'YOUR_MAPTILER_API_KEY_HERE') {
-            document.getElementById('map').innerHTML = '<div style="padding: 20px; text-align: center; color: #6c757d;">Map cannot be displayed: MapTiler API Key is not configured.</div>';
-            console.error("MapTiler API Key is missing. Please add it to the maplibre_example.html file.");
-            return;
-        }
-
-        // --- Step 2: Initialize the map using a MapTiler style ---
-        // This URL points to a complete vector map style that includes water bodies.
         const map = new maplibregl.Map({
             container: 'map', // container id
-            style: `https://api.maptiler.com/maps/streets-v2/style.json?key=${maptilerApiKey}`,
+            style: {
+                "version": 8,
+                "sources": {
+                    "linz-topo50": {
+                        "type": "raster",
+                        "tiles": [ `https://tiles-cdn.koordinates.com/services;key=${linzApiKey}/tiles/v4/layer=52343,style=auto/EPSG:3857/{z}/{x}/{y}.png` ],
+                        "tileSize": 256,
+                        "attribution": "© LINZ"
+                    }
+                },
+                "layers": [
+                    {
+                        "id": "linz-topo50-layer",
+                        "type": "raster",
+                        "source": "linz-topo50"
+                    }
+                ]
+            },
             center: [174.7762, -41.2865], // Default center [lon, lat]
             zoom: 4 // Default zoom
         });
 
         let marker = null;
 
-        // --- Step 3 (Optional): Add custom layers to highlight freshwater ---
-        // This waits for the map style to load before adding our custom layers on top.
-        map.on('load', function () {
-            // The MapTiler "streets-v2" style uses the "maptiler" source.
-            // The data for water is in the 'water' source-layer.
-            map.addLayer({
-                'id': 'freshwater-highlight',
-                'type': 'fill',
-                'source': 'maptiler', // Use the source from the MapTiler style
-                'source-layer': 'water',
-                'filter': [
-                    'any',
-                    ['==', 'class', 'lake'],
-                    ['==', 'class', 'river']
-                ],
-                'paint': {
-                    'fill-color': '#005f99', // A darker, more prominent blue
-                    'fill-opacity': 0.6
-                }
-            }, 'water'); // This places our new layer just above the original 'water' layer.
-        });
-
-        // 4. Get the coordinate input field from the form.
+        // Get the coordinate input field from the form.
         const coordInput = document.getElementById('id_geolocation_paste');
 
-        // 5. Listen for changes in the input field.
+        // Listen for changes in the input field.
         coordInput.addEventListener('input', function () {
-            // 6. Read the value and parse coordinates [lat, lon].
+            // Read the value and parse coordinates [lat, lon].
             const coords = this.value.split(',').map(s => parseFloat(s.trim()));
 
             if (coords.length === 2 && !isNaN(coords[0]) && !isNaN(coords[1])) {
                 const lat = coords[0];
                 const lon = coords[1];
 
-                // 7. Set the map view to the new coordinates with a chosen zoom level.
-                //    You can adjust the zoom level here.
+                // Set the map view to the new coordinates with a chosen zoom level.
+                // You can adjust the zoom level here.
                 const zoomLevel = 11; // Mapbox/MapLibre zoom is slightly different from Leaflet
                 map.flyTo({
                     center: [lon, lat], // Note: Mapbox/MapLibre use [lon, lat]
