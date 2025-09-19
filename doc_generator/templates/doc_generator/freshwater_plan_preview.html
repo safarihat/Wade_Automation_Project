@@ -109,89 +109,19 @@
     </div>
 </main>
 
-<script>
-    // Auto-refresh logic for pending plans.
-    // This script will only run if the pending indicator is present on the page.
-    const pendingIndicator = document.getElementById('plan-pending-indicator');
-    if (pendingIndicator) {
-        const checkStatus = () => {
-            // Reload the page to check for the updated content.
-            // A more advanced implementation could use fetch() to check an API endpoint
-            // to avoid a full page reload, but this is simple and effective.
-            window.location.reload(true); // Pass true to force a reload from the server
-        };
-        setTimeout(checkStatus, 5000); // Check after 5 seconds
-    }
-</script>
-
 <!-- MapLibre GL JS -->
 <script src='https://unpkg.com/maplibre-gl@4.1.2/dist/maplibre-gl.js'></script>
 <!-- MapLibre GL Draw -->
 <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.4.0/mapbox-gl-draw.js'></script>
 
 <script>
-(async function initMaps() {
+document.addEventListener('DOMContentLoaded', function() {
     // Get coordinates and API key from Django template
     const lat = {{ plan.latitude }};
     const lon = {{ plan.longitude }};
     const linzApiKey = "{{ LINZ_API_KEY|safe }}";
     const drawnFeatures = JSON.parse('{{ drawn_features_json|escapejs }}');
     const plannedWorksFeatures = JSON.parse('{{ planned_works_features_json|escapejs }}');
-
-    // Helper to fetch and parse LINZ WMTS capabilities and return correct layer + matrix set
-    async function getLinzTopo50WmtsConfig(apiKey) {
-        const capabilitiesUrl = `https://data.linz.govt.nz/services;key=${apiKey}/wmts/1.0.0/WMTSCapabilities.xml`;
-        try {
-            const resp = await fetch(capabilitiesUrl);
-            if (!resp.ok) throw new Error(`Failed to fetch WMTS Capabilities: ${resp.status}`);
-            const xmlText = await resp.text();
-            const doc = new DOMParser().parseFromString(xmlText, 'application/xml');
-
-            const layers = Array.from(doc.getElementsByTagNameNS('*', 'Layer'));
-            // Find the Layer matching dataset 50767 (NZ Topo50 Maps)
-            let layerIdentifier = null;
-            let tileMatrixSet = null;
-
-            for (const layer of layers) {
-                const idEl = layer.getElementsByTagNameNS('*', 'Identifier')[0];
-                const titleEl = layer.getElementsByTagNameNS('*', 'Title')[0];
-                const idTxt = idEl ? idEl.textContent.trim() : '';
-                const titleTxt = titleEl ? titleEl.textContent.trim() : '';
-
-                const looksLikeTopo50 = /topo\s*50|topo50/i.test(titleTxt) || /50767/.test(idTxt);
-                if (!looksLikeTopo50) continue;
-
-                // Determine a valid TileMatrixSet from the TileMatrixSetLink(s)
-                const tmsLinks = Array.from(layer.getElementsByTagNameNS('*', 'TileMatrixSetLink'));
-                const tmsIds = tmsLinks
-                    .map(l => (l.getElementsByTagNameNS('*', 'TileMatrixSet')[0] || {}).textContent)
-                    .filter(Boolean);
-
-                // Prefer EPSG:3857 if present, otherwise the first one
-                const preferred = tmsIds.find(v => /3857/.test(v)) || tmsIds[0] || 'EPSG:3857';
-
-                layerIdentifier = idTxt; // Use exactly as provided in capabilities
-                tileMatrixSet = preferred;
-                break;
-            }
-
-            if (!layerIdentifier) throw new Error('NZ Topo50 WMTS layer not found in capabilities.');
-
-            // Construct the WMTS tile URL format with correct order {TileMatrix}/{TileRow}/{TileCol}
-            const tileUrlTemplate = `https://data.linz.govt.nz/services;key=${apiKey}/wmts/1.0.0/${layerIdentifier}/${tileMatrixSet}/{z}/{y}/{x}.png`;
-            return { layerIdentifier, tileMatrixSet, tileUrlTemplate };
-        } catch (e) {
-            console.error(e);
-            // Fallback to the known correct URL structure from the capabilities document.
-            const fallbackUrl = `https://tiles-cdn.koordinates.com/services;key=${apiKey}/tiles/v4/layer=52343,style=auto/EPSG:3857/{z}/{x}/{y}.png`;
-            const fallbackMatrixSet = 'EPSG:3857';
-            return {
-                layerIdentifier: '52343', // The layer ID from the URL
-                tileMatrixSet: fallbackMatrixSet,
-                tileUrlTemplate: fallbackUrl
-            };
-        }
-    }
 
     if (!linzApiKey) {
         document.getElementById('map-vulnerabilities').innerHTML = '<p class="text-center">Map cannot be displayed: API Key is not configured.</p>';
@@ -201,57 +131,35 @@
         return;
     }
 
-    const { tileUrlTemplate } = await getLinzTopo50WmtsConfig(linzApiKey);
+    // Use the reliable, hardcoded Koordinates URL for the Topo50 layer.
+    const topoTileUrl = `https://tiles-cdn.koordinates.com/services;key=${linzApiKey}/tiles/v4/layer=52343,style=auto/EPSG:3857/{z}/{x}/{y}.png`;
+
+    // --- Helper function to create a standard map ---
+    function createStandardMap(containerId, center, zoom) {
+        return new maplibregl.Map({
+            container: containerId,
+            style: {
+                "version": 8,
+                "sources": {
+                    "linz-topo50": {
+                        "type": "raster",
+                        "tiles": [ topoTileUrl ],
+                        "tileSize": 256,
+                        "attribution": "© LINZ"
+                    }
+                },
+                "layers": [{ "id": "linz-topo50-layer", "type": "raster", "source": "linz-topo50" }]
+            },
+            center: center,
+            zoom: zoom
+        });
+    }
 
     // --- Initialize Map 1: Vulnerabilities ---
-    const map1 = new maplibregl.Map({
-        container: 'map-vulnerabilities',
-        style: {
-            "version": 8,
-            "sources": {
-                "linz-topo50": {
-                    "type": "raster",
-                    "tiles": [ tileUrlTemplate ],
-                    "tileSize": 256,
-                    "attribution": "© LINZ"
-                }
-            },
-            "layers": [
-                {
-                    "id": "linz-topo50-layer",
-                    "type": "raster",
-                    "source": "linz-topo50"
-                },
-            ]
-        },
-        center: [lon, lat],
-        zoom: 14
-    });
+    const map1 = createStandardMap('map-vulnerabilities', [lon, lat], 14);
 
     // --- Initialize Map 2: Activities ---
-    const map2 = new maplibregl.Map({
-        container: 'map-activities',
-        style: {
-            "version": 8,
-            "sources": {
-                "linz-topo50": {
-                    "type": "raster",
-                    "tiles": [ tileUrlTemplate ],
-                    "tileSize": 256,
-                    "attribution": "© LINZ"
-                }
-            },
-            "layers": [
-                {
-                    "id": "linz-topo50-layer",
-                    "type": "raster",
-                    "source": "linz-topo50"
-                },
-            ]
-        },
-        center: [lon, lat],
-        zoom: 14
-    });
+    const map2 = createStandardMap('map-activities', [lon, lat], 14);
     map2.on('load', () => {
         if (drawnFeatures) {
             map2.addSource('drawn-data', {
@@ -295,54 +203,10 @@
     });
 
     // --- Initialize Map 3: Catchment Context ---
-    const map3 = new maplibregl.Map({
-        container: 'map-catchment',
-        style: {
-            "version": 8,
-            "sources": {
-                "linz-topo50": {
-                    "type": "raster",
-                    "tiles": [ tileUrlTemplate ],
-                    "tileSize": 256,
-                    "attribution": "© LINZ"
-                }
-            },
-            "layers": [
-                {
-                    "id": "linz-topo50-layer",
-                    "type": "raster",
-                    "source": "linz-topo50"
-                },
-            ]
-        },
-        center: [lon, lat],
-        zoom: 12 // Zoom out a bit for catchment context
-    });
+    const map3 = createStandardMap('map-catchment', [lon, lat], 12); // Zoom out for context
 
     // --- Initialize Map 4: New Physical Works (with drawing) ---
-    const map4 = new maplibregl.Map({
-        container: 'map-new-works',
-        style: {
-            "version": 8,
-            "sources": {
-                "linz-topo50": {
-                    "type": "raster",
-                    "tiles": [ tileUrlTemplate ],
-                    "tileSize": 256,
-                    "attribution": "© LINZ"
-                }
-            },
-            "layers": [
-                {
-                    "id": "linz-topo50-layer",
-                    "type": "raster",
-                    "source": "linz-topo50"
-                },
-            ]
-        },
-        center: [lon, lat],
-        zoom: 14
-    });
+    const map4 = createStandardMap('map-new-works', [lon, lat], 14);
     const drawControls = new MapboxDraw({
         displayControlsDefault: false,
         controls: {
@@ -370,6 +234,6 @@
     map4.on('draw.delete', updatePlannedWorksData);
     map4.on('draw.update', updatePlannedWorksData);
 
-})();
+});
 </script>
 {% endblock %}

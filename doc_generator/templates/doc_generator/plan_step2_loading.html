@@ -30,7 +30,7 @@
 {% block extra_js %}
 <script>
 (function() {
-    const statusUrl = "{% url 'doc_generator:check_plan_status' pk=plan.pk %}";
+    const statusUrl = "{% url 'doc_generator:api_check_plan_status' pk=plan.pk %}";
     const loadingIndicator = document.getElementById('loading-indicator');
     const errorIndicator = document.getElementById('error-indicator');
 
@@ -41,8 +41,18 @@
             const urlWithCacheBuster = `${statusUrl}?t=${new Date().getTime()}`;
             const response = await fetch(urlWithCacheBuster);
             const data = await response.json();
-            if (data.status === 'ready') window.location.reload();
-            else if (data.status === 'failed') throw new Error("Task failed on server.");
+
+            // Use a case-insensitive comparison to make the check more robust.
+            const status = data.status.toLowerCase();
+
+            // If the status is anything other than 'processing', the server-side
+            // logic will handle the redirect or error message on the next reload.
+            if (status !== 'processing') {
+                // Stop polling immediately once we get a success status.
+                clearInterval(checkInterval);
+                // Reload the page. The view will now see the 'READY' or 'FAILED' status and act accordingly.
+                window.location.reload();
+            }
         } catch (error) {
             clearInterval(checkInterval);
             loadingIndicator.style.display = 'none';

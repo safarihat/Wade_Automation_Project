@@ -174,6 +174,11 @@ LINZ_API_KEY = os.environ.get('LINZ_API_KEY')
 if not LINZ_API_KEY:
     print("Warning: LINZ_API_KEY not found in .env file. Map features may not work.")
 
+# Publicly available LINZ Basemaps API key for services like aerial imagery.
+# This key does not require referrer restrictions.
+# See: https://www.linz.govt.nz/data/linz-data-service/guides-and-documentation/linz-basemaps-service-api
+LINZ_BASEMAPS_API_KEY = 'c01k45db6yn9zw23jjjy9kegjh9'
+
 # Groq API Key for AI, loaded from .env file
 GROQ_API_KEY = os.environ.get('GROQ_API_KEY')
 if not GROQ_API_KEY:

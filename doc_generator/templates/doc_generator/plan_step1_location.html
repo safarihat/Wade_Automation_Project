@@ -1,4 +1,5 @@
 {% extends 'wade_automation/base.html' %}
+{% load static %}
 {% block title %}Step 1: Confirm Your Location{% endblock %}
 
 {% block content %}
@@ -7,26 +8,59 @@
 
 <style>
     #map {
-        height: 500px;
+        height: 700px; /* Increased map height for an even larger view */
         width: 100%;
         margin-top: 20px;
         border-radius: 8px;
         background-color: #e9ecef;
+        position: relative; /* Needed for the loading spinner */
+    }
+    .map-loading-spinner {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 10;
+        display: none; /* Hidden by default */
     }
     .form-container {
-        max-width: 900px;
+        max-width: 1200px; /* Further widened the container for a larger map */
         margin: 40px auto;
         padding: 20px;
     }
     .confirmation-section {
         display: none; /* Hidden by default */
         margin-top: 20px;
+        padding: 20px;
         text-align: center;
+        border: 2px solid #28a745; /* Added a green border to draw attention */
+        border-radius: 8px;
+        background-color: #f0fff4; /* A very light green background */
+        transition: all 0.3s ease-in-out;
     }
     .btn-confirm {
         background-color: #28a745;
         color: white;
+        padding: 12px 24px; /* Made the button larger */
+        font-size: 1.1rem;
+        font-weight: 600;
     }
+    .map-overlay {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: rgba(255, 255, 255, 0.8);
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-family: sans-serif;
+    }
+    .map-overlay input {
+        margin-right: 5px;
+    }
+    .map-overlay label {
+        margin-right: 10px;
+    }
+
 </style>
 
 <div class="form-container">
@@ -49,7 +83,19 @@
         <input type="hidden" name="longitude" id="id_longitude" value="{{ form.longitude.value|default:'' }}">
         
         <!-- Map Container -->
-        <div id="map"></div>
+        <div style="position: relative;">
+            <div id="map">
+                <div class="map-loading-spinner spinner-border" role="status">
+                    <span class="visually-hidden">Loading map...</span>
+                </div>
+            </div>
+            <div id="map-overlay" class="map-overlay">
+                <input id="aerial-layer" type="radio" name="rtoggle" value="aerial" checked="checked"><label for="aerial-layer">Aerial</label>
+                <input id="topo-layer" type="radio" name="rtoggle" value="topo"><label for="topo-layer">Topo</label>
+                <hr style="margin: 4px 0;">
+                <input type="checkbox" id="parcels-toggle" checked><label for="parcels-toggle">Show Borders</label>
+            </div>
+        </div>
         
         <div id="confirmation-section" class="confirmation-section">
             <p class="lead">Is this the correct location for your farm?</p>
@@ -65,52 +111,132 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const linzApiKey = '{{ LINZ_API_KEY|safe }}';
+    const linzBasemapsApiKey = '{{ LINZ_BASEMAPS_API_KEY|safe }}';
 
-    if (!linzApiKey) {
+    if (!linzApiKey || !linzBasemapsApiKey) {
         document.getElementById('map').innerHTML = '<p class="text-center">Map cannot be displayed: API Key is not configured.</p>';
         return;
     }
+    
+    // Use the public LINZ Basemaps key with its correct service URL.
+    const aerialTileUrl = `https://basemaps.linz.govt.nz/v1/tiles/aerial/WebMercatorQuad/{z}/{x}/{y}.png?api=${linzBasemapsApiKey}`;
+    // Use the private Koordinates key for the other layers.
+    const topoTileUrl = `https://tiles-cdn.koordinates.com/services;key=${linzApiKey}/tiles/v4/layer=52343,style=auto/EPSG:3857/{z}/{x}/{y}.png`;
+    // The correct URL is for the bundled 'property' vector tile service.
 
     const map = new maplibregl.Map({
         container: 'map',
         style: {
             "version": 8,
             "sources": {
-                "linz-topo50": {
+                "linz-aerial": {
                     "type": "raster",
-                        "tiles": [ `https://tiles-cdn.koordinates.com/services;key=${linzApiKey}/tiles/v4/layer=52343,style=auto/EPSG:3857/{z}/{x}/{y}.png` ],
+                    "tiles": [ aerialTileUrl ],
                     "tileSize": 256,
                     "attribution": "© LINZ"
-                    },
-                    "linz-parcels": {
-                        "type": "raster",
-                        "tiles": [ `https://tiles-cdn.koordinates.com/services;key=${linzApiKey}/tiles/v4/layer=50772,style=auto/EPSG:3857/{z}/{x}/{y}.png` ],
-                        "tileSize": 256
+                },
+                "linz-topo": {
+                    "type": "raster",
+                    "tiles": [ topoTileUrl ],
+                    "tileSize": 256,
+                    "attribution": "© LINZ"
                 }
             },
             "layers": [
                 {
-                    "id": "linz-topo50-layer",
+                    "id": "linz-aerial-layer",
                     "type": "raster",
-                        "source": "linz-topo50"
-                    },
-                    {
-                        "id": "linz-parcels-layer",
-                        "type": "raster",
-                        "source": "linz-parcels",
-                        "paint": { "raster-opacity": 0.75 }
+                    "source": "linz-aerial" // Visible by default
+                },
+                {
+                    "id": "linz-topo-layer",
+                    "type": "raster",
+                    "source": "linz-topo",
+                    "layout": { "visibility": "none" } // Hidden by default
                 },
             ]
         },
         center: [174.7762, -41.2865], // Default to Wellington
         zoom: 4
     });
+
+    // --- Loading Spinner Logic ---
+    const spinner = document.querySelector('.map-loading-spinner');
+    map.on('dataloading', () => {
+        spinner.style.display = 'block';
+    });
+    map.on('data', (e) => {
+        // Hide spinner only when the map is fully loaded/settled
+        if (e.dataType === 'source' && map.isSourceLoaded('linz-aerial')) {
+            spinner.style.display = 'none';
+        }
+    });
+
+    // Add error handling to see which layer is failing
+    map.on('error', event => {
+        if (event.error) {
+            console.error(`A map error occurred with source '${event.sourceId}':`, event.error);
+        }
+    });
+
+    // Layer switcher logic
+    document.getElementById('map-overlay').addEventListener('change', (event) => {
+        const layerId = event.target.value;
+        if (layerId === 'aerial') {
+            map.setLayoutProperty('linz-aerial-layer', 'visibility', 'visible');
+            map.setLayoutProperty('linz-topo-layer', 'visibility', 'none');
+        } else {
+            map.setLayoutProperty('linz-aerial-layer', 'visibility', 'none');
+            map.setLayoutProperty('linz-topo-layer', 'visibility', 'visible');
+        }
+    });
+
+    // Parcel layer toggle logic
+    document.getElementById('parcels-toggle').addEventListener('change', (event) => {
+        const visibility = event.target.checked ? 'visible' : 'none';
+        if (map.getLayer('parcel-boundary-layer')) {
+            map.setLayoutProperty('parcel-boundary-layer', 'visibility', visibility);
+        }
+    });
+
     let marker = null;
+
+    // --- Function to fetch and display parcel geometry ---
+    async function fetchAndDrawParcel(lat, lon) {
+        const parcelApiUrl = `{% url 'doc_generator:api_get_parcel_geometry' %}?lat=${lat}&lon=${lon}`;
+        try {
+            const response = await fetch(parcelApiUrl);
+            const geojsonData = await response.json();
+
+            // Remove old parcel layer if it exists
+            if (map.getSource('parcel-boundary')) {
+                map.removeLayer('parcel-boundary-layer');
+                map.removeSource('parcel-boundary');
+            }
+
+            if (geojsonData && geojsonData.features && geojsonData.features.length > 0) {
+                map.addSource('parcel-boundary', {
+                    'type': 'geojson',
+                    'data': geojsonData
+                });
+                map.addLayer({
+                    'id': 'parcel-boundary-layer',
+                    'type': 'line',
+                    'source': 'parcel-boundary',
+                    'paint': {
+                        'line-color': '#FF0000',
+                        'line-width': 2.5
+                    }
+                });
+            }
+        } catch (error) {
+            console.error("Failed to fetch parcel geometry:", error);
+        }
+    }
 
     const coordInput = document.getElementById('id_geolocation_paste');
     coordInput.addEventListener('input', function () {
         const coords = this.value.split(',').map(s => parseFloat(s.trim()));
-
         if (coords.length === 2 && !isNaN(coords[0]) && !isNaN(coords[1])) {
             const lat = coords[0];
             const lon = coords[1];
@@ -124,6 +250,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById('id_latitude').value = lat;
                 document.getElementById('id_longitude').value = lon;
                 document.getElementById('confirmation-section').style.display = 'block';
+                
+                // Smoothly scroll to the confirmation button so the user doesn't miss it.
+                document.getElementById('confirmation-section').scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                // Fetch and draw the parcel for the new coordinates
+                fetchAndDrawParcel(lat, lon);
             } else {
                 document.getElementById('confirmation-section').style.display = 'none';
             }

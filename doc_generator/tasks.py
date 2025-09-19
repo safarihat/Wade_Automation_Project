@@ -9,7 +9,7 @@ from celery import shared_task
 from django.conf import settings
 from django.template.loader import render_to_string
 from django.core.files.base import ContentFile
-from .models import FreshwaterPlan
+from doc_generator.models import FreshwaterPlan
 
 # PDF and Watermarking libraries
 PDF_DEPS_AVAILABLE = True

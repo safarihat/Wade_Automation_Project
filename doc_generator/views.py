@@ -1,4 +1,5 @@
 import json
+import requests
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
@@ -6,10 +7,10 @@ from django.contrib import messages
 from django.contrib.gis.geos import Point
 from django import forms
 from django.conf import settings
-from django.http import JsonResponse
-from .forms import AdminDetailsForm, LocationForm
-from .models import FreshwaterPlan, RegionalCouncil
-from .tasks import generate_plan_task, populate_admin_details_task
+from django.http import JsonResponse, HttpResponseBadRequest
+from doc_generator.forms import AdminDetailsForm, LocationForm
+from doc_generator.models import FreshwaterPlan, RegionalCouncil
+from doc_generator.tasks import generate_plan_task, populate_admin_details_task
 
 import logging
 
@@ -93,6 +94,7 @@ def plan_wizard_start(request):
         'form': form,
 
         'LINZ_API_KEY': settings.LINZ_API_KEY,
+        'LINZ_BASEMAPS_API_KEY': settings.LINZ_BASEMAPS_API_KEY,
     }
     return render(request, 'doc_generator/plan_step1_location.html', context)
 
@@ -118,18 +120,23 @@ def plan_wizard_details(request, pk):
             # If form is invalid, re-render the details page with errors
             context = {'form': form, 'plan': plan}
             return render(request, 'doc_generator/plan_step2_details.html', context)
-
-    # This is for the initial GET request
-    if plan.generation_status == FreshwaterPlan.GenerationStatus.READY:
-        # AI is done, show the pre-populated form
+    
+    # This is for the GET request.
+    # Check for a query parameter to see if we are in the final review step.
+    if request.GET.get('step') == 'review':
+        # We've been redirected here after the plan was ready. Show the form.
         form = AdminDetailsForm(instance=plan)
-        context = {'form': form, 'plan': plan}
-        return render(request, 'doc_generator/plan_step2_details.html', context)
+        return render(request, 'doc_generator/plan_step2_details.html', {'form': form, 'plan': plan})
+
+    # If no query param, check the status.
+    if plan.generation_status == FreshwaterPlan.GenerationStatus.READY:
+        # The plan is ready. Redirect to this same view, but add the query
+        # parameter. This ensures the transaction is committed and visible.
+        redirect_url = f"{reverse('doc_generator:plan_wizard_details', kwargs={'pk': pk})}?step=review"
+        return redirect(redirect_url)
     elif plan.generation_status == FreshwaterPlan.GenerationStatus.FAILED:
-        # Handle failure
-        messages.error(request, "There was an error generating the initial plan details. Please try again or contact support.")
-        # You could add a "retry" button here that calls a new view to re-trigger the task
-        return redirect(reverse('doc_generator:plan_wizard_start'))
+        messages.error(request, "There was an error generating plan details. Please try again.")
+        return redirect('doc_generator:plan_wizard_start')
     else:
         # AI is still working, show the loading page
         context = {'plan': plan}
@@ -144,6 +151,46 @@ def check_plan_status(request, pk):
     """
     plan = get_object_or_404(FreshwaterPlan, pk=pk, user=request.user)
     return JsonResponse({'status': plan.generation_status})
+
+
+@login_required
+def get_parcel_geometry(request):
+    """
+    An API endpoint that takes latitude and longitude, queries the LINZ WFS
+    for the intersecting property parcel, and returns its geometry as GeoJSON.
+    """
+    lat = request.GET.get('lat')
+    lon = request.GET.get('lon')
+
+    if not lat or not lon:
+        return HttpResponseBadRequest("Missing 'lat' or 'lon' parameters.")
+
+    wfs_url = f"https://data.linz.govt.nz/services;key={settings.LINZ_API_KEY}/wfs"
+    params = {
+        'service': 'WFS',
+        'version': '2.0.0',
+        'request': 'GetFeature',
+        'typeNames': 'layer-50772',  # NZ Primary Parcels
+        'outputFormat': 'application/json',
+        'srsName': 'urn:ogc:def:crs:EPSG::4326', # Ensure output is in WGS84
+        'cql_filter': f"INTERSECTS(shape, SRID=4326;POINT({lon} {lat}))"
+    }
+
+    try:
+        response = requests.get(wfs_url, params=params, timeout=20)
+        response.raise_for_status()
+        data = response.json()
+
+        if data and data.get('features'):
+            # Return the entire GeoJSON FeatureCollection
+            return JsonResponse(data)
+        else:
+            # Return an empty FeatureCollection if no parcel is found
+            return JsonResponse({'type': 'FeatureCollection', 'features': []})
+
+    except requests.RequestException as e:
+        logger.error(f"WFS request for parcel geometry failed: {e}")
+        return JsonResponse({'error': 'Failed to retrieve parcel data from LINZ.'}, status=502)
 
 
 @login_required

@@ -1,7 +1,7 @@
 import re
 from django import forms
 from django.contrib.gis.geos import Point
-from .models import FreshwaterPlan
+from doc_generator.models import FreshwaterPlan
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Row, Column
 
