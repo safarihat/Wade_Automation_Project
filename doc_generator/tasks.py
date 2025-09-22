@@ -329,42 +329,114 @@ def _get_parcel_details_from_linz(lat: float, lon: float) -> dict:
             properties = data['features'][0].get('properties', {})
             # Extract relevant details. 'appellation' is the legal description.
             legal_titles = properties.get('appellation', 'Not found')
-            return {'legal_land_titles': legal_titles}
+            area_ha = properties.get('survey_area_ha')
+            return {'legal_land_titles': legal_titles, 'total_farm_area_ha': area_ha}
         else:
             logger.warning(f"WFS query for lat={lat}, lon={lon} returned no features.")
-            return {'legal_land_titles': 'No parcel information found at this location.'}
+            return {'legal_land_titles': 'No parcel information found at this location.', 'total_farm_area_ha': None}
     except requests.RequestException as e:
         logger.warning(f"WFS request for parcel details failed: {e}")
-        return {'legal_land_titles': 'Could not retrieve parcel information due to a network error.'}
+        return {'legal_land_titles': 'Could not retrieve parcel information due to a network error.', 'total_farm_area_ha': None}
     except Exception as e:
         logger.error(f"An unexpected error occurred during WFS query: {e}", exc_info=True)
-        return {'legal_land_titles': 'An error occurred while retrieving parcel information.'}
+        return {'legal_land_titles': 'An error occurred while retrieving parcel information.', 'total_farm_area_ha': None}
+
+def _update_progress(plan_id: int, message: str, status: str = "pending"):
+    """
+    Helper function to append a progress update to the plan's log.
+    This ensures each update is saved to the database immediately, making it
+    visible to the polling front-end.
+    """
+    try:
+        plan = FreshwaterPlan.objects.get(pk=plan_id)
+        # Ensure generation_progress is a list
+        if not isinstance(plan.generation_progress, list):
+            plan.generation_progress = []
+        
+        plan.generation_progress.append({"message": message, "status": status})
+        plan.save(update_fields=['generation_progress', 'updated_at'])
+    except FreshwaterPlan.DoesNotExist:
+        logger.warning(f"_update_progress called for non-existent plan ID {plan_id}")
 
 @shared_task(bind=True, max_retries=0)
 def populate_admin_details_task(self, freshwater_plan_id):
-    """Populates administrative details for a plan, including reverse geocoding the coordinates to get a farm address."""
+    """
+    Populates administrative details and provides live progress updates.
+    1. Identifies council and logs progress.
+    2. Runs a teaser RAG query for an initial insight.
+    3. Fetches address and legal titles concurrently.
+    4. Sets status to READY.
+    """
     try:
         plan = FreshwaterPlan.objects.get(pk=freshwater_plan_id)
         
-        # Spawn green threads to run the network calls concurrently,
-        # taking advantage of the eventlet worker pool.
+        # Step 1: Log Council Confirmation
+        # This step now also uses RAG to find the official authority name.
+        _update_progress(plan.pk, f"Verifying council authority for {plan.council} area...", "pending")
+        try:
+            model_name = "sentence-transformers/all-MiniLM-L6-v2"
+            embeddings = HuggingFaceEmbeddings(model_name=model_name, model_kwargs={'device': 'cpu'})
+            vector_store_path = os.path.join(settings.BASE_DIR, 'vector_store')
+            vector_store = Chroma(persist_directory=vector_store_path, embedding_function=embeddings)
+            retriever = vector_store.as_retriever(search_kwargs={'k': 1})
+            llm = ChatGroq(model_name="llama-3.1-8b-instant", groq_api_key=settings.GROQ_API_KEY)
+
+            template = """Based on the context for the '{council}' area, what is the official name of the regional council or unitary authority? Provide only the name.
+            Context: {context}
+            Answer:"""
+            prompt = PromptTemplate.from_template(template)
+            rag_chain = ({"context": retriever, "council": lambda x: plan.council} | prompt | llm | StrOutputParser())
+            plan.council_authority_name = rag_chain.invoke(f"Official name for {plan.council}")
+        except Exception as e:
+            logger.warning(f"RAG query for council authority name failed for plan {plan.pk}: {e}")
+            plan.council_authority_name = f"Could not verify '{plan.council}'"
+        _update_progress(plan.pk, f"Location confirmed in the {plan.council} area.", "complete")
+        _update_progress(plan.pk, "The full plan will involve a risk analysis based on catchment data, followed by a detailed assessment and mitigation plan.", "info")
+
+        # Step 2: Run Teaser RAG Query
+        _update_progress(plan.pk, "Running preliminary analysis of regional context...", "pending")
+        try:
+            model_name = "sentence-transformers/all-MiniLM-L6-v2"
+            embeddings = HuggingFaceEmbeddings(model_name=model_name, model_kwargs={'device': 'cpu'})
+            vector_store_path = os.path.join(settings.BASE_DIR, 'vector_store')
+            vector_store = Chroma(persist_directory=vector_store_path, embedding_function=embeddings)
+            retriever = vector_store.as_retriever(search_kwargs={'k': 2})
+            llm = ChatGroq(model_name="llama-3.1-8b-instant", groq_api_key=settings.GROQ_API_KEY)
+
+            template = """Based on the following context for the '{council}' area, what is the single most important environmental risk or regulation a farmer should be aware of? Be very brief and state it in one sentence.
+            Context: {context}
+            Answer:"""
+            prompt = PromptTemplate.from_template(template)
+
+            rag_chain = ({"context": retriever, "council": lambda x: plan.council} | prompt | llm | StrOutputParser())
+            teaser_insight = rag_chain.invoke(f"Key environmental consideration for {plan.council}")
+            _update_progress(plan.pk, f"Initial analysis: {teaser_insight}", "complete")
+        except Exception as e:
+            logger.warning(f"Teaser RAG query failed for plan {plan.pk}: {e}")
+            _update_progress(plan.pk, "Could not perform initial analysis.", "warning")
+
+        # Step 3: Fetch Admin Details
+        _update_progress(plan.pk, "Fetching address and property title information...", "pending")
         address_thread = eventlet.spawn(_get_address_from_coords, plan.latitude, plan.longitude)
         parcel_thread = eventlet.spawn(_get_parcel_details_from_linz, plan.latitude, plan.longitude)
 
-        # Wait for both threads to complete and retrieve their results.
         plan.farm_address = address_thread.wait()
         parcel_details = parcel_thread.wait()
         plan.legal_land_titles = parcel_details.get('legal_land_titles')
+        plan.total_farm_area_ha = parcel_details.get('total_farm_area_ha')
+        _update_progress(plan.pk, "Administrative details retrieved.", "complete")
 
+        # Step 4: Finalize
         plan.generation_status = FreshwaterPlan.GenerationStatus.READY
-        plan.save(update_fields=['farm_address', 'legal_land_titles', 'generation_status', 'updated_at'])
+        plan.save(update_fields=['council_authority_name', 'farm_address', 'legal_land_titles', 'total_farm_area_ha', 'generation_status', 'generation_progress', 'updated_at'])
         logger.info(f"populate_admin_details_task completed for plan ID: {freshwater_plan_id}")
+
     except FreshwaterPlan.DoesNotExist:
         logger.warning(f"populate_admin_details_task: plan ID {freshwater_plan_id} does not exist")
     except Exception as e:
         logger.error(f"populate_admin_details_task failed for ID {freshwater_plan_id}: {e}", exc_info=True)
-        # Ensure the plan status is updated to FAILED so the UI can react.
+        # Use the helper to log the failure, then update the main status
+        _update_progress(plan.pk, f"A critical error occurred: {e}", "error")
         plan.generation_status = FreshwaterPlan.GenerationStatus.FAILED
         plan.save(update_fields=['generation_status', 'updated_at'])
-        # Re-raise the exception to mark the Celery task as failed.
         raise

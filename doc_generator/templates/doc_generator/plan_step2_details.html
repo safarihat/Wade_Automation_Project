@@ -14,20 +14,15 @@
                     Some fields may have been pre-populated for your convenience.
                 </p>
 
-                <div class="card mt-4">
-                    <div class="card-body">
-                        <form method="post">
-                            {% csrf_token %}
-                            {% crispy form %}
-                            <div class="d-grid gap-2 mt-4">
-                                <button type="submit" class="btn btn-primary btn-lg">Save and Continue</button>
-                                <a href="{% url 'doc_generator:plan_wizard_start' %}" class="btn btn-outline-secondary">Back to Location</a>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+                {# Let crispy-forms render the entire form, including the <form> tag and CSRF token. #}
+                {# The buttons are now part of the form's layout, ensuring they work correctly. #}
+                {% crispy form %}
             </div>
         </div>
     </div>
 </main>
+{% endblock %}
+
+{% block extra_js %}
+{{ form.media }}
 {% endblock %}

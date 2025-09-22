@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.contrib import messages
 from django.contrib.gis.geos import Point
 from django import forms
+from django.db import transaction
 from django.conf import settings
 from django.http import JsonResponse, HttpResponseBadRequest
 from doc_generator.forms import AdminDetailsForm, LocationForm
@@ -80,7 +81,7 @@ def plan_wizard_start(request):
                 land_use="Pending..." # Placeholder for out-of-sync DB
             )
             # Trigger the FAST background task to populate admin details
-            populate_admin_details_task.delay(plan.pk)
+            populate_admin_details_task(plan.pk)
             return redirect(reverse('doc_generator:plan_wizard_details', kwargs={'pk': plan.pk}))
 
         else:
@@ -100,6 +101,7 @@ def plan_wizard_start(request):
 
 
 @login_required
+@transaction.atomic
 def plan_wizard_details(request, pk):
     """
     Step 2 of the wizard. Shows a loading page while AI runs, then shows
@@ -150,7 +152,10 @@ def check_plan_status(request, pk):
     Returns the generation status of the plan.
     """
     plan = get_object_or_404(FreshwaterPlan, pk=pk, user=request.user)
-    return JsonResponse({'status': plan.generation_status})
+    return JsonResponse({
+        'status': plan.generation_status,
+        'progress': plan.generation_progress or []
+    })
 
 
 @login_required
@@ -221,6 +226,7 @@ def plan_wizard_map_vulnerabilities(request, pk):
         'plan': plan,
 
         'LINZ_API_KEY': settings.LINZ_API_KEY,
+        'LINZ_BASEMAPS_API_KEY': settings.LINZ_BASEMAPS_API_KEY,
         'vulnerability_features_json': json.dumps(plan.vulnerability_features) if plan.vulnerability_features else 'null',
     }
     return render(request, 'doc_generator/plan_step3_map_vulnerabilities.html', context)

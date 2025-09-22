@@ -85,33 +85,31 @@ WSGI_APPLICATION = 'wade_automation_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        # Switched to the SpatiaLite backend for GeoDjango
-        'ENGINE': 'django.contrib.gis.db.backends.spatialite',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        # Switched to the PostGIS backend for GeoDjango
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': 'wade_automation_db',
+        'USER': 'wade_user',
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'HOST': 'localhost', # Or '127.0.0.1'
+        'PORT': '5432',
     }
 }
 
-# --- GeoDjango Configuration ---
-# On Windows, you often need to explicitly point to the GIS libraries.
-# This configuration is for a Conda environment.
+# --- Definitive GeoDjango Configuration for Windows/Conda ---
+# This block ensures GeoDjango finds the correct GDAL/GEOS libraries within
+# the Conda environment, bypassing potential version detection issues.
 if os.name == 'nt':
     import sys
-    # sys.prefix points to the root of the current Python environment.
-    # In a Conda env, the required DLLs are in 'Library/bin'.
     conda_env_path = Path(sys.prefix)
     lib_dir = conda_env_path / 'Library' / 'bin'
 
     if lib_dir.is_dir():
-        # Add the library directory to the DLL search path. This is the modern
-        # and recommended way to handle DLL dependencies on Windows.
+        # Add the Conda library bin to the DLL search path. This is crucial
+        # for GDAL to find its own dependencies (like PROJ, etc.).
         os.add_dll_directory(str(lib_dir))
-
-        # Explicitly set the paths for the main libraries. This is the most
-        # reliable way to ensure GeoDjango finds them, as it looks for these
-        # variables directly.
+        # Explicitly override the library paths Django will use.
         GDAL_LIBRARY_PATH = str(lib_dir / 'gdal.dll')
         GEOS_LIBRARY_PATH = str(lib_dir / 'geos_c.dll')
-        SPATIALITE_LIBRARY_PATH = str(lib_dir / 'mod_spatialite.dll')
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators

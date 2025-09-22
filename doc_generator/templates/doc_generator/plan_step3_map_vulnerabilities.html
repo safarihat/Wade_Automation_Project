@@ -76,8 +76,8 @@
     <div id="map-data"
          data-lat="{{ plan.latitude|default:'' }}"
          data-lon="{{ plan.longitude|default:'' }}"
-         data-maptiler-key="{{ MAPTILER_API_KEY|safe }}"
          data-linz-key="{{ LINZ_API_KEY|safe }}"
+         data-linz-basemaps-key="{{ LINZ_BASEMAPS_API_KEY|safe }}"
          data-existing-features="{{ vulnerability_features_json|escapejs }}"
          style="display:none;"></div>
 </main>
@@ -97,6 +97,7 @@
     const lat = parseFloat(dataEl.dataset.lat) || -41.2865; // Fallback: Wellington lat
     const lon = parseFloat(dataEl.dataset.lon) || 174.7762; // Fallback: Wellington lon
     const linzKey = dataEl.dataset.linzKey || '';
+    const linzBasemapsKey = dataEl.dataset.linzBasemapsKey || '';
     const existingFeatures = (function(){
         try { return JSON.parse(dataEl.dataset.existingFeatures || 'null'); } catch(e) { return null; }
     })();
@@ -125,35 +126,32 @@
         style: {
             "version": 8,
             "sources": {
-                "linz-topo50": {
+                "linz-aerial": {
                     "type": "raster",
-                        "tiles": [ `https://tiles-cdn.koordinates.com/services;key=${linzKey}/tiles/v4/layer=52343,style=auto/EPSG:3857/{z}/{x}/{y}.png` ],
+                    "tiles": [ `https://basemaps.linz.govt.nz/v1/tiles/aerial/WebMercatorQuad/{z}/{x}/{y}.png?api=${linzBasemapsKey}` ],
                     "tileSize": 256,
                     "attribution": "© LINZ"
-                    },
-                    "linz-parcels": {
-                        "type": "raster",
-                        "tiles": [ `https://tiles-cdn.koordinates.com/services;key=${linzKey}/tiles/v4/layer=50772,style=auto/EPSG:3857/{z}/{x}/{y}.png` ],
-                        "tileSize": 256
+                },
+                "linz-parcels": {
+                    "type": "raster",
+                    "tiles": [ `https://data.linz.govt.nz/services;key=${linzKey}/wmts/1.0.0/layer/50772/tile/v1/g/EPSG:3857/{z}/{y}/{x}.png` ],
+                    "tileSize": 256
                 }
             },
             "layers": [
                 {
-                    "id": "linz-topo50-layer",
+                    "id": "linz-aerial-layer",
                     "type": "raster",
-                    "source": "linz-topo50",
-                    "minzoom": 0,
-                        "maxzoom": 22
-                    },
-                    {
-                        "id": "linz-parcels-layer",
-                        "type": "raster",
-                        "source": "linz-parcels",
-                        "paint": { "raster-opacity": 0.75 }
+                    "source": "linz-aerial"
+                },
+                {
+                    "id": "linz-parcels-layer",
+                    "type": "raster",
+                    "source": "linz-parcels",
+                    "paint": { "raster-opacity": 0.75 }
                 }
             ]
         },
-        // style: styleUrl, // Removed MapTiler/demo style
         center: [lon, lat],
         zoom: 14
     });
@@ -166,17 +164,19 @@
         styles: [
             { id: 'gl-draw-polygon-fill', type: 'fill', filter: ['all', ['==', '$type', 'Polygon'], ['!=', 'mode', 'static']], paint: { 'fill-color': ['get', 'color'], 'fill-opacity': 0.4 }},
             { id: 'gl-draw-polygon-stroke-active', type: 'line', filter: ['all', ['==', '$type', 'Polygon'], ['==', 'active', 'true']], layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': '#fbb03b', 'line-width': 3 }},
-            { id: 'gl-draw-line', type: 'line', filter: ['all', ['==', '$type', 'LineString'], ['!=', 'mode', 'static']], layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': ['get', 'color'], 'line-width': 3 }},
-            { id: 'gl-draw-point', type: 'circle', filter: ['all', ['==', '$type', 'Point'], ['!=', 'mode', 'static']], paint: { 'circle-radius': 5, 'circle-color': ['get', 'color'], 'circle-stroke-width': 1, 'circle-stroke-color': '#fff' }}
+            { id: 'gl-draw-polygon-stroke-inactive', type: 'line', filter: ['all', ['==', '$type', 'Polygon'], ['!=', 'active', 'true']], layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': ['get', 'color'], 'line-width': 3 }},
+            { id: 'gl-draw-line-active', type: 'line', filter: ['all', ['==', '$type', 'LineString'], ['==', 'active', 'true']], layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': '#fbb03b', 'line-width': 3 }},
+            { id: 'gl-draw-line-inactive', type: 'line', filter: ['all', ['==', '$type', 'LineString'], ['!=', 'active', 'true']], layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': ['get', 'color'], 'line-width': 3 }},
+            { id: 'gl-draw-point-active', type: 'circle', filter: ['all', ['==', '$type', 'Point'], ['==', 'active', 'true']], paint: { 'circle-radius': 5, 'circle-color': '#fbb03b' }},
+            { id: 'gl-draw-point-inactive', type: 'circle', filter: ['all', ['==', '$type', 'Point'], ['!=', 'active', 'true']], paint: { 'circle-radius': 5, 'circle-color': ['get', 'color'] }}
         ]
     });
     map.addControl(draw);
 
     function updateFormAndArea() {
         const data = draw.getAll();
-        // Save to hidden input
         hiddenInput.value = data.features.length ? JSON.stringify(data) : '';
-        // Compute total area of all polygons in hectares
+        // Compute total area of all polygons
         let sqm = 0;
         for (const f of data.features) {
             if (f.geometry && (f.geometry.type === 'Polygon' || f.geometry.type === 'MultiPolygon')) {
@@ -195,25 +195,7 @@
     }
 
     map.on('load', () => {
-        // LINZ Topo raster overlay for context
-        if (linzKey) {
-            // The base style already includes linz-topo50, so we don't need to add it again.
-            // If you wanted additional LINZ layers, you would add them here.
-            /* map.addSource('linz-additional-layer', {
-                type: 'raster',
-                tiles: [ `https://data.linz.govt.nz/services;key=${linzKey}/wmts/1.0.0/{LayerIdentifier}/{TileMatrixSet}/{z}/{y}/{x}.png` ],
-                scheme: 'xyz',
-                tileSize: 256,
-                attribution: '© LINZ' });
-
-            map.addLayer({
-                id: 'linz-topo-layer',
-                type: 'raster',
-                source: 'linz-topo',
-                minzoom: 0,
-                maxzoom: 22
-            }); */
-        }
+        // The base style now correctly uses the LINZ tile services.
 
         // Load existing features if any
         if (existingFeatures && existingFeatures.features && existingFeatures.features.length > 0) {
@@ -229,25 +211,21 @@
                 const bbox = turf.bbox(existingFeatures);
                 map.fitBounds([[bbox[0], bbox[1]], [bbox[2], bbox[3]]], { padding: 40, duration: 600 });
             } catch (e) {}
-        } else {
-            // If keys missing, map still renders with demo style
         }
 
         updateFormAndArea();
     });
 
-    // Events
     map.on('draw.create', (e) => {
-        if (e.features && e.features[0]) applyDefaultPropertiesOnCreate(e.features[0]);
+        applyDefaultPropertiesOnCreate(e.features[0]);
         updateFormAndArea();
     });
-    map.on('draw.update', updateFormAndArea);
     map.on('draw.delete', updateFormAndArea);
+    map.on('draw.update', updateFormAndArea);
 
-    // Selection editor
-    const editor = document.getElementById('feature-editor');
     map.on('draw.selectionchange', (e) => {
-        if (e.features && e.features.length > 0) {
+        const editor = document.getElementById('feature-editor');
+        if (e.features.length > 0) {
             const feat = e.features[0];
             document.getElementById('vulnerability-type').value = (feat.properties && feat.properties.vulnerability_type) || 'uncategorized';
             document.getElementById('feature-description').value = (feat.properties && feat.properties.description) || '';
@@ -271,27 +249,27 @@
         }
     });
 
-    // Legend
-    const legendContainer = document.getElementById('legend');
-    Object.keys(vulnerabilityTypes).forEach((key) => {
+    // Legend generation
+    const legendEl = document.getElementById('legend');
+    for (const type in vulnerabilityTypes) {
         const item = document.createElement('div');
         item.className = 'legend-item';
         const colorBox = document.createElement('div');
         colorBox.className = 'legend-color';
-        colorBox.style.backgroundColor = vulnerabilityTypes[key].color;
+        colorBox.style.backgroundColor = vulnerabilityTypes[type].color;
         const label = document.createElement('span');
-        label.textContent = vulnerabilityTypes[key].name;
+        label.textContent = vulnerabilityTypes[type].name;
         item.appendChild(colorBox);
         item.appendChild(label);
-        legendContainer.appendChild(item);
-    });
+        legendEl.appendChild(item);
+    }
 
-    // Export drawn data as GeoJSON file
+    // Export functionality
     document.getElementById('export-geojson').addEventListener('click', () => {
         const data = draw.getAll();
+        const a = document.createElement('a');
         const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
         a.href = url;
         a.download = `vulnerabilities-plan-{{ plan.pk }}.geojson`;
         document.body.appendChild(a);

@@ -3,7 +3,9 @@ from django import forms
 from django.contrib.gis.geos import Point
 from doc_generator.models import FreshwaterPlan
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, Row, Column
+from django.urls import reverse, reverse_lazy
+from crispy_forms.layout import Layout, Fieldset, Row, Column, Div, HTML
+from crispy_forms.bootstrap import PrependedText, FormActions
 
 class FreshwaterPlanForm(forms.ModelForm):
     """
@@ -87,32 +89,69 @@ class AdminDetailsForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_method = 'post'
+        self.helper.form_id = 'admin-details-form'
+        # Let crispy-forms handle the form tags for a cleaner template.
+        self.helper.form_tag = True
+        
         self.helper.layout = Layout(
-            Fieldset(
-                'People & Business',
-                Row(
-                    Column('operator_name', css_class='form-group col-md-6 mb-3'),
-                    Column('operator_nzbn', css_class='form-group col-md-6 mb-3'),
+            # First Card: People & Business
+            Div(
+                Div(
+                    Fieldset(
+                        'People & Business',
+                        Row(
+                            Column(PrependedText('operator_name', '<i class="fas fa-user"></i>'), css_class='form-group col-md-6 mb-3'),
+                            Column(PrependedText('owner_name', '<i class="fas fa-user-tie"></i>'), css_class='form-group col-md-6 mb-3'),
+                        ),
+                        Row(
+                            Column(PrependedText('operator_nzbn', '<i class="fas fa-briefcase"></i>'), css_class='form-group col-md-6 mb-3'),
+                            Column(PrependedText('plan_preparer_name', '<i class="fas fa-pen-nib"></i>'), css_class='form-group col-md-6 mb-3'),
+                        ),
+                        Row(
+                            Column('operator_contact_details', css_class='form-group col-md-6 mb-3'),
+                            Column('owner_contact_details', css_class='form-group col-md-6 mb-3'),
+                        )
+                    ),
+                    css_class='card-body'
                 ),
-                'operator_contact_details',
-                Row(
-                    Column('owner_name', css_class='form-group col-md-6 mb-3'),
-                    Column('plan_preparer_name', css_class='form-group col-md-6 mb-3'),
-                ),
-                'owner_contact_details',
+                css_class='card'
             ),
-            Fieldset(
-                'Farm & Land Information',
-                'farm_address',
-                'legal_land_titles',
-                Row(
-                    Column('total_farm_area_ha', css_class='form-group col-md-6 mb-3'),
-                    Column('leased_area_ha', css_class='form-group col-md-6 mb-3'),
+            # Second Card: Property & Location
+            Div(
+                Div(
+                    Fieldset(
+                        'Property & Location Details',
+                        PrependedText('farm_address', '<i class="fas fa-map-marker-alt"></i>', css_class="mb-3"),
+                        Row(
+                            Column(PrependedText('council_authority_name', '<i class="fas fa-landmark"></i>'), css_class='form-group col-md-6 mb-3'),
+                            Column('legal_land_titles', css_class='form-group col-md-6 mb-3'),
+                        ),
+                        Row(
+                            Column(PrependedText('total_farm_area_ha', 'ha', css_class="mb-0"), css_class='form-group col-md-6 mb-3'),
+                            Column(PrependedText('leased_area_ha', 'ha', css_class="mb-0"), css_class='form-group col-md-6 mb-3'),
+                        ),
+                        'land_use',
+                        'resource_consents'
+                    ),
+                    css_class='card-body'
                 ),
-                'land_use',
-                'resource_consents',
+                css_class='card mt-4'
+            ),
+            # Buttons
+            FormActions(
+                # Use the HTML object to render raw HTML, and reverse_lazy for safety in class definitions.
+                HTML('<a href="{}" class="btn btn-outline-secondary">Back to Location</a>'.format(reverse_lazy('doc_generator:plan_wizard_start'))),
+                # Add a margin-start (ms-2) for spacing between buttons.
+                HTML('<button type="submit" class="btn btn-primary ms-2">Save and Continue</button>'),
+                # Use Bootstrap flex utilities for alignment.
+                css_class="d-flex justify-content-end mt-4"
             )
         )
+
+        # Make the AI-populated field read-only
+        self.fields['council_authority_name'].widget.attrs['readonly'] = True
+        self.fields['farm_address'].widget.attrs['readonly'] = True
+
 
     class Meta:
         model = FreshwaterPlan
@@ -124,6 +163,7 @@ class AdminDetailsForm(forms.ModelForm):
             'owner_contact_details',
             'plan_preparer_name',
             'farm_address',
+            'council_authority_name',
             'legal_land_titles',
             'total_farm_area_ha',
             'leased_area_ha',

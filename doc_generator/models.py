@@ -21,7 +21,7 @@ class FreshwaterPlan(models.Model):
         PAID = 'paid', 'Paid'
 
     class GenerationStatus(models.TextChoices):
-        PENDING = 'pending', 'Pending'
+        PROCESSING = 'processing', 'Processing'
         READY = 'ready', 'Ready'
         FAILED = 'failed', 'Failed'
 
@@ -35,6 +35,7 @@ class FreshwaterPlan(models.Model):
 
     # Basic plan metadata/content
     council = models.CharField(max_length=255, blank=True, null=True, help_text="The council associated with the plan.")
+    council_authority_name = models.CharField(max_length=255, blank=True, null=True, help_text="The official council name as identified by the RAG model.")
     generated_plan = models.TextField(blank=True, null=True, help_text="The generated content of the freshwater plan.")
 
     # --- Fields for Step 2: Administrative Details ---
@@ -66,9 +67,10 @@ class FreshwaterPlan(models.Model):
     generation_status = models.CharField(
         max_length=20,
         choices=GenerationStatus.choices,
-        default=GenerationStatus.PENDING,
+        default=GenerationStatus.PROCESSING,
         help_text="Status of admin details pre-population/generation pipeline."
     )
+    generation_progress = models.JSONField(default=list, blank=True, help_text="A log of steps taken during the generation process.")
     vulnerability_features = models.JSONField(blank=True, null=True, help_text="User-drawn vulnerability features (GeoJSON).")
     activity_features = models.JSONField(blank=True, null=True, help_text="User-drawn activity features (GeoJSON).")
 

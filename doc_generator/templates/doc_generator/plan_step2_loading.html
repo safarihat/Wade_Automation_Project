@@ -14,6 +14,20 @@
                 We're fetching administrative data for your location. This may take a moment.
             </p>
             <p>This page will automatically continue when ready.</p>
+
+            <div class="progress-log-container mt-4" style="max-width: 600px; margin: auto; text-align: left;">
+                <ul id="progress-log" class="list-group">
+                    <!-- Progress items will be injected here by JavaScript -->
+                </ul>
+            </div>
+        </div>
+
+        <div id="error-indicator" style="display: none;">
+            <h1 class="mt-3 text-danger">An Error Occurred</h1>
+            <p class="lead">
+                We were unable to retrieve the details for your plan.
+            </p>
+            <a href="{% url 'doc_generator:plan_wizard_start' %}" class="btn btn-primary">Try Again</a>
         </div>
 
         <div id="error-indicator" style="display: none;">
@@ -33,6 +47,7 @@
     const statusUrl = "{% url 'doc_generator:api_check_plan_status' pk=plan.pk %}";
     const loadingIndicator = document.getElementById('loading-indicator');
     const errorIndicator = document.getElementById('error-indicator');
+    const progressLogEl = document.getElementById('progress-log');
 
     const checkStatus = async () => {
         try {
@@ -42,16 +57,39 @@
             const response = await fetch(urlWithCacheBuster);
             const data = await response.json();
 
+            // Update the progress log on the screen
+            if (data.progress && data.progress.length > 0) {
+                // Clear existing logs to prevent duplicates
+                progressLogEl.innerHTML = '';
+                data.progress.forEach(item => {
+                    const li = document.createElement('li');
+                    li.className = 'list-group-item';
+                    
+                    let icon = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>'; // Pending
+                    if (item.status === 'complete') {
+                        icon = '<i class="fas fa-check-circle text-success me-2"></i>';
+                    } else if (item.status === 'warning' || item.status === 'error') {
+                        icon = '<i class="fas fa-exclamation-triangle text-danger me-2"></i>';
+                    } else if (item.status === 'info') {
+                        icon = '<i class="fas fa-info-circle text-info me-2"></i>';
+                    }
+                    
+                    li.innerHTML = `${icon} ${item.message}`;
+                    progressLogEl.appendChild(li);
+                });
+            }
+
             // Use a case-insensitive comparison to make the check more robust.
             const status = data.status.toLowerCase();
 
-            // If the status is anything other than 'processing', the server-side
-            // logic will handle the redirect or error message on the next reload.
+            // If the status is no longer 'processing', stop polling and reload.
             if (status !== 'processing') {
                 // Stop polling immediately once we get a success status.
                 clearInterval(checkInterval);
-                // Reload the page. The view will now see the 'READY' or 'FAILED' status and act accordingly.
-                window.location.reload();
+                // Instead of a generic reload, construct the final URL and navigate directly.
+                // This is more reliable than the reload -> redirect chain.
+                const finalUrl = `${window.location.pathname}?step=review`;
+                window.location.href = finalUrl;
             }
         } catch (error) {
             clearInterval(checkInterval);
