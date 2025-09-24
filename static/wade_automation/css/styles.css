@@ -351,3 +351,55 @@ section h2 {
   object-fit: cover;
   filter: brightness(65%);
 }
+
+/* --- Form Styling --- */
+
+/* Style for form fields for a modern, rounded look */
+.form-control,
+.form-select {
+    border-radius: 0.5rem; /* Rounded borders */
+    padding: 0.75rem 1rem; /* Consistent padding */
+    border: 1px solid #ced4da;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Style for form field labels to make them bold */
+.form-label {
+    font-weight: 600!important;
+}
+
+/* Custom gradient button */
+.btn-gradient {
+    color: #fff;
+    background: linear-gradient(45deg, #0d6efd, #0dcaf0);
+    border: none;
+    transition: all 0.3s ease-in-out;
+    background-size: 200% auto;
+    box-shadow: 0 4px 15px 0 rgba(13, 110, 253, 0.4);
+}
+
+.btn-gradient:hover {
+    color: #fff;
+    background-position: right center; /* Change direction of the gradient */
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px 0 rgba(13, 110, 253, 0.5);
+}
+
+/* Crispy Forms Error Messages */
+.is-invalid .form-control {
+    border-color: #dc3545;
+}
+
+.invalid-feedback {
+    display: block; /* Ensure error messages are always visible */
+    width: 100%;
+    margin-top: 0.25rem;
+    font-size: .875em;
+    color: #dc3545; /* Bootstrap's danger color */
+    font-weight: 500;
+}

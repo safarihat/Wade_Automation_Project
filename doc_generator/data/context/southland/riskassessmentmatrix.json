@@ -1,0 +1,66 @@
+{
+  "risk_scoring_framework": {
+    "likelihood": [
+      { "score": 1, "label": "Rare", "description": "May occur only in exceptional circumstances" },
+      { "score": 2, "label": "Unlikely", "description": "Could occur at some time, but not expected" },
+      { "score": 3, "label": "Possible", "description": "Might occur at some time" },
+      { "score": 4, "label": "Likely", "description": "Will probably occur in most circumstances" },
+      { "score": 5, "label": "Almost Certain", "description": "Expected to occur in most circumstances" }
+    ],
+    "consequence": [
+      { "score": 1, "label": "Insignificant", "description": "No measurable impact on freshwater values" },
+      { "score": 2, "label": "Minor", "description": "Minor short-term impact, easily reversible" },
+      { "score": 3, "label": "Moderate", "description": "Noticeable impact, reversible with effort" },
+      { "score": 4, "label": "Major", "description": "Significant impact, long recovery period" },
+      { "score": 5, "label": "Severe", "description": "Irreversible or long-term degradation" }
+    ]
+  },
+  "risk_matrix": [
+    { "likelihood": 5, "consequence": 1, "category": "Medium" },
+    { "likelihood": 5, "consequence": 2, "category": "High" },
+    { "likelihood": 5, "consequence": 3, "category": "High" },
+    { "likelihood": 5, "consequence": 4, "category": "Extreme" },
+    { "likelihood": 5, "consequence": 5, "category": "Extreme" },
+    { "likelihood": 4, "consequence": 1, "category": "Medium" },
+    { "likelihood": 4, "consequence": 2, "category": "Medium" },
+    { "likelihood": 4, "consequence": 3, "category": "High" },
+    { "likelihood": 4, "consequence": 4, "category": "High" },
+    { "likelihood": 4, "consequence": 5, "category": "Extreme" },
+    { "likelihood": 3, "consequence": 1, "category": "Low" },
+    { "likelihood": 3, "consequence": 2, "category": "Medium" },
+    { "likelihood": 3, "consequence": 3, "category": "Medium" },
+    { "likelihood": 3, "consequence": 4, "category": "High" },
+    { "likelihood": 3, "consequence": 5, "category": "High" },
+    { "likelihood": 2, "consequence": 1, "category": "Low" },
+    { "likelihood": 2, "consequence": 2, "category": "Low" },
+    { "likelihood": 2, "consequence": 3, "category": "Medium" },
+    { "likelihood": 2, "consequence": 4, "category": "Medium" },
+    { "likelihood": 2, "consequence": 5, "category": "High" },
+    { "likelihood": 1, "consequence": 1, "category": "Low" },
+    { "likelihood": 1, "consequence": 2, "category": "Low" },
+    { "likelihood": 1, "consequence": 3, "category": "Low" },
+    { "likelihood": 1, "consequence": 4, "category": "Medium" },
+    { "likelihood": 1, "consequence": 5, "category": "Medium" }
+  ],
+  "risk_categories": [
+    { "category": "Low", "score_range": "1-4", "action": "Maintain current good practice; monitor periodically" },
+    { "category": "Medium", "score_range": "5-9", "action": "Implement targeted mitigations; monitor annually" },
+    { "category": "High", "score_range": "10-16", "action": "Prioritise mitigations; monitor quarterly" },
+    { "category": "Extreme", "score_range": "17-25", "action": "Immediate action required; intensive monitoring" }
+  ],
+  "risk_factors": [
+    { "name": "Nutrient Loss", "indicators": "High N surplus, fertiliser near waterways", "catchment_influence": "Elevated in degraded estuary catchments" },
+    { "name": "Sediment Loss", "indicators": "Steep cultivated slopes, bare soil in winter", "catchment_influence": "Elevated in erosion-prone catchments" },
+    { "name": "Pathogen Loss", "indicators": "Stock access to waterways, poor effluent storage", "catchment_influence": "Elevated in catchments with swimming/recreation values" },
+    { "name": "Hydrological Change", "indicators": "Extensive drainage, wetland removal", "catchment_influence": "Elevated in sensitive wetland catchments" },
+    { "name": "Chemical Contamination", "indicators": "Spray drift, agrichemical storage near water", "catchment_influence": "Elevated in drinking water supply catchments" }
+  ],
+  "catchment_context_modifiers": [
+    { "context_type": "Degraded estuary", "adjustment": { "risk_factor": ["Nutrient Loss", "Sediment Loss"], "consequence_increase": 1 } },
+    { "context_type": "Erosion-prone hills", "adjustment": { "risk_factor": ["Sediment Loss"], "consequence_increase": 1 } },
+    { "context_type": "High-value recreation", "adjustment": { "risk_factor": ["Pathogen Loss"], "consequence_increase": 1 } },
+    { "context_type": "Wetland-rich", "adjustment": { "risk_factor": ["Hydrological Change"], "consequence_increase": 1 } },
+    { "context_type": "Drinking water supply", "adjustment": { "risk_factor": ["Chemical Contamination"], "consequence_increase": 1 } }
+  ],
+  "llm_prompt_template": "The following is the Freshwater Farm Plan risk assessment matrix used for Southland context, including catchment context modifiers. Given the farm’s location, land use, and catchment context, assess each relevant risk factor by assigning a likelihood score (1–5) and a consequence score (1–5). Apply any catchment context modifiers to adjust the consequence score before calculating the final risk category using the matrix. Recommend actions based on the category. Use the provided risk factors, categories, and modifiers as your reference."
+}

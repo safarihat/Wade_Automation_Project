@@ -90,61 +90,35 @@ class AdminDetailsForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.form_method = 'post'
         self.helper.form_id = 'admin-details-form'
-        # Let crispy-forms handle the form tags for a cleaner template.
         self.helper.form_tag = True
-        
+        self.helper.form_class = 'form-vertical'
+        self.helper.label_class = 'form-label fw-bold'
+        self.helper.field_class = 'mb-3'
+
         self.helper.layout = Layout(
-            # First Card: People & Business
-            Div(
-                Div(
-                    Fieldset(
-                        'People & Business',
-                        Row(
-                            Column(PrependedText('operator_name', '<i class="fas fa-user"></i>'), css_class='form-group col-md-6 mb-3'),
-                            Column(PrependedText('owner_name', '<i class="fas fa-user-tie"></i>'), css_class='form-group col-md-6 mb-3'),
-                        ),
-                        Row(
-                            Column(PrependedText('operator_nzbn', '<i class="fas fa-briefcase"></i>'), css_class='form-group col-md-6 mb-3'),
-                            Column(PrependedText('plan_preparer_name', '<i class="fas fa-pen-nib"></i>'), css_class='form-group col-md-6 mb-3'),
-                        ),
-                        Row(
-                            Column('operator_contact_details', css_class='form-group col-md-6 mb-3'),
-                            Column('owner_contact_details', css_class='form-group col-md-6 mb-3'),
-                        )
-                    ),
-                    css_class='card-body'
-                ),
-                css_class='card'
+            Fieldset(
+                'People & Business',
+                'operator_name',
+                'owner_name',
+                'operator_nzbn',
+                'plan_preparer_name',
+                'operator_contact_details',
+                'owner_contact_details',
             ),
-            # Second Card: Property & Location
-            Div(
-                Div(
-                    Fieldset(
-                        'Property & Location Details',
-                        PrependedText('farm_address', '<i class="fas fa-map-marker-alt"></i>', css_class="mb-3"),
-                        Row(
-                            Column(PrependedText('council_authority_name', '<i class="fas fa-landmark"></i>'), css_class='form-group col-md-6 mb-3'),
-                            Column('legal_land_titles', css_class='form-group col-md-6 mb-3'),
-                        ),
-                        Row(
-                            Column(PrependedText('total_farm_area_ha', 'ha', css_class="mb-0"), css_class='form-group col-md-6 mb-3'),
-                            Column(PrependedText('leased_area_ha', 'ha', css_class="mb-0"), css_class='form-group col-md-6 mb-3'),
-                        ),
-                        'land_use',
-                        'resource_consents'
-                    ),
-                    css_class='card-body'
-                ),
-                css_class='card mt-4'
+            Fieldset(
+                'Property & Location Details',
+                'farm_address',
+                'council_authority_name',
+                'legal_land_titles',
+                'total_farm_area_ha',
+                'leased_area_ha',
+                'land_use',
+                'resource_consents',
             ),
-            # Buttons
             FormActions(
-                # Use the HTML object to render raw HTML, and reverse_lazy for safety in class definitions.
-                HTML('<a href="{}" class="btn btn-outline-secondary">Back to Location</a>'.format(reverse_lazy('doc_generator:plan_wizard_start'))),
-                # Add a margin-start (ms-2) for spacing between buttons.
-                HTML('<button type="submit" class="btn btn-primary ms-2">Save and Continue</button>'),
-                # Use Bootstrap flex utilities for alignment.
-                css_class="d-flex justify-content-end mt-4"
+                HTML('<a href="{}" class="btn btn-lg btn-outline-secondary"><i class="fas fa-chevron-left me-2"></i>Back</a>'.format(reverse_lazy('doc_generator:plan_wizard_start'))),
+                HTML('<button type="submit" class="btn btn-lg btn-gradient ms-3">Save & Continue<i class="fas fa-chevron-right ms-2"></i></button>'),
+                css_class="d-flex justify-content-end mt-5"
             )
         )
 

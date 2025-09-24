@@ -17,6 +17,7 @@ urlpatterns = [
     path('api/get-parcel-geometry/', views.get_parcel_geometry, name='api_get_parcel_geometry'),
     path('wizard/<int:pk>/details/', views.plan_wizard_details, name='plan_wizard_details'),
     path('wizard/<int:pk>/status/', views.check_plan_status, name='api_check_plan_status'),
+    path('api/vulnerability-analysis/<int:pk>/', views.api_generate_vulnerability_analysis, name='api_generate_vulnerability_analysis'),
     path('wizard/<int:pk>/map-vulnerabilities/', views.plan_wizard_map_vulnerabilities, name='plan_wizard_map_vulnerabilities'),
     path('wizard/<int:pk>/map-activities/', views.plan_wizard_map_activities, name='plan_wizard_map_activities'),
     # Add more steps here in the future

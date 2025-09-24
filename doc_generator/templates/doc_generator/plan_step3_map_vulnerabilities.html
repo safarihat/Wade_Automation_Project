@@ -9,57 +9,61 @@
     <!-- Mapbox GL Draw CSS (compatible with MapLibre) -->
     <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.4.0/mapbox-gl-draw.css' type='text/css' />
     <style>
-        .map-wrapper { display: flex; gap: 1rem; }
-        #map { height: 70vh; flex-grow: 1; border-radius: 8px; }
-        .sidebar { flex-basis: 320px; flex-shrink: 0; padding: 1rem; background-color: #f8f9fa; border-radius: 8px; }
-        .form-group { margin-bottom: 1rem; }
-        #feature-editor { display: none; margin-top: 1rem; border-top: 1px solid #dee2e6; padding-top: 1rem; }
-        .legend-item { display: flex; align-items: center; margin-bottom: 0.5rem; }
-        .legend-color { width: 20px; height: 20px; margin-right: 10px; border: 1px solid #ccc; }
-        .sidebar .stat { font-size: 0.95rem; color: #333; margin: 0.25rem 0 1rem; }
+        #map { height: 70vh; width: 100%; border-radius: 8px; }
+        .map-wrapper {
+            /* The grid layout is removed to stack the map and sidebar vertically. */
+        }
+        .sidebar {
+            padding: 1.5rem;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            /* height is now auto, and we add a margin-top for spacing. */
+            margin-top: 2rem; 
+            min-height: 300px;
+        }
+        .map-container { position: relative; }
+        .map-overlay {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-family: sans-serif;
+            z-index: 1;
+        }
     </style>
 {% endblock %}
 
 {% block content %}
 <main class="page-section">
-    <div class="container">
+    <div class="container-fluid">
         <h1 class="text-center">Step 3: Map Inherent Vulnerabilities</h1>
-        <p class="lead text-center">
-            Use the drawing tools to identify areas on your farm with inherent risks to freshwater. Select a feature on the map to categorize it.
-        </p>
+        <p class="lead text-center">Below is a map of your property and an AI-generated technical summary of its environmental context and inherent risks. Review this overview before proceeding.</p>
 
         <div class="map-wrapper mt-4">
-            <div id="map"></div>
-            <div class="sidebar">
-                <h5>Map Legend & Controls</h5>
-                <p class="stat">Computed Area (drawn polygons): <strong id="total-area">0.00 ha</strong></p>
-                <div id="legend"></div>
+            <div style="position: relative; flex-grow: 1;">
+                <div id="map"></div>
+                <div id="map-overlay" class="map-overlay">
+                    <input id="aerial-layer" type="radio" name="rtoggle" value="aerial" checked="checked"><label for="aerial-layer">Aerial</label>
+                    <input id="topo-layer" type="radio" name="rtoggle" value="topo"><label for="topo-layer">Topo</label>
+                    <hr style="margin: 4px 0;">
+                    <input type="checkbox" id="lucas-toggle"><label for="lucas-toggle">Land Use (LUCAS)</label>
+                </div>
+            </div>
 
-                <div id="feature-editor">
-                    <h6>Edit Selected Feature</h6>
-                    <div class="form-group">
-                        <label for="vulnerability-type">Vulnerability Type</label>
-                        <select id="vulnerability-type" class="form-select">
-                            <option value="uncategorized">Uncategorized</option>
-                            <option value="farm_boundary">Farm Boundary</option>
-                            <option value="leased_land">Leased Land</option>
-                            <option value="land_use_zone">Land Use Zone</option>
-                            <option value="land_unit">Land Unit</option>
-                            <option value="soil_type">Soil Type</option>
-                            <option value="surface_water_body">Surface / Artificial Water Body</option>
-                            <option value="slope_landform">Slope / Landform</option>
-                            <option value="iwg_zone">Intensive Winter Grazing</option>
-                            <option value="critical_source_area">Critical Source Area</option>
-                            <option value="drainage_system">Drainage System</option>
-                            <option value="irrigation_infra">Irrigation / Frost Protection</option>
-                        </select>
+            <div class="sidebar">
+                <h5>Technical Vulnerability Summary</h5>
+                <!-- The loading spinner will now handle the initial message -->
+                
+                <div id="analysis-container" class="mt-3">
+                    <div id="analysis-output" class="p-3 bg-white border rounded" style="min-height: 300px; font-size: 0.9rem; white-space: pre-wrap; position: relative;">
+                        <!-- AI analysis will be loaded here -->
+                        <div id="analysis-loader" class="text-center text-muted pt-5">
+                            <div class="spinner-border spinner-border-sm" role="status"></div>
+                            <p class="mt-2 small">Generating technical summary...</p>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="feature-description">Description</label>
-                        <textarea id="feature-description" class="form-control" rows="3"></textarea>
-                    </div>
-                    <button id="save-feature-properties" class="btn btn-sm btn-secondary">Save Properties</button>
-                    <button id="export-geojson" class="btn btn-sm btn-outline-secondary" style="margin-left:8px;">Export GeoJSON</button>
                 </div>
             </div>
         </div>
@@ -67,17 +71,21 @@
         <form method="post" class="mt-3">
             {% csrf_token %}
             <input type="hidden" name="vulnerability_features" id="id_vulnerability_features">
-            <button type="submit" class="btn btn-primary">Save and Continue</button>
-            <a href="{% url 'doc_generator:plan_wizard_details' pk=plan.pk %}" class="btn btn-outline-secondary">Back to Details</a>
+            <div class="d-flex justify-content-end mt-4">
+                <a href="{% url 'doc_generator:plan_wizard_details' pk=plan.pk %}" class="btn btn-lg btn-outline-secondary"><i class="fas fa-chevron-left me-2"></i>Back to Details</a>
+                <button type="submit" class="btn btn-lg btn-gradient ms-3">Save & Continue<i class="fas fa-chevron-right ms-2"></i></button>
+            </div>
         </form>
     </div>
 
     <!-- Data container for JS -->
     <div id="map-data"
+         data-plan-pk="{{ plan.pk }}"
          data-lat="{{ plan.latitude|default:'' }}"
          data-lon="{{ plan.longitude|default:'' }}"
          data-linz-key="{{ LINZ_API_KEY|safe }}"
          data-linz-basemaps-key="{{ LINZ_BASEMAPS_API_KEY|safe }}"
+         data-koordinates-key="{{ KOORDINATES_API_KEY|safe }}"
          data-existing-features="{{ vulnerability_features_json|escapejs }}"
          style="display:none;"></div>
 </main>
@@ -92,19 +100,15 @@
 <script src='https://unpkg.com/@turf/turf@6/turf.min.js'></script>
 
 <script>
-(function(){
+document.addEventListener('DOMContentLoaded', function () {
     const dataEl = document.getElementById('map-data');
     const lat = parseFloat(dataEl.dataset.lat) || -41.2865; // Fallback: Wellington lat
     const lon = parseFloat(dataEl.dataset.lon) || 174.7762; // Fallback: Wellington lon
     const linzKey = dataEl.dataset.linzKey || '';
     const linzBasemapsKey = dataEl.dataset.linzBasemapsKey || '';
-    const existingFeatures = (function(){
-        try { return JSON.parse(dataEl.dataset.existingFeatures || 'null'); } catch(e) { return null; }
-    })();
-
+    const koordinatesKey = dataEl.dataset.koordinatesKey || '';
+    const existingFeatures = JSON.parse(dataEl.dataset.existingFeatures || 'null');
     const hiddenInput = document.getElementById('id_vulnerability_features');
-    const totalAreaEl = document.getElementById('total-area');
-
     const vulnerabilityTypes = {
         'farm_boundary': { color: '#e60049', name: 'Farm Boundary' },
         'leased_land': { color: '#9b19f5', name: 'Leased Land' },
@@ -120,6 +124,12 @@
         'uncategorized': { color: '#999999', name: 'Uncategorized' }
     };
 
+    // --- Consistent Map Initialization from Step 1 ---
+    const aerialTileUrl = `https://basemaps.linz.govt.nz/v1/tiles/aerial/WebMercatorQuad/{z}/{x}/{y}.png?api=${linzBasemapsKey}`;
+    const topoTileUrl = `https://tiles-cdn.koordinates.com/services;key=${linzKey}/tiles/v4/layer=52343,style=auto/EPSG:3857/{z}/{x}/{y}.png`;
+    // LUCAS NZ Land Use Map 2020 v005 from MfE, hosted on Koordinates. Layer ID: 117733
+    const lucasTileUrl = `https://tiles-cdn.koordinates.com/services;key=${koordinatesKey}/tiles/v4/layer=117733,style=auto/EPSG:3857/{z}/{x}/{y}.png`;
+
     // Initialize MapLibre
     const map = new maplibregl.Map({
         container: 'map',
@@ -128,32 +138,69 @@
             "sources": {
                 "linz-aerial": {
                     "type": "raster",
-                    "tiles": [ `https://basemaps.linz.govt.nz/v1/tiles/aerial/WebMercatorQuad/{z}/{x}/{y}.png?api=${linzBasemapsKey}` ],
+                    "tiles": [ aerialTileUrl ],
                     "tileSize": 256,
                     "attribution": "© LINZ"
                 },
-                "linz-parcels": {
+                "linz-topo": {
                     "type": "raster",
-                    "tiles": [ `https://data.linz.govt.nz/services;key=${linzKey}/wmts/1.0.0/layer/50772/tile/v1/g/EPSG:3857/{z}/{y}/{x}.png` ],
-                    "tileSize": 256
+                    "tiles": [ topoTileUrl ],
+                    "tileSize": 256,
+                    "attribution": "© LINZ"
+                },
+                "lucas-landuse": {
+                    "type": "raster",
+                    "tiles": [ lucasTileUrl ],
+                    "tileSize": 256,
+                    "attribution": "© MfE, Manaaki Whenua"
                 }
             },
             "layers": [
                 {
                     "id": "linz-aerial-layer",
                     "type": "raster",
-                    "source": "linz-aerial"
+                    "source": "linz-aerial" // Visible by default
                 },
                 {
-                    "id": "linz-parcels-layer",
+                    "id": "linz-topo-layer",
                     "type": "raster",
-                    "source": "linz-parcels",
-                    "paint": { "raster-opacity": 0.75 }
+                    "source": "linz-topo",
+                    "layout": { "visibility": "none" } // Hidden by default
+                },
+                {
+                    "id": "lucas-landuse-layer",
+                    "type": "raster",
+                    "source": "lucas-landuse",
+                    "layout": { "visibility": "none" }, // Hidden by default
+                    "paint": { "raster-opacity": 0.7 }
                 }
             ]
         },
         center: [lon, lat],
         zoom: 14
+    });
+
+    // --- Layer switcher logic from Step 1 ---
+    document.getElementById('map-overlay').addEventListener('change', (event) => {
+        // Only act on the radio buttons for base layer switching by checking their name attribute.
+        if (event.target.name === 'rtoggle') {
+            const layerId = event.target.value;
+            if (layerId === 'aerial') {
+                map.setLayoutProperty('linz-aerial-layer', 'visibility', 'visible');
+                map.setLayoutProperty('linz-topo-layer', 'visibility', 'none');
+            } else {
+                map.setLayoutProperty('linz-aerial-layer', 'visibility', 'none');
+                map.setLayoutProperty('linz-topo-layer', 'visibility', 'visible');
+            }
+        }
+    });
+
+    // LUCAS layer toggle logic
+    document.getElementById('lucas-toggle').addEventListener('change', (event) => {
+        const visibility = event.target.checked ? 'visible' : 'none';
+        if (map.getLayer('lucas-landuse-layer')) {
+            map.setLayoutProperty('lucas-landuse-layer', 'visibility', visibility);
+        }
     });
 
     // Drawing controls
@@ -173,18 +220,9 @@
     });
     map.addControl(draw);
 
-    function updateFormAndArea() {
+    function updateForm() {
         const data = draw.getAll();
         hiddenInput.value = data.features.length ? JSON.stringify(data) : '';
-        // Compute total area of all polygons
-        let sqm = 0;
-        for (const f of data.features) {
-            if (f.geometry && (f.geometry.type === 'Polygon' || f.geometry.type === 'MultiPolygon')) {
-                try { sqm += turf.area(f); } catch (e) {}
-            }
-        }
-        const ha = sqm / 10000.0;
-        totalAreaEl.textContent = ha.toFixed(2) + ' ha';
     }
 
     function applyDefaultPropertiesOnCreate(feature) {
@@ -194,11 +232,41 @@
         draw.setFeatureProperty(feature.id, 'color', vulnerabilityTypes[defaultType].color);
     }
 
-    map.on('load', () => {
-        // The base style now correctly uses the LINZ tile services.
+    // --- Function to fetch and display parcel geometry (from Step 1) ---
+    async function fetchAndDrawParcel(lat, lon) {
+        const parcelApiUrl = `{% url 'doc_generator:api_get_parcel_geometry' %}?lat=${lat}&lon=${lon}`;
+        try {
+            const response = await fetch(parcelApiUrl);
+            const geojsonData = await response.json();
 
-        // Load existing features if any
-        if (existingFeatures && existingFeatures.features && existingFeatures.features.length > 0) {
+            if (map.getSource('parcel-boundary')) {
+                map.removeLayer('parcel-boundary-layer');
+                map.removeSource('parcel-boundary');
+            }
+    
+            if (geojsonData && geojsonData.features && geojsonData.features.length > 0) {
+                map.addSource('parcel-boundary', { 'type': 'geojson', 'data': geojsonData });
+                map.addLayer({
+                    'id': 'parcel-boundary-layer',
+                    'beforeId': 'gl-draw-polygon-fill', // Draw parcel under drawn features
+                    'type': 'line',
+                    'source': 'parcel-boundary',
+                    'paint': { 'line-color': '#FF0000', 'line-width': 2.5 }
+                });
+            }
+        } catch (error) {
+            console.error("Failed to fetch parcel geometry:", error);
+        }
+    }
+
+    map.on('load', async () => {
+        // Fetch the parcel boundary first but don't wait for it to finish rendering
+        const parcelPromise = fetchAndDrawParcel(lat, lon);
+
+        let hasExistingFeatures = existingFeatures && existingFeatures.features && existingFeatures.features.length > 0;
+
+        // If there are existing drawn features, load them into the draw control
+        if (hasExistingFeatures) {
             for (const f of existingFeatures.features) {
                 const t = (f.properties && f.properties.vulnerability_type) || 'uncategorized';
                 const color = (vulnerabilityTypes[t] || vulnerabilityTypes['uncategorized']).color;
@@ -206,77 +274,60 @@
                 f.properties.color = color;
             }
             draw.set(existingFeatures);
-            // Fit to features
-            try {
-                const bbox = turf.bbox(existingFeatures);
-                map.fitBounds([[bbox[0], bbox[1]], [bbox[2], bbox[3]]], { padding: 40, duration: 600 });
-            } catch (e) {}
         }
 
-        updateFormAndArea();
+        // Now, decide how to set the initial map view
+        if (hasExistingFeatures) {
+            const bbox = turf.bbox(existingFeatures);
+            map.fitBounds(bbox, { padding: 50, duration: 0 });
+        } else {
+            await parcelPromise; // Wait for the parcel to be fetched
+            const parcelSource = map.getSource('parcel-boundary');
+            if (parcelSource) {
+                const parcelData = parcelSource._data;
+                if (parcelData && parcelData.features && parcelData.features.length > 0) {
+                    const bbox = turf.bbox(parcelData);
+                    map.fitBounds(bbox, { padding: 50, duration: 0 });
+                }
+            }
+        }
+
+        updateForm();
     });
 
     map.on('draw.create', (e) => {
         applyDefaultPropertiesOnCreate(e.features[0]);
-        updateFormAndArea();
+        updateForm();
     });
-    map.on('draw.delete', updateFormAndArea);
-    map.on('draw.update', updateFormAndArea);
+    map.on('draw.delete', updateForm);
+    map.on('draw.update', updateForm);
 
-    map.on('draw.selectionchange', (e) => {
-        const editor = document.getElementById('feature-editor');
-        if (e.features.length > 0) {
-            const feat = e.features[0];
-            document.getElementById('vulnerability-type').value = (feat.properties && feat.properties.vulnerability_type) || 'uncategorized';
-            document.getElementById('feature-description').value = (feat.properties && feat.properties.description) || '';
-            editor.style.display = 'block';
-        } else {
-            editor.style.display = 'none';
+    // --- Automatic Vulnerability Analysis ---
+    async function generateVulnerabilityAnalysis() {
+        const planPk = dataEl.dataset.planPk;
+        const analysisUrl = `/doc-generator/api/vulnerability-analysis/${planPk}/`;
+        const outputEl = document.getElementById('analysis-output');
+        const loaderEl = document.getElementById('analysis-loader');
+
+        try {
+            const response = await fetch(analysisUrl);
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({ error: `Network response was not ok: ${response.statusText}` }));
+                throw new Error(errorData.error || `Network response was not ok: ${response.statusText}`);
+            }
+            const data = await response.json();
+            
+            loaderEl.style.display = 'none'; // Hide loader
+            outputEl.textContent = data.analysis_text || 'No analysis was returned.';
+
+        } catch (error) {
+            console.error('Failed to fetch vulnerability analysis:', error);
+            loaderEl.style.display = 'none'; // Hide loader
+            outputEl.innerHTML = `<p class="text-danger"><strong>Could not load analysis.</strong><br>Please check your API key configurations and network connection, then refresh the page.<br><br><em>Error: ${error.message}</em></p>`;
         }
-    });
-
-    document.getElementById('save-feature-properties').addEventListener('click', () => {
-        const selected = draw.getSelected();
-        if (selected.features.length > 0) {
-            const id = selected.features[0].id;
-            const type = document.getElementById('vulnerability-type').value;
-            const desc = document.getElementById('feature-description').value;
-            const color = (vulnerabilityTypes[type] || vulnerabilityTypes['uncategorized']).color;
-            draw.setFeatureProperty(id, 'vulnerability_type', type);
-            draw.setFeatureProperty(id, 'description', desc);
-            draw.setFeatureProperty(id, 'color', color);
-            updateFormAndArea();
-        }
-    });
-
-    // Legend generation
-    const legendEl = document.getElementById('legend');
-    for (const type in vulnerabilityTypes) {
-        const item = document.createElement('div');
-        item.className = 'legend-item';
-        const colorBox = document.createElement('div');
-        colorBox.className = 'legend-color';
-        colorBox.style.backgroundColor = vulnerabilityTypes[type].color;
-        const label = document.createElement('span');
-        label.textContent = vulnerabilityTypes[type].name;
-        item.appendChild(colorBox);
-        item.appendChild(label);
-        legendEl.appendChild(item);
     }
 
-    // Export functionality
-    document.getElementById('export-geojson').addEventListener('click', () => {
-        const data = draw.getAll();
-        const a = document.createElement('a');
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        a.href = url;
-        a.download = `vulnerabilities-plan-{{ plan.pk }}.geojson`;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        URL.revokeObjectURL(url);
-    });
-})();
+    generateVulnerabilityAnalysis(); // Trigger analysis on page load.
+});
 </script>
 {% endblock %}

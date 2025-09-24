@@ -172,6 +172,11 @@ LINZ_API_KEY = os.environ.get('LINZ_API_KEY')
 if not LINZ_API_KEY:
     print("Warning: LINZ_API_KEY not found in .env file. Map features may not work.")
 
+# Koordinates.com API Key for vector/raster queries, loaded from .env file
+KOORDINATES_API_KEY = os.environ.get('KOORDINATES_API_KEY')
+if not KOORDINATES_API_KEY:
+    print("Warning: KOORDINATES_API_KEY not found in .env file. Geospatial analysis will fail.")
+
 # Publicly available LINZ Basemaps API key for services like aerial imagery.
 # This key does not require referrer restrictions.
 # See: https://www.linz.govt.nz/data/linz-data-service/guides-and-documentation/linz-basemaps-service-api
