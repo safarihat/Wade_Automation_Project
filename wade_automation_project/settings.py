@@ -194,6 +194,15 @@ ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', 'admin@example.com')
 
 
 # --- Celery Configuration ---
+
+# --- Production Best Practices ---
+# 1. Message Broker: For production, use a robust, managed message broker like RabbitMQ or a managed Redis service.
+# 2. Monitoring: Use a tool like Flower to monitor your Celery workers and tasks.
+#    - To install: pip install flower
+#    - To run: celery -A wade_automation_project flower --port=5555
+# 3. Logging: Configure dedicated logging for Celery to a file for easier debugging.
+#    - This can be configured in the LOGGING setting below.
+
 # Use Redis for both development and production for reliability.
 # The 'sqla+sqlite' broker is unreliable, especially with eventlet.
 REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
@@ -202,13 +211,21 @@ CELERY_BROKER_URL = REDIS_URL
 CELERY_RESULT_BACKEND = REDIS_URL
 
 CELERY_TIMEZONE = TIME_ZONE # Use Django's timezone
-CELERY_RESULT_EXTENDED = True # To store more metadata about tasks
+
+# Store extended task metadata (e.g., arguments, start time, etc.)
+CELERY_RESULT_EXTENDED = True 
+
 # This setting silences a deprecation warning and ensures connection retries on startup.
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 
-# Add task time limits to prevent tasks from running indefinitely
+# --- Task Time Limits ---
+# It's a best practice to set both soft and hard time limits to prevent tasks from hanging.
+# A soft time limit raises an exception that the task can catch to clean up.
+# A hard time limit forcefully terminates the task.
+# NOTE: These are global defaults. They can be overridden on a per-task basis,
+# which is often a better approach for tasks with different expected runtimes.
 CELERY_TASK_TIME_LIMIT = 600  # Hard time limit of 10 minutes
-CELERY_TASK_SOFT_TIME_LIMIT = 240 # Soft time limit of 4 minutes
+CELERY_TASK_SOFT_TIME_LIMIT = 540 # Soft time limit of 9 minutes
 
 # Disable ChromaDB telemetry
 CHROMA_TELEMETRY_ENABLED = os.environ.get('CHROMA_TELEMETRY_ENABLED', 'False') == 'True'

@@ -2,7 +2,7 @@ import os
 import io
 import logging
 import requests
-import eventlet
+import gevent
 from celery import shared_task
 from django.conf import settings
 from django.template.loader import render_to_string
@@ -82,7 +82,7 @@ def _stamp_pdf(pdf_content: bytes, watermark_pdf: io.BytesIO) -> io.BytesIO:
     output_pdf_stream.seek(0)
     return output_pdf_stream
 
-@shared_task(bind=True, max_retries=3, default_retry_delay=60)
+@shared_task(bind=True, max_retries=3, default_retry_delay=60, soft_time_limit=900, time_limit=960)
 def generate_plan_task(self, freshwater_plan_id):
     """
     Celery task to generate a freshwater plan using a RAG pipeline,
@@ -365,7 +365,7 @@ def _update_progress(plan_id: int, message: str, status: str = "pending"):
     except FreshwaterPlan.DoesNotExist:
         logger.warning(f"_update_progress called for non-existent plan ID {plan_id}")
 
-@shared_task(bind=True, autoretry_for=(requests.exceptions.HTTPError, Exception,), retry_kwargs={'max_retries': 2, 'retry_backoff': True})
+@shared_task(bind=True, autoretry_for=(requests.exceptions.HTTPError, Exception,), retry_kwargs={'max_retries': 2, 'retry_backoff': True}, soft_time_limit=300, time_limit=360)
 def populate_admin_details_task(self, freshwater_plan_id):
     """
     Populates administrative details and provides live progress updates.
@@ -418,10 +418,10 @@ def populate_admin_details_task(self, freshwater_plan_id):
 
         # Step 3: Fetch Admin Details
         _update_progress(plan.pk, "Fetching address and property title information...", "pending")
-        # Using eventlet.spawn for concurrent non-blocking I/O
-        address_thread = eventlet.spawn(_get_address_from_coords, plan.latitude, plan.longitude)
+        # Using gevent.spawn for concurrent non-blocking I/O
+        address_thread = gevent.spawn(_get_address_from_coords, plan.latitude, plan.longitude)
 
-        plan.farm_address = address_thread.wait()
+        plan.farm_address = address_thread.get()
         _update_progress(plan.pk, "Address retrieved.", "complete")
 
         # Step 4: Fetch Catchment Name, Soil, and Slope data
