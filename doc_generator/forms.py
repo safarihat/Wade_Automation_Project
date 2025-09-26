@@ -108,12 +108,16 @@ class AdminDetailsForm(forms.ModelForm):
             Fieldset(
                 'Property & Location Details',
                 'farm_address',
+                'catchment_name',
                 'council_authority_name',
+                'soil_type',
+                'slope_class',
                 'legal_land_titles',
                 'total_farm_area_ha',
                 'leased_area_ha',
                 'land_use',
                 'resource_consents',
+                
             ),
             FormActions(
                 HTML('<a href="{}" class="btn btn-lg btn-outline-secondary"><i class="fas fa-chevron-left me-2"></i>Back</a>'.format(reverse_lazy('doc_generator:plan_wizard_start'))),
@@ -124,6 +128,9 @@ class AdminDetailsForm(forms.ModelForm):
 
         # Make the AI-populated field read-only
         self.fields['council_authority_name'].widget.attrs['readonly'] = True
+        self.fields['catchment_name'].widget.attrs['readonly'] = True
+        self.fields['soil_type'].widget.attrs['readonly'] = True
+        self.fields['slope_class'].widget.attrs['readonly'] = True
         self.fields['farm_address'].widget.attrs['readonly'] = True
 
 
@@ -136,6 +143,9 @@ class AdminDetailsForm(forms.ModelForm):
             'owner_name',
             'owner_contact_details',
             'plan_preparer_name',
+            'catchment_name',
+            'soil_type',
+            'slope_class',
             'farm_address',
             'council_authority_name',
             'legal_land_titles',

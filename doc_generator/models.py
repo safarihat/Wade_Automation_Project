@@ -58,6 +58,13 @@ class FreshwaterPlan(models.Model):
     land_use = models.CharField(max_length=255, blank=True, null=True, help_text="Primary land use of the farm.")
     resource_consents = models.TextField(blank=True, null=True, help_text="Current relevant resource consents.")
 
+    # --- Fields for Catchment/Degradation Data (from ArcGIS) ---
+    catchment_area_info = models.JSONField(blank=True, null=True, help_text="Aggregated catchment data from ArcGIS.")
+    catchment_name = models.CharField(max_length=255, blank=True, null=True, help_text="The name of the REC catchment the property is located in.")
+    
+    # --- Fields for high-resolution regional data ---
+    soil_type = models.CharField(max_length=255, blank=True, null=True, help_text="Dominant soil type from regional data (e.g., Topoclimate).")
+    slope_class = models.CharField(max_length=255, blank=True, null=True, help_text="Dominant slope class from regional data (e.g., LiDAR).")
 
     # PDF outputs
     pdf_preview = models.FileField(upload_to='previews/', blank=True, null=True, help_text="A PDF preview of the generated plan.")

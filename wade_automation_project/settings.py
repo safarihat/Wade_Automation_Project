@@ -206,6 +206,13 @@ CELERY_RESULT_EXTENDED = True # To store more metadata about tasks
 # This setting silences a deprecation warning and ensures connection retries on startup.
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 
+# Add task time limits to prevent tasks from running indefinitely
+CELERY_TASK_TIME_LIMIT = 600  # Hard time limit of 10 minutes
+CELERY_TASK_SOFT_TIME_LIMIT = 240 # Soft time limit of 4 minutes
+
+# Disable ChromaDB telemetry
+CHROMA_TELEMETRY_ENABLED = os.environ.get('CHROMA_TELEMETRY_ENABLED', 'False') == 'True'
+
 # --- Crispy Forms Configuration ---
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"

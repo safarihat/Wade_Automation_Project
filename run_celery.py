@@ -1,7 +1,7 @@
-# This is the crucial fix for eventlet concurrency.
+# This is the crucial fix for gevent concurrency.
 # It must be called before any other modules (like socket or requests) are imported.
-import eventlet
-eventlet.monkey_patch()
+import gevent.monkey
+gevent.monkey.patch_all()
 
 import os
 from wade_automation_project.celery import app
@@ -14,7 +14,7 @@ def main():
     """
     # Set the default Django settings module for the 'celery' program.
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'wade_automation_project.settings')
-    app.worker_main(['worker', '--loglevel=info', '--pool=eventlet'])
+    app.worker_main(['worker', '--loglevel=info', '--pool=gevent', '-c', '4'])
 
 if __name__ == '__main__':
     main()

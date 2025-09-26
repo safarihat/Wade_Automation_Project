@@ -6,11 +6,16 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.contrib import messages
 from django.contrib.gis.geos import Point
-from django import forms
 from django.db import transaction
 from django.conf import settings
 from django.http import JsonResponse, HttpResponseBadRequest
 from doc_generator.forms import AdminDetailsForm, LocationForm
+from doc_generator.utils import (
+    _query_koordinates_vector,
+    _query_arcgis_vector,
+    _query_arcgis_raster,
+    _query_koordinates_raster
+)
 from doc_generator.models import FreshwaterPlan, RegionalCouncil
 from doc_generator.tasks import generate_plan_task, populate_admin_details_task
 
@@ -21,7 +26,7 @@ from langchain_groq import ChatGroq
 from langchain_core.prompts import PromptTemplate
 from groq import AuthenticationError
 from langchain_core.runnables import RunnablePassthrough
-from langchain_core.output_parsers import StrOutputParser
+from langchain_core.output_parsers import JsonOutputParser
 
 import logging
 
@@ -257,112 +262,6 @@ def plan_wizard_map_activities(request, pk):
 # KOORDINATES API DATA FETCHING (Replaces WFS)
 # =============================================================================
 
-def _query_koordinates_vector(layer_id: int, lon: float, lat: float, api_key: str, radius: int = 100, max_results: int = 10, retries: int = 3) -> dict:
-    """Queries a Koordinates vector layer for features intersecting a point."""
-    url = "https://koordinates.com/services/query/v1/vector.json"
-    payload = {
-        'key': api_key,
-        'layer': layer_id,
-        'x': lon,
-        'y': lat,
-        'crs': 'epsg:4326', # Explicitly state the coordinate system is WGS84
-        'max_results': max_results, # Now uses the updated max_results (default 10)
-        'radius': radius,
-        'geometry': 'true',
-        'with_field_names': 'true'
-    }
-    for attempt in range(retries):
-        try:
-            response = requests.get(url, params=payload, timeout=20)
-            if response.status_code == 200:
-                data = response.json()
-                # Defensive check: ensure 'layers' is a non-empty list before indexing.
-                # Log the raw response for debugging purposes
-                logger.info(f"Koordinates vector response for layer {layer_id}: {json.dumps(data)}")
-                layers = data.get('vectorQuery', {}).get('layers', [])
-                if isinstance(layers, list) and len(layers) > 0:
-                    features = layers[0].get('features', [])
-                    if features:
-                        parsed_features = []
-                        for f in features:
-                            parsed_features.append({
-                                "properties": f.get("properties", {}),
-                                "geometry": f.get("geometry", {}),
-                                "distance": f.get("distance") # Can be None
-                            })
-                        return parsed_features
-                logger.info(f"No features found for layer {layer_id} at ({lon}, {lat}) with radius {radius}.") # Improved logging
-                return {"info": f"No features found for layer {layer_id} at this location."} # Fallback message
-            elif response.status_code == 401:
-                logger.error(f"Koordinates API key is invalid or unauthorized for layer {layer_id}. The key starts with: '{api_key[:4]}...'")
-                return {"error": "Koordinates API key is invalid or unauthorized. Please check the key in your .env file."}
-            elif response.status_code == 403:
-                logger.error(f"Koordinates API request forbidden (403) for layer {layer_id}. This may be due to an incorrect API key or referer restrictions on Koordinates.com.")
-                return {"error": "API request forbidden (403). Check your API key and referer settings on koordinates.com."}
-            elif response.status_code == 404:
-                logger.error(f"Koordinates layer {layer_id} not found.")
-                return {"error": f"Layer {layer_id} not found."}
-            elif 500 <= response.status_code < 600:
-                logger.warning(f"Koordinates server error (HTTP {response.status_code}) on attempt {attempt + 1}/{retries} for layer {layer_id}.")
-                time.sleep(2 ** attempt)
-                continue
-            else:
-                logger.error(f"Koordinates vector query failed for layer {layer_id} with status {response.status_code}: {response.text}")
-                return {"error": f"API request failed with status {response.status_code}."}
-        except requests.exceptions.SSLError as e:
-            logger.error(f"Koordinates SSL error on attempt {attempt + 1}/{retries} for layer {layer_id}: {e}", exc_info=True)
-            return {"error": f"An SSL error occurred while contacting Koordinates. This may be due to a network proxy or firewall. Please check your network settings. Error: {e}"}
-        except requests.RequestException as e:
-            logger.error(f"Koordinates network error on attempt {attempt + 1}/{retries} for layer {layer_id}: {e}", exc_info=True)
-            time.sleep(2 ** attempt)
-    return {"error": f"Failed to query layer {layer_id} after {retries} attempts."}
-
-def _query_koordinates_raster(layer_id: int, lon: float, lat: float, api_key: str, retries: int = 3) -> dict:
-    """Queries a Koordinates raster layer for the value at a specific point."""
-    url = "https://koordinates.com/services/query/v1/raster.json"
-    payload = {
-        'key': api_key,
-        'layer': layer_id,
-        'x': lon,
-        'y': lat,
-        'crs': 'epsg:4326', # Explicitly state the coordinate system is WGS84
-    }
-    for attempt in range(retries):
-        try:
-            response = requests.get(url, params=payload, timeout=20)
-            if response.status_code == 200:
-                data = response.json()
-                # Defensive check: ensure 'layers' is a non-empty list before indexing.
-                # Log the raw response for debugging purposes
-                logger.info(f"Koordinates raster response for layer {layer_id}: {json.dumps(data)}")
-                layers = data.get('rasterQuery', {}).get('layers', [])
-                if isinstance(layers, list) and len(layers) > 0 and 'bands' in layers[0]:
-                    return layers[0]
-                return {"info": f"No raster value found for layer {layer_id} at this location."}
-            elif response.status_code == 401:
-                logger.error(f"Koordinates API key is invalid or unauthorized for layer {layer_id}. The key starts with: '{api_key[:4]}...'")
-                return {"error": "Koordinates API key is invalid or unauthorized. Please check the key in your .env file."}
-            elif response.status_code == 403:
-                logger.error(f"Koordinates API request forbidden (403) for layer {layer_id}. This may be due to an incorrect API key or referer restrictions on Koordinates.com.")
-                return {"error": "API request forbidden (403). Check your API key and referer settings on koordinates.com."}
-            elif response.status_code == 404:
-                logger.error(f"Koordinates layer {layer_id} not found.")
-                return {"error": f"Layer {layer_id} not found."}
-            elif 500 <= response.status_code < 600:
-                logger.warning(f"Koordinates server error (HTTP {response.status_code}) on attempt {attempt + 1}/{retries} for layer {layer_id}.")
-                time.sleep(2 ** attempt)
-                continue
-            else:
-                logger.error(f"Koordinates raster query failed for layer {layer_id} with status {response.status_code}: {response.text}")
-                return {"error": f"API request failed with status {response.status_code}."}
-        except requests.exceptions.SSLError as e:
-            logger.error(f"Koordinates SSL error on attempt {attempt + 1}/{retries} for layer {layer_id}: {e}", exc_info=True)
-            return {"error": f"An SSL error occurred while contacting Koordinates. This may be due to a network proxy or firewall. Please check your network settings. Error: {e}"}
-        except requests.RequestException as e:
-            logger.error(f"Koordinates network error on attempt {attempt + 1}/{retries} for layer {layer_id}: {e}", exc_info=True)
-            time.sleep(2 ** attempt)
-    return {"error": f"Failed to query layer {layer_id} after {retries} attempts."}
-
 @login_required
 def api_generate_vulnerability_analysis(request, pk):
     """
@@ -374,45 +273,71 @@ def api_generate_vulnerability_analysis(request, pk):
     # Use the dedicated Koordinates API key for all Koordinates.com queries.
     koordinates_api_key = settings.KOORDINATES_API_KEY
     if not koordinates_api_key:
+        logger.error("Koordinates API key is not configured.")
         return JsonResponse({'error': 'Koordinates API key is not configured.'}, status=500)
 
     # Add a check for the Groq API key to prevent crashes and provide a clear error.
     if not settings.GROQ_API_KEY:
+        logger.error("Groq AI API key (GROQ_API_KEY) is not configured in your .env file.")
         return JsonResponse({'error': 'Groq AI API key (GROQ_API_KEY) is not configured in your .env file.'}, status=500)
 
-    # Define the layers to be queried from the Koordinates API
-    KOORDINATES_LAYERS = {
-        'nzlri_soil': {'id': 48066, 'type': 'vector', 'name': 'NZLRI Soil', 'radius': 1000},
+    # Define the layers to be queried. We now mix Koordinates and ArcGIS sources.
+    # Using example URLs for Southland. These should be verified.
+    DATA_LAYERS = {
+        # --- NEW: ArcGIS Southland Layers ---
+        'southland_soil': {'type': 'arcgis_vector', 'name': 'Southland Topoclimate Soils', 'url': 'https://services3.arcgis.com/v5RzLI7nHYeFImL4/arcgis/rest/services/Freshwater_farm_plan_contextual_data_hosted/FeatureServer/5/query'},
+        'southland_slope': {'type': 'arcgis_raster', 'name': 'World Elevation Terrain', 'url': 'https://elevation.arcgis.com/arcgis/rest/services/WorldElevation/Terrain/ImageServer/identify'},
+        # --- Existing Koordinates Layers ---
         'land_cover': {'id': 104640, 'type': 'vector', 'name': 'LCDB v5.0 Land Cover', 'radius': 1000},
         'erosion': {'id': 25197, 'type': 'vector', 'name': 'Highly Erodible Land', 'radius': 1000},
         'protected_areas': {'id': 754, 'type': 'vector', 'name': 'DOC Public Conservation Areas', 'radius': 1000},
-        'slope': {'id': 51770, 'type': 'raster', 'name': 'Slope in Degrees'}
     }
 
     try:
         # 1. Fetch data from all configured Koordinates layers
         geospatial_context = {}
-        for key, layer_info in KOORDINATES_LAYERS.items():
-            layer_id = layer_info['id']
+        for key, layer_info in DATA_LAYERS.items():
             layer_name = layer_info['name']
-            logger.info(f"Querying Koordinates layer: {layer_name} (ID: {layer_id})")
+            logger.info(f"Querying data layer: {layer_name}")
             
-            result_obj = {"layer_id": layer_id, "layer_name": layer_name}
+            result_obj = {"layer_name": layer_name}
 
-            if layer_info['type'] == 'vector':
+            result = None # Initialize result to None
+            if layer_info['type'] == 'arcgis_raster':
+                result = _query_arcgis_raster(layer_info['url'], plan.longitude, plan.latitude)
+            elif layer_info['type'] == 'arcgis_vector':
+                result = _query_arcgis_vector(layer_info['url'], plan.longitude, plan.latitude)
+            elif layer_info['type'] == 'vector': # Koordinates vector
+                layer_id = layer_info['id']
+                result_obj["layer_id"] = layer_id
                 radius = layer_info.get('radius', 100)
                 result = _query_koordinates_vector(layer_id, plan.longitude, plan.latitude, koordinates_api_key, radius=radius)
-                if isinstance(result, list):
-                    result_obj["features"] = result
-                else: # Handle info/error messages
-                    result_obj.update(result)
-            else: # raster
+            elif layer_info['type'] == 'raster': # Koordinates raster
+                layer_id = layer_info['id']
+                result_obj["layer_id"] = layer_id
                 result = _query_koordinates_raster(layer_id, plan.longitude, plan.latitude, koordinates_api_key)
-                if "bands" in result:
-                    result_obj.update(result)
-                else: # Handle info/error messages
-                    result_obj.update(result)
             
+            # Safely update result_obj, handling None from _query functions
+            if result is not None:
+                if isinstance(result, list) and layer_info['type'] in ['arcgis_vector', 'vector']:
+                    result_obj["features"] = result
+                elif isinstance(result, dict) and layer_info['type'] in ['arcgis_raster', 'raster']:
+                    result_obj.update(result)
+                else:
+                    logger.warning(f"Unexpected result type from {layer_name}: {type(result)}")
+                    # Ensure a consistent empty structure if result was unexpected
+                    if layer_info['type'] in ['arcgis_vector', 'vector']:
+                        result_obj["features"] = []
+                    elif layer_info['type'] in ['arcgis_raster', 'raster']:
+                        result_obj["value"] = None
+            else:
+                logger.info(f"No data or error for layer {layer_name}, returning empty fallback.")
+                # Ensure a consistent empty structure if result was None
+                if layer_info['type'] in ['arcgis_vector', 'vector']:
+                    result_obj["features"] = []
+                elif layer_info['type'] in ['arcgis_raster', 'raster']:
+                    result_obj["value"] = None
+
             geospatial_context[key] = result_obj
             time.sleep(1) # Rate limiting for the free tier
 
@@ -429,11 +354,11 @@ def api_generate_vulnerability_analysis(request, pk):
                         del feature['geometry']
             return json.dumps(data_obj, indent=2)
 
-        soil_context = format_context(geospatial_context.get('nzlri_soil', {}))
+        soil_context = format_context(geospatial_context.get('southland_soil', {}))
         land_cover_context = format_context(geospatial_context.get('land_cover', {}))
         erosion_context = format_context(geospatial_context.get('erosion', {}))
         protection_context = format_context(geospatial_context.get('protected_areas', {}))
-        slope_context = format_context(geospatial_context.get('slope', {}))
+        slope_context = format_context(geospatial_context.get('southland_slope', {}))
 
         # 3. Set up and use the RAG chain to get regional policy context
         model_name = "sentence-transformers/all-MiniLM-L6-v2"
@@ -442,57 +367,58 @@ def api_generate_vulnerability_analysis(request, pk):
         vector_store = Chroma(persist_directory=str(vector_store_path), embedding_function=embeddings)
         retriever = vector_store.as_retriever(search_kwargs={'k': 3})
         llm = ChatGroq(model_name="llama-3.1-8b-instant", groq_api_key=settings.GROQ_API_KEY)
+        output_parser = JsonOutputParser()
         
         template = """You are an expert environmental consultant specializing in New Zealand's freshwater regulations.
-        Your task is to provide a technical summary of the inherent environmental risks for a specific farm location.
-        The output must be direct, factual, and written in the style of a professional consultant's report.
+        Your task is to analyze site-specific data and produce a JSON object containing a technical summary and a structured table of biophysical vulnerabilities.
 
-        Synthesize the following information. Each data source is provided as a JSON object.
+        Synthesize the following information. Each data source is provided as a JSON object. The Southland-specific data (Soils, Slope) is higher resolution and should be prioritized in your analysis.
         1.  **Data Source 1: Regional Policy Documents for {council}**
         {context}
         
-        2.  **Data Source 2: Site-Specific Soil Data (NZLRI)** (JSON object)
+        2.  **Data Source 2: Site-Specific Soil Data (Southland Topoclimate)** (JSON object)
         {soil_data}
 
-        3.  **Data Source 3: Site-Specific Land Cover Data (LCDB)** (JSON object)
+        3.  **Data Source 3: Site-Specific Slope Data (Southland LiDAR)** (JSON object)
+        {slope_data}
+
+        4.  **Data Source 4: Site-Specific Land Cover Data (LCDB)** (JSON object)
         {land_cover_data}
 
-        4.  **Data Source 4: Site-Specific Erosion Risk Data** (JSON object)
+        5.  **Data Source 5: Site-Specific Erosion Risk Data (National HEL)** (JSON object)
         {erosion_data}
 
-        5.  **Data Source 5: Site-Specific Protected Area Status** (JSON object)
+        6.  **Data Source 6: Site-Specific Protected Area Status (National DOC)** (JSON object)
         {protection_data}
-
-        6.  **Data Source 6: Site-Specific Slope Data** (JSON object)
-        {slope_data}
 
         ---
         **Task:**
-        Generate a "Technical Vulnerability Summary" for the property. Structure the output with the headings: "Key Environmental Characteristics" and "Primary Inherent Risks".
+        Based on all the provided data, generate a JSON object that follows this exact format:
+        {{
+            "technical_summary": "A markdown-formatted text summary of the key environmental characteristics and primary inherent risks for the property. Interpret the data, don't just list it. Cite your sources (e.g., 'According to LCDB data...').",
+            "biophysical_table": [
+                {{
+                    "feature": "Climate",
+                    "considerations": ["A list of considerations based on the data, e.g., 'High annual rainfall noted in regional context.'"],
+                    "vulnerabilities": ["A list of resulting vulnerabilities, e.g., 'Increased risk of flooding.', 'Potential for sheet erosion.']
+                }},
+                {{
+                    "feature": "Landform",
+                    "considerations": ["e.g., 'LiDAR data indicates an average slope of 12 degrees.'"],
+                    "vulnerabilities": ["e.g., 'Moderate risk of mass movement erosion on steeper faces.']
+                }},
+                {{
+                    "feature": "Soil",
+                    "considerations": ["e.g., 'Topoclimate data identifies the soil as Waikiwi silt loam.'"],
+                    "vulnerabilities": ["e.g., 'High permeability suggests a risk of nutrient loss to drainage.']
+                }}
+            ]
+        }}
         
         **Instructions for Interpretation:**
-        - **DO NOT just list raw data or codes.** You MUST interpret what the data means in an environmental context.
-        - For each point, cite the data source (e.g., "According to LCDB data...", "The NZLRI soil properties indicate...").
-        - If a JSON object contains an "info" or "error" key, it means no data was found. State this clearly in your summary for that section (e.g., "No specific soil data was found for this property.").
-        - **After** providing your narrative summary for each section, you MUST generate a markdown table summarizing the raw properties of the features found. If no features were found, state that in the table section as well.
-        
-        **Example of good interpretation:**
-        - **Bad:** "The soil data shows code 'H1'."
-        - **Good:** "The NZLRI soil data identifies the dominant soil type as having high permeability (H1), which suggests an elevated risk of nutrient leaching to groundwater."
-        
-        **Example of adding the technical table:**
-        The LCDB data shows the property contains two primary land cover types... (your narrative summary here).
-
-        **Technical Summary Table: Land Cover (LCDB)**
-        | Feature | Distance (m) | LCDB_CLASS_NAME                |
-        |---------|--------------|--------------------------------|
-        | 1       | 15.5         | High Producing Exotic Grassland|
-        | 2       | 120.3        | Manuka and/or Kanuka           |
-
-        **Example of handling multiple features:**
-        - **Good:** "The LCDB data shows the property contains two primary land cover types: 'High Producing Exotic Grassland' and a small area of 'Manuka and/or Kanuka'. The presence of grassland indicates active grazing, which can increase sediment runoff potential, while the scrubland area may offer some natural filtration."
-
-        **Technical Vulnerability Summary:**
+        - Populate the `biophysical_table` with entries for Climate, Landform, Soil, and other relevant features based on the provided data.
+        - If data for a feature is missing (e.g., no soil data found), reflect this in the considerations and vulnerabilities (e.g., "No site-specific soil data available.").
+        - The final output MUST be a single, valid JSON object and nothing else.
         """
         prompt = PromptTemplate.from_template(template)
 
@@ -501,13 +427,19 @@ def api_generate_vulnerability_analysis(request, pk):
              "erosion_data": lambda x: erosion_context, "protection_data": lambda x: protection_context, "slope_data": lambda x: slope_context}
             | prompt
             | llm
-            | StrOutputParser()
+            | output_parser
         )
 
-        analysis_text = rag_chain.invoke("Generate vulnerability analysis.")
+        analysis_data = rag_chain.invoke("Generate vulnerability analysis.")
 
-        return JsonResponse({'analysis_text': analysis_text})
+        return JsonResponse(analysis_data)
 
+    except requests.exceptions.ConnectionError as e:
+        if 'Failed to resolve' in str(e):
+            logger.error(f"DNS resolution failed for vulnerability analysis: {e}", exc_info=True)
+            return JsonResponse({'error': 'Network Error: Could not resolve the address of an external mapping service. Please check your internet connection and DNS settings.'}, status=504)
+        logger.error(f"Connection error during vulnerability analysis: {e}", exc_info=True)
+        return JsonResponse({'error': 'A network connection error occurred while contacting an external mapping service.'}, status=504)
     except AuthenticationError as e:
         logger.error(f"Groq AI authentication failed: {e}", exc_info=True)
         return JsonResponse({'error': 'Groq AI authentication failed. Please check your GROQ_API_KEY in the .env file.'}, status=500)

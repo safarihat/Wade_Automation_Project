@@ -1,8 +1,6 @@
 import os
 import io
 import logging
-import sys
-from contextlib import contextmanager
 import requests
 import eventlet
 from celery import shared_task
@@ -10,6 +8,13 @@ from django.conf import settings
 from django.template.loader import render_to_string
 from django.core.files.base import ContentFile
 from doc_generator.models import FreshwaterPlan
+from doc_generator.utils import (
+    _query_koordinates_vector,
+    _query_arcgis_vector,
+    _query_arcgis_raster
+)
+import hashlib
+from langchain_core.documents import Document
 
 # PDF and Watermarking libraries
 PDF_DEPS_AVAILABLE = True
@@ -31,7 +36,7 @@ except ImportError as e:
     letter = None
 
 # LangChain components for RAG
-from langchain_community.vectorstores import Chroma
+from langchain_community.vectorstores import Chroma # Updated import
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_groq import ChatGroq
 from langchain_core.prompts import PromptTemplate
@@ -237,7 +242,9 @@ def _generate_static_map_image(freshwater_plan: FreshwaterPlan):
         logger.warning(f"Could not fetch static map for plan ID {freshwater_plan.pk}: {e}")
 
 def _generate_pdf_preview(freshwater_plan: FreshwaterPlan):
-    """Renders the plan to HTML, converts to PDF, and stamps a watermark."""
+    """
+    Renders the plan to HTML, converts to PDF, and stamps a watermark.
+    """
     # If PDF already exists, skip regeneration to make the task idempotent.
     if freshwater_plan.pdf_preview:
         logger.info(f"PDF preview for ID {freshwater_plan.pk} already exists. Skipping generation.")
@@ -318,7 +325,7 @@ def _get_parcel_details_from_linz(lat: float, lon: float) -> dict:
         'request': 'GetFeature',
         'typeNames': 'layer-50772', # Layer ID for NZ Primary Parcels
         'outputFormat': 'application/json',
-        # Use a CQL filter to find the parcel that intersects the point
+        'srsName': 'urn:ogc:def:crs:EPSG::4326', # Ensure output is in WGS84
         'cql_filter': f"INTERSECTS(shape, SRID=4326;POINT({lon} {lat}))"
     }
     try:
@@ -358,20 +365,20 @@ def _update_progress(plan_id: int, message: str, status: str = "pending"):
     except FreshwaterPlan.DoesNotExist:
         logger.warning(f"_update_progress called for non-existent plan ID {plan_id}")
 
-@shared_task(bind=True, max_retries=0)
+@shared_task(bind=True, autoretry_for=(requests.exceptions.HTTPError, Exception,), retry_kwargs={'max_retries': 2, 'retry_backoff': True})
 def populate_admin_details_task(self, freshwater_plan_id):
     """
     Populates administrative details and provides live progress updates.
     1. Identifies council and logs progress.
     2. Runs a teaser RAG query for an initial insight.
     3. Fetches address and legal titles concurrently.
-    4. Sets status to READY.
+    4. Fetches catchment data from ArcGIS, enriches the RAG store, and updates the plan.
+    5. Sets status to READY.
     """
     try:
         plan = FreshwaterPlan.objects.get(pk=freshwater_plan_id)
         
         # Step 1: Log Council Confirmation
-        # This step now also uses RAG to find the official authority name.
         _update_progress(plan.pk, f"Verifying council authority for {plan.council} area...", "pending")
         try:
             model_name = "sentence-transformers/all-MiniLM-L6-v2"
@@ -396,13 +403,7 @@ def populate_admin_details_task(self, freshwater_plan_id):
         # Step 2: Run Teaser RAG Query
         _update_progress(plan.pk, "Running preliminary analysis of regional context...", "pending")
         try:
-            model_name = "sentence-transformers/all-MiniLM-L6-v2"
-            embeddings = HuggingFaceEmbeddings(model_name=model_name, model_kwargs={'device': 'cpu'})
-            vector_store_path = os.path.join(settings.BASE_DIR, 'vector_store')
-            vector_store = Chroma(persist_directory=vector_store_path, embedding_function=embeddings)
-            retriever = vector_store.as_retriever(search_kwargs={'k': 2})
-            llm = ChatGroq(model_name="llama-3.1-8b-instant", groq_api_key=settings.GROQ_API_KEY)
-
+            retriever.search_kwargs={'k': 2}
             template = """Based on the following context for the '{council}' area, what is the single most important environmental risk or regulation a farmer should be aware of? Be very brief and state it in one sentence.
             Context: {context}
             Answer:"""
@@ -417,6 +418,7 @@ def populate_admin_details_task(self, freshwater_plan_id):
 
         # Step 3: Fetch Admin Details
         _update_progress(plan.pk, "Fetching address and property title information...", "pending")
+        # Using eventlet.spawn for concurrent non-blocking I/O
         address_thread = eventlet.spawn(_get_address_from_coords, plan.latitude, plan.longitude)
         parcel_thread = eventlet.spawn(_get_parcel_details_from_linz, plan.latitude, plan.longitude)
 
@@ -424,11 +426,59 @@ def populate_admin_details_task(self, freshwater_plan_id):
         parcel_details = parcel_thread.wait()
         plan.legal_land_titles = parcel_details.get('legal_land_titles')
         plan.total_farm_area_ha = parcel_details.get('total_farm_area_ha')
-        _update_progress(plan.pk, "Administrative details retrieved.", "complete")
+        _update_progress(plan.pk, "Address and property title retrieved.", "complete")
 
-        # Step 4: Finalize
+        # Step 4: Fetch Catchment Name, Soil, and Slope data
+        _update_progress(plan.pk, "Fetching regional environmental data...", "pending")
+        try:
+            # These URLs should be verified and ideally stored in settings
+            catchment_layer_id = 105609 # Koordinates "REC2.4 Catchments"
+            # Corrected domain for ArcGIS services
+            soil_url = 'https://services3.arcgis.com/v5RzLI7nHYeFImL4/arcgis/rest/services/Freshwater_farm_plan_contextual_data_hosted/FeatureServer/5/query'
+            slope_url = 'https://elevation.arcgis.com/arcgis/rest/services/WorldElevation/Terrain/ImageServer/identify'
+
+            # Fetch Catchment Name from Koordinates
+            catchment_data = _query_koordinates_vector(catchment_layer_id, plan.longitude, plan.latitude, settings.KOORDINATES_API_KEY, radius=10, max_results=1)
+            if isinstance(catchment_data, list) and catchment_data:
+                plan.catchment_name = catchment_data[0].get('properties', {}).get('catchname', 'Not found')
+            else:
+                plan.catchment_name = "Not found or error during Koordinates query."
+
+            # Fetch Soil Type from ArcGIS
+            soil_data = _query_arcgis_vector(soil_url, plan.longitude, plan.latitude)
+            if isinstance(soil_data, list) and soil_data:
+                plan.soil_type = soil_data[0].get('SOIL_NAME', 'Unknown Soil')
+            else:
+                plan.soil_type = "Not available or error during ArcGIS soil query."
+
+            # Fetch Slope Class from ArcGIS
+            slope_data = _query_arcgis_raster(slope_url, plan.longitude, plan.latitude)
+            if slope_data and 'value' in slope_data and slope_data['value'] is not None:
+                try:
+                    slope_degrees = float(slope_data['value'])
+                    if slope_degrees < 3: slope_class = 'Flat (0-3°)'
+                    elif slope_degrees < 7: slope_class = 'Gently Undulating (3-7°)'
+                    elif slope_degrees < 15: slope_class = 'Rolling (7-15°)'
+                    else: slope_class = 'Steep (>15°)'
+                    plan.slope_class = f"{slope_class} ({slope_degrees:.1f}°)"
+                except (ValueError, TypeError):
+                    logger.warning(f"Could not parse slope value '{slope_data['value']}' for plan {plan.pk}")
+                    plan.slope_class = "Not available"
+            else:
+                plan.slope_class = "Not available or error during ArcGIS slope query."
+
+            _update_progress(plan.pk, "Regional environmental data retrieved.", "complete")
+        except Exception as e:
+            logger.warning(f"Failed to fetch regional data for plan {plan.pk}: {e}", exc_info=True)
+            _update_progress(plan.pk, "Could not retrieve some regional data.", "warning")
+
+        # Step 5: Finalize
         plan.generation_status = FreshwaterPlan.GenerationStatus.READY
-        plan.save(update_fields=['council_authority_name', 'farm_address', 'legal_land_titles', 'total_farm_area_ha', 'generation_status', 'generation_progress', 'updated_at'])
+        plan.save(update_fields=[
+            'council_authority_name', 'farm_address', 'legal_land_titles', 'total_farm_area_ha',
+            'catchment_name', 'soil_type', 'slope_class',
+            'generation_status', 'generation_progress', 'updated_at'
+        ])
         logger.info(f"populate_admin_details_task completed for plan ID: {freshwater_plan_id}")
 
     except FreshwaterPlan.DoesNotExist:
