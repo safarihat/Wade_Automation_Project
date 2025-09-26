@@ -11,7 +11,8 @@ from doc_generator.models import FreshwaterPlan
 from doc_generator.utils import (
     _query_koordinates_vector,
     _query_arcgis_vector,
-    _query_arcgis_raster
+    _query_koordinates_raster,
+    _calculate_slope_from_dem,
 )
 import hashlib
 from langchain_core.documents import Document
@@ -36,7 +37,7 @@ except ImportError as e:
     letter = None
 
 # LangChain components for RAG
-from langchain_community.vectorstores import Chroma # Updated import
+from langchain_chroma import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_groq import ChatGroq
 from langchain_core.prompts import PromptTemplate
@@ -313,40 +314,39 @@ def _get_address_from_coords(lat: float, lon: float) -> str:
         logger.error(f"An unexpected error occurred during reverse geocoding: {e}", exc_info=True)
         return "An error occurred while retrieving the address."
 
-def _get_parcel_details_from_linz(lat: float, lon: float) -> dict:
+def _get_parcel_features_from_wfs(lat: float, lon: float) -> list | None:
     """
-    Queries the LINZ WFS for the NZ Primary Parcels layer to get details
-    for the parcel at the given coordinates.
+    Queries the LINZ WFS for the NZ Primary Parcels layer and returns the
+    full feature list for the parcel(s) at the given coordinates.
     """
     wfs_url = f"https://data.linz.govt.nz/services;key={settings.LINZ_API_KEY}/wfs"
     params = {
         'service': 'WFS',
         'version': '2.0.0',
         'request': 'GetFeature',
-        'typeNames': 'layer-50772', # Layer ID for NZ Primary Parcels
+        'typeNames': 'layer-50772',  # NZ Primary Parcels
         'outputFormat': 'application/json',
         'srsName': 'urn:ogc:def:crs:EPSG::4326', # Ensure output is in WGS84
-        'cql_filter': f"INTERSECTS(shape, SRID=4326;POINT({lon} {lat}))"
+        'cql_filter': f"INTERSECTS(shape, SRID=4326;POINT({lon} {lat}))",
+        'count': 5 # Limit to 5 features
     }
     try:
         response = requests.get(wfs_url, params=params, timeout=20)
         response.raise_for_status()
         data = response.json()
         if data and data.get('features'):
-            properties = data['features'][0].get('properties', {})
-            # Extract relevant details. 'appellation' is the legal description.
-            legal_titles = properties.get('appellation', 'Not found')
-            area_ha = properties.get('survey_area_ha')
-            return {'legal_land_titles': legal_titles, 'total_farm_area_ha': area_ha}
+            logger.info(f"WFS fallback query successful for ({lat}, {lon}). Found {len(data['features'])} features.")
+            # Return the list of features directly
+            return data['features']
         else:
-            logger.warning(f"WFS query for lat={lat}, lon={lon} returned no features.")
-            return {'legal_land_titles': 'No parcel information found at this location.', 'total_farm_area_ha': None}
+            logger.warning(f"WFS fallback query for lat={lat}, lon={lon} returned no features.")
+            return None
     except requests.RequestException as e:
-        logger.warning(f"WFS request for parcel details failed: {e}")
-        return {'legal_land_titles': 'Could not retrieve parcel information due to a network error.', 'total_farm_area_ha': None}
+        logger.error(f"WFS fallback request for parcel details failed: {e}", exc_info=True)
+        return None
     except Exception as e:
-        logger.error(f"An unexpected error occurred during WFS query: {e}", exc_info=True)
-        return {'legal_land_titles': 'An error occurred while retrieving parcel information.', 'total_farm_area_ha': None}
+        logger.error(f"An unexpected error occurred during WFS fallback query: {e}", exc_info=True)
+        return None
 
 def _update_progress(plan_id: int, message: str, status: str = "pending"):
     """
@@ -420,52 +420,77 @@ def populate_admin_details_task(self, freshwater_plan_id):
         _update_progress(plan.pk, "Fetching address and property title information...", "pending")
         # Using eventlet.spawn for concurrent non-blocking I/O
         address_thread = eventlet.spawn(_get_address_from_coords, plan.latitude, plan.longitude)
-        parcel_thread = eventlet.spawn(_get_parcel_details_from_linz, plan.latitude, plan.longitude)
 
         plan.farm_address = address_thread.wait()
-        parcel_details = parcel_thread.wait()
-        plan.legal_land_titles = parcel_details.get('legal_land_titles')
-        plan.total_farm_area_ha = parcel_details.get('total_farm_area_ha')
-        _update_progress(plan.pk, "Address and property title retrieved.", "complete")
+        _update_progress(plan.pk, "Address retrieved.", "complete")
 
         # Step 4: Fetch Catchment Name, Soil, and Slope data
         _update_progress(plan.pk, "Fetching regional environmental data...", "pending")
         try:
             # These URLs should be verified and ideally stored in settings
-            catchment_layer_id = 105609 # Koordinates "REC2.4 Catchments"
+            parcel_layer_id = 53682 # Koordinates "NZ Land Parcels"
             # Corrected domain for ArcGIS services
             soil_url = 'https://services3.arcgis.com/v5RzLI7nHYeFImL4/arcgis/rest/services/Freshwater_farm_plan_contextual_data_hosted/FeatureServer/5/query'
-            slope_url = 'https://elevation.arcgis.com/arcgis/rest/services/WorldElevation/Terrain/ImageServer/identify'
+            # New authoritative URL for Southland FMUs from ArcGIS
+            fmu_url = 'https://services3.arcgis.com/v5RzLI7nHYeFImL4/arcgis/rest/services/Freshwater_farm_plan_contextual_data_hosted/FeatureServer/1/query'
 
-            # Fetch Catchment Name from Koordinates
-            catchment_data = _query_koordinates_vector(catchment_layer_id, plan.longitude, plan.latitude, settings.KOORDINATES_API_KEY, radius=10, max_results=1)
+            # Fetch Catchment/FMU Name from ArcGIS
+            catchment_data = _query_arcgis_vector(fmu_url, plan.longitude, plan.latitude)
             if isinstance(catchment_data, list) and catchment_data:
-                plan.catchment_name = catchment_data[0].get('properties', {}).get('catchname', 'Not found')
+                # The correct property for this ArcGIS layer is 'Zone'.
+                raw_catchment_name = catchment_data[0].get('Zone', 'Not found')
+                # Normalize the name by removing "catchment" and trimming whitespace.
+                normalized_name = raw_catchment_name.lower().replace('catchment', '').strip().title()
+                plan.catchment_name = normalized_name
             else:
-                plan.catchment_name = "Not found or error during Koordinates query."
+                plan.catchment_name = "Catchment/FMU not found at this location via ArcGIS."
 
-            # Fetch Soil Type from ArcGIS
+            # Fetch Parcel data from Koordinates
+            # The parcel_features field has been removed. We will still query for legal titles and area.
+            logger.warning(f"Koordinates layer 53682 returned no data. Falling back to LINZ WFS.")
+            wfs_parcel_data = _get_parcel_features_from_wfs(plan.latitude, plan.longitude)
+            if wfs_parcel_data:
+                plan.legal_land_titles = ", ".join([f.get('properties', {}).get('appellation', '') for f in wfs_parcel_data])
+                # Use survey_area_ha as it's more consistently available from WFS
+                plan.total_farm_area_ha = sum(f.get('properties', {}).get('survey_area_ha', 0) for f in wfs_parcel_data if f.get('properties', {}).get('survey_area_ha'))
+            else:
+                plan.legal_land_titles = "No parcel information found."
+                plan.total_farm_area_ha = None
+
+            # Fetch Soil Type from ArcGIS Vector
             soil_data = _query_arcgis_vector(soil_url, plan.longitude, plan.latitude)
             if isinstance(soil_data, list) and soil_data:
-                plan.soil_type = soil_data[0].get('SOIL_NAME', 'Unknown Soil')
+                attributes = soil_data[0]
+                plan.soil_type = attributes.get('SoilType', 'Unknown Soil')
+                
+                # Safely handle 'nil' or other non-numeric values for SlopeAngle
+                slope_angle_val = attributes.get('SlopeAngle')
+                try:
+                    plan.arcgis_slope_angle = float(slope_angle_val)
+                except (ValueError, TypeError):
+                    logger.warning(f"Could not parse ArcGIS SlopeAngle '{slope_angle_val}'. Setting to None.")
+                    plan.arcgis_slope_angle = None
+
+                plan.nutrient_leaching_vulnerability = attributes.get('NutrientLeachingVulnerability')
+                plan.erodibility = attributes.get('Erodibility')
             else:
                 plan.soil_type = "Not available or error during ArcGIS soil query."
 
-            # Fetch Slope Class from ArcGIS
-            slope_data = _query_arcgis_raster(slope_url, plan.longitude, plan.latitude)
-            if slope_data and 'value' in slope_data and slope_data['value'] is not None:
-                try:
-                    slope_degrees = float(slope_data['value'])
-                    if slope_degrees < 3: slope_class = 'Flat (0-3°)'
-                    elif slope_degrees < 7: slope_class = 'Gently Undulating (3-7°)'
-                    elif slope_degrees < 15: slope_class = 'Rolling (7-15°)'
-                    else: slope_class = 'Steep (>15°)'
-                    plan.slope_class = f"{slope_class} ({slope_degrees:.1f}°)"
-                except (ValueError, TypeError):
-                    logger.warning(f"Could not parse slope value '{slope_data['value']}' for plan {plan.pk}")
-                    plan.slope_class = "Not available"
+            # Always calculate slope from the DEM as the primary method.
+            logger.info(f"Calculating slope from DEM for plan {plan.pk}.")
+            slope_degrees = _calculate_slope_from_dem(plan.longitude, plan.latitude, settings.KOORDINATES_API_KEY)
+            
+            if slope_degrees is not None:
+                if slope_degrees < 3: slope_class = 'Flat (0-3°)'
+                elif slope_degrees < 7: slope_class = 'Gently Undulating (3-7°)'
+                elif slope_degrees < 15: slope_class = 'Rolling (7-15°)'
+                else: slope_class = 'Steep (>15°)'
+                plan.slope_class = f"{slope_class} ({slope_degrees:.1f}°)"
+                # Also save the raw angle if the ArcGIS one wasn't available
+                if plan.arcgis_slope_angle is None:
+                    plan.arcgis_slope_angle = round(slope_degrees, 1)
             else:
-                plan.slope_class = "Not available or error during ArcGIS slope query."
+                plan.slope_class = "Not available or error during slope query."
 
             _update_progress(plan.pk, "Regional environmental data retrieved.", "complete")
         except Exception as e:
@@ -475,8 +500,9 @@ def populate_admin_details_task(self, freshwater_plan_id):
         # Step 5: Finalize
         plan.generation_status = FreshwaterPlan.GenerationStatus.READY
         plan.save(update_fields=[
-            'council_authority_name', 'farm_address', 'legal_land_titles', 'total_farm_area_ha',
-            'catchment_name', 'soil_type', 'slope_class',
+            'council_authority_name', 'farm_address', 'legal_land_titles', 'total_farm_area_ha', 'catchment_name',
+            'soil_type', 'slope_class', 'arcgis_slope_angle',
+            'nutrient_leaching_vulnerability', 'erodibility',
             'generation_status', 'generation_progress', 'updated_at'
         ])
         logger.info(f"populate_admin_details_task completed for plan ID: {freshwater_plan_id}")

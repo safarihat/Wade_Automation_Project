@@ -13,8 +13,8 @@ from doc_generator.forms import AdminDetailsForm, LocationForm
 from doc_generator.utils import (
     _query_koordinates_vector,
     _query_arcgis_vector,
-    _query_arcgis_raster,
-    _query_koordinates_raster
+    _query_koordinates_raster,
+    _calculate_slope_from_dem,
 )
 from doc_generator.models import FreshwaterPlan, RegionalCouncil
 from doc_generator.tasks import generate_plan_task, populate_admin_details_task
@@ -92,8 +92,6 @@ def plan_wizard_start(request):
                 longitude=float(lon),
                 location=location_point,
                 council=council_obj.name if council_obj else "Unknown Council",
-                farm_address="Address pending...", # Placeholder for out-of-sync DB
-                land_use="Pending..." # Placeholder for out-of-sync DB
             )
             # Trigger the FAST background task to populate admin details
             populate_admin_details_task.delay(plan.pk)
@@ -251,10 +249,31 @@ def plan_wizard_map_vulnerabilities(request, pk):
 def plan_wizard_map_activities(request, pk):
     """
     Step 4 of the wizard: Map farming activities. (Placeholder)
+    Allows users to draw features like paddocks, tracks, and infrastructure.
     """
     plan = get_object_or_404(FreshwaterPlan, pk=pk, user=request.user)
-    # TODO: Implement the form and logic for the activities map.
-    context = {'plan': plan}
+
+    if request.method == 'POST':
+        activity_data = request.POST.get('activity_features')
+        if activity_data:
+            try:
+                plan.activity_features = json.loads(activity_data)
+                messages.success(request, "Farming activity map features have been saved.")
+            except json.JSONDecodeError:
+                messages.error(request, "There was an error saving your map data. Invalid format.")
+        else:
+            plan.activity_features = None
+            messages.info(request, "Farming activity map features have been cleared.")
+        
+        plan.save(update_fields=['activity_features', 'updated_at'])
+        # Redirect to the next step when it's ready. For now, we can redirect to a placeholder or preview.
+        return redirect(reverse('freshwater_plan_preview', kwargs={'pk': plan.pk})) # Placeholder redirect
+
+    context = {
+        'plan': plan,
+        'LINZ_BASEMAPS_API_KEY': settings.LINZ_BASEMAPS_API_KEY,
+        'activity_features_json': json.dumps(plan.activity_features) if plan.activity_features else 'null',
+    }
     return render(request, 'doc_generator/plan_step4_map_activities.html', context)
 
 
@@ -283,14 +302,14 @@ def api_generate_vulnerability_analysis(request, pk):
 
     # Define the layers to be queried. We now mix Koordinates and ArcGIS sources.
     # Using example URLs for Southland. These should be verified.
+    # Koordinates Layer IDs: NZ 8m DEM (51768), NZ 8m Slope (51769)
     DATA_LAYERS = {
-        # --- NEW: ArcGIS Southland Layers ---
-        'southland_soil': {'type': 'arcgis_vector', 'name': 'Southland Topoclimate Soils', 'url': 'https://services3.arcgis.com/v5RzLI7nHYeFImL4/arcgis/rest/services/Freshwater_farm_plan_contextual_data_hosted/FeatureServer/5/query'},
-        'southland_slope': {'type': 'arcgis_raster', 'name': 'World Elevation Terrain', 'url': 'https://elevation.arcgis.com/arcgis/rest/services/WorldElevation/Terrain/ImageServer/identify'},
-        # --- Existing Koordinates Layers ---
+        'regional_soil': {'type': 'arcgis_vector', 'name': 'Regional Soil Data', 'url': 'https://services3.arcgis.com/v5RzLI7nHYeFImL4/arcgis/rest/services/Freshwater_farm_plan_contextual_data_hosted/FeatureServer/5/query'},
+        # --- Koordinates Vector Layers ---
         'land_cover': {'id': 104640, 'type': 'vector', 'name': 'LCDB v5.0 Land Cover', 'radius': 1000},
         'erosion': {'id': 25197, 'type': 'vector', 'name': 'Highly Erodible Land', 'radius': 1000},
         'protected_areas': {'id': 754, 'type': 'vector', 'name': 'DOC Public Conservation Areas', 'radius': 1000},
+        'land_parcels': {'id': 53682, 'type': 'vector', 'name': 'NZ Land Parcels', 'radius': 100},
     }
 
     try:
@@ -303,43 +322,38 @@ def api_generate_vulnerability_analysis(request, pk):
             result_obj = {"layer_name": layer_name}
 
             result = None # Initialize result to None
-            if layer_info['type'] == 'arcgis_raster':
-                result = _query_arcgis_raster(layer_info['url'], plan.longitude, plan.latitude)
-            elif layer_info['type'] == 'arcgis_vector':
+            if layer_info['type'] == 'arcgis_vector':
                 result = _query_arcgis_vector(layer_info['url'], plan.longitude, plan.latitude)
             elif layer_info['type'] == 'vector': # Koordinates vector
                 layer_id = layer_info['id']
                 result_obj["layer_id"] = layer_id
                 radius = layer_info.get('radius', 100)
                 result = _query_koordinates_vector(layer_id, plan.longitude, plan.latitude, koordinates_api_key, radius=radius)
-            elif layer_info['type'] == 'raster': # Koordinates raster
-                layer_id = layer_info['id']
-                result_obj["layer_id"] = layer_id
-                result = _query_koordinates_raster(layer_id, plan.longitude, plan.latitude, koordinates_api_key)
             
             # Safely update result_obj, handling None from _query functions
             if result is not None:
                 if isinstance(result, list) and layer_info['type'] in ['arcgis_vector', 'vector']:
                     result_obj["features"] = result
-                elif isinstance(result, dict) and layer_info['type'] in ['arcgis_raster', 'raster']:
+                elif isinstance(result, dict) and layer_info['type'] == 'koordinates_raster':
                     result_obj.update(result)
                 else:
                     logger.warning(f"Unexpected result type from {layer_name}: {type(result)}")
-                    # Ensure a consistent empty structure if result was unexpected
-                    if layer_info['type'] in ['arcgis_vector', 'vector']:
-                        result_obj["features"] = []
-                    elif layer_info['type'] in ['arcgis_raster', 'raster']:
-                        result_obj["value"] = None
+                    result_obj["features" if "vector" in layer_info['type'] else "values"] = {}
             else:
                 logger.info(f"No data or error for layer {layer_name}, returning empty fallback.")
-                # Ensure a consistent empty structure if result was None
                 if layer_info['type'] in ['arcgis_vector', 'vector']:
                     result_obj["features"] = []
-                elif layer_info['type'] in ['arcgis_raster', 'raster']:
-                    result_obj["value"] = None
+                elif layer_info['type'] == 'koordinates_raster':
+                    result_obj.update({key: None for key in layer_info.get('ids', {})})
 
             geospatial_context[key] = result_obj
             time.sleep(1) # Rate limiting for the free tier
+
+        # Always calculate slope from DEM
+        logger.info("Calculating slope from DEM for analysis.")
+        slope_degrees = _calculate_slope_from_dem(plan.longitude, plan.latitude, koordinates_api_key)
+        geospatial_context['calculated_slope'] = {'slope_degrees': slope_degrees}
+
 
         # 2. Format the fetched data for the LLM prompt
         def format_context(data_obj):
@@ -354,11 +368,12 @@ def api_generate_vulnerability_analysis(request, pk):
                         del feature['geometry']
             return json.dumps(data_obj, indent=2)
 
-        soil_context = format_context(geospatial_context.get('southland_soil', {}))
+        soil_context = format_context(geospatial_context.get('regional_soil', {}))
         land_cover_context = format_context(geospatial_context.get('land_cover', {}))
         erosion_context = format_context(geospatial_context.get('erosion', {}))
         protection_context = format_context(geospatial_context.get('protected_areas', {}))
-        slope_context = format_context(geospatial_context.get('southland_slope', {}))
+        slope_context = format_context(geospatial_context.get('calculated_slope', {}))
+        parcels_context = format_context(geospatial_context.get('land_parcels', {}))
 
         # 3. Set up and use the RAG chain to get regional policy context
         model_name = "sentence-transformers/all-MiniLM-L6-v2"
@@ -371,24 +386,27 @@ def api_generate_vulnerability_analysis(request, pk):
         
         template = """You are an expert environmental consultant specializing in New Zealand's freshwater regulations.
         Your task is to analyze site-specific data and produce a JSON object containing a technical summary and a structured table of biophysical vulnerabilities.
-
-        Synthesize the following information. Each data source is provided as a JSON object. The Southland-specific data (Soils, Slope) is higher resolution and should be prioritized in your analysis.
+        The primary context for regulations and environmental values comes from the retrieved documents for the specific catchment: **{catchment_name}**.
+        Synthesize the following information. Each data source is provided as a JSON object. The regional soil data is high resolution and should be prioritized.
         1.  **Data Source 1: Regional Policy Documents for {council}**
         {context}
         
-        2.  **Data Source 2: Site-Specific Soil Data (Southland Topoclimate)** (JSON object)
+        2.  **Data Source 2: Site-Specific Soil Data (from regional council)** (JSON object)
         {soil_data}
 
-        3.  **Data Source 3: Site-Specific Slope Data (Southland LiDAR)** (JSON object)
+        3.  **Data Source 3: Site-Specific Slope Data (calculated from DEM)** (JSON object)
         {slope_data}
 
-        4.  **Data Source 4: Site-Specific Land Cover Data (LCDB)** (JSON object)
+        4.  **Data Source 4: Site-Specific Land Parcel Data (from LINZ)** (JSON object)
+        {parcels_data}
+
+        5.  **Data Source 5: Site-Specific Land Cover Data (LCDB)** (JSON object)
         {land_cover_data}
 
-        5.  **Data Source 5: Site-Specific Erosion Risk Data (National HEL)** (JSON object)
+        6.  **Data Source 6: Site-Specific Erosion Risk Data (National HEL)** (JSON object)
         {erosion_data}
 
-        6.  **Data Source 6: Site-Specific Protected Area Status (National DOC)** (JSON object)
+        7.  **Data Source 7: Site-Specific Protected Area Status (National DOC)** (JSON object)
         {protection_data}
 
         ---
@@ -404,12 +422,12 @@ def api_generate_vulnerability_analysis(request, pk):
                 }},
                 {{
                     "feature": "Landform",
-                    "considerations": ["e.g., 'LiDAR data indicates an average slope of 12 degrees.'"],
+                    "considerations": ["e.g., 'DEM-derived slope is 12 degrees.', 'ArcGIS data indicates SlopeAngle is 11.'"],
                     "vulnerabilities": ["e.g., 'Moderate risk of mass movement erosion on steeper faces.']
                 }},
                 {{
                     "feature": "Soil",
-                    "considerations": ["e.g., 'Topoclimate data identifies the soil as Waikiwi silt loam.'"],
+                    "considerations": ["e.g., 'Regional data identifies the soil as Waikiwi silt loam.', 'NutrientLeachingVulnerability is High.'"],
                     "vulnerabilities": ["e.g., 'High permeability suggests a risk of nutrient loss to drainage.']
                 }}
             ]
@@ -422,15 +440,26 @@ def api_generate_vulnerability_analysis(request, pk):
         """
         prompt = PromptTemplate.from_template(template)
 
+        # This is the correct LCEL structure for a RAG chain.
+        # The retriever is invoked with the catchment name to get specific context.
         rag_chain = (
-            {"context": retriever, "council": lambda x: plan.council, "soil_data": lambda x: soil_context, "land_cover_data": lambda x: land_cover_context,
-             "erosion_data": lambda x: erosion_context, "protection_data": lambda x: protection_context, "slope_data": lambda x: slope_context}
+            {
+                "context": lambda x: retriever.invoke(x["catchment_name"]),
+                "catchment_name": lambda x: x["catchment_name"],
+                "council": lambda x: plan.council,
+                "soil_data": lambda x: soil_context,
+                "land_cover_data": lambda x: land_cover_context,
+                "erosion_data": lambda x: erosion_context,
+                "protection_data": lambda x: protection_context,
+                "slope_data": lambda x: slope_context,
+                "parcels_data": lambda x: parcels_context
+            }
             | prompt
             | llm
             | output_parser
         )
 
-        analysis_data = rag_chain.invoke("Generate vulnerability analysis.")
+        analysis_data = rag_chain.invoke({"catchment_name": plan.catchment_name})
 
         return JsonResponse(analysis_data)
 

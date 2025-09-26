@@ -55,7 +55,6 @@ class FreshwaterPlan(models.Model):
     total_farm_area_ha = models.FloatField(blank=True, null=True, help_text="Total farm area in hectares.")
     leased_area_ha = models.FloatField(blank=True, null=True, help_text="Leased or licensed area in hectares.")
 
-    land_use = models.CharField(max_length=255, blank=True, null=True, help_text="Primary land use of the farm.")
     resource_consents = models.TextField(blank=True, null=True, help_text="Current relevant resource consents.")
 
     # --- Fields for Catchment/Degradation Data (from ArcGIS) ---
@@ -65,6 +64,11 @@ class FreshwaterPlan(models.Model):
     # --- Fields for high-resolution regional data ---
     soil_type = models.CharField(max_length=255, blank=True, null=True, help_text="Dominant soil type from regional data (e.g., Topoclimate).")
     slope_class = models.CharField(max_length=255, blank=True, null=True, help_text="Dominant slope class from regional data (e.g., LiDAR).")
+    
+    # --- New fields for detailed ArcGIS data ---
+    arcgis_slope_angle = models.FloatField(blank=True, null=True, help_text="Slope angle in degrees from ArcGIS data.")
+    nutrient_leaching_vulnerability = models.CharField(max_length=100, blank=True, null=True, help_text="Nutrient leaching vulnerability from ArcGIS data.")
+    erodibility = models.CharField(max_length=100, blank=True, null=True, help_text="Erodibility classification from ArcGIS data.")
 
     # PDF outputs
     pdf_preview = models.FileField(upload_to='previews/', blank=True, null=True, help_text="A PDF preview of the generated plan.")

@@ -112,10 +112,12 @@ class AdminDetailsForm(forms.ModelForm):
                 'council_authority_name',
                 'soil_type',
                 'slope_class',
+                'arcgis_slope_angle',
+                'nutrient_leaching_vulnerability',
+                'erodibility',
                 'legal_land_titles',
                 'total_farm_area_ha',
                 'leased_area_ha',
-                'land_use',
                 'resource_consents',
                 
             ),
@@ -131,6 +133,9 @@ class AdminDetailsForm(forms.ModelForm):
         self.fields['catchment_name'].widget.attrs['readonly'] = True
         self.fields['soil_type'].widget.attrs['readonly'] = True
         self.fields['slope_class'].widget.attrs['readonly'] = True
+        self.fields['arcgis_slope_angle'].widget.attrs['readonly'] = True
+        self.fields['nutrient_leaching_vulnerability'].widget.attrs['readonly'] = True
+        self.fields['erodibility'].widget.attrs['readonly'] = True
         self.fields['farm_address'].widget.attrs['readonly'] = True
 
 
@@ -146,11 +151,13 @@ class AdminDetailsForm(forms.ModelForm):
             'catchment_name',
             'soil_type',
             'slope_class',
+            'arcgis_slope_angle',
+            'nutrient_leaching_vulnerability',
+            'erodibility',
             'farm_address',
             'council_authority_name',
             'legal_land_titles',
             'total_farm_area_ha',
             'leased_area_ha',
-            'land_use',
             'resource_consents',
         ]
