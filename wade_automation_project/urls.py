@@ -24,7 +24,9 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),  # Add this line
     path('', include('wade_automation.urls')),  # Routes to app's urls.py
     path('invoices/', include('invoice_reconciliation.urls')),
-    path('doc-generator/', include('doc_generator.urls')),
+    # By providing a tuple of (URLconf_module, app_namespace), we explicitly
+    # tell Django how to route and reverse URLs for the 'doc_generator' app.
+    path('doc-generator/', include(('doc_generator.urls', 'doc_generator'))),
 ]
 
 if settings.DEBUG:

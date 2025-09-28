@@ -438,7 +438,8 @@ def populate_admin_details_task(self, freshwater_plan_id):
             catchment_data = _query_arcgis_vector(fmu_url, plan.longitude, plan.latitude)
             if isinstance(catchment_data, list) and catchment_data:
                 # The correct property for this ArcGIS layer is 'Zone'.
-                raw_catchment_name = catchment_data[0].get('Zone', 'Not found')
+                # The attributes are now nested in the feature object.
+                raw_catchment_name = catchment_data[0].get('attributes', {}).get('Zone', 'Not found')
                 # Normalize the name by removing "catchment" and trimming whitespace.
                 normalized_name = raw_catchment_name.lower().replace('catchment', '').strip().title()
                 plan.catchment_name = normalized_name
@@ -446,21 +447,27 @@ def populate_admin_details_task(self, freshwater_plan_id):
                 plan.catchment_name = "Catchment/FMU not found at this location via ArcGIS."
 
             # Fetch Parcel data from Koordinates
-            # The parcel_features field has been removed. We will still query for legal titles and area.
-            logger.warning(f"Koordinates layer 53682 returned no data. Falling back to LINZ WFS.")
-            wfs_parcel_data = _get_parcel_features_from_wfs(plan.latitude, plan.longitude)
-            if wfs_parcel_data:
-                plan.legal_land_titles = ", ".join([f.get('properties', {}).get('appellation', '') for f in wfs_parcel_data])
-                # Use survey_area_ha as it's more consistently available from WFS
-                plan.total_farm_area_ha = sum(f.get('properties', {}).get('survey_area_ha', 0) for f in wfs_parcel_data if f.get('properties', {}).get('survey_area_ha'))
+            parcel_data = _query_koordinates_vector(parcel_layer_id, plan.longitude, plan.latitude, settings.KOORDINATES_API_KEY, radius=50)
+            if isinstance(parcel_data, list) and parcel_data:
+                logger.info(f"Koordinates layer {parcel_layer_id} query successful.")
+                plan.legal_land_titles = ", ".join([f.get('properties', {}).get('appellation', '') for f in parcel_data])
+                plan.total_farm_area_ha = sum(f.get('properties', {}).get('area_ha', 0) for f in parcel_data if f.get('properties', {}).get('area_ha'))
             else:
-                plan.legal_land_titles = "No parcel information found."
-                plan.total_farm_area_ha = None
+                logger.warning(f"Koordinates layer {parcel_layer_id} returned no data. Falling back to LINZ WFS.")
+                wfs_parcel_data = _get_parcel_features_from_wfs(plan.latitude, plan.longitude)
+                if wfs_parcel_data:
+                    plan.legal_land_titles = ", ".join([f.get('properties', {}).get('appellation', '') for f in wfs_parcel_data])
+                    # Use survey_area_ha as it's more consistently available from WFS
+                    plan.total_farm_area_ha = sum(f.get('properties', {}).get('survey_area_ha', 0) for f in wfs_parcel_data if f.get('properties', {}).get('survey_area_ha'))
+                else:
+                    plan.legal_land_titles = "No parcel information found."
+                    plan.total_farm_area_ha = None
 
             # Fetch Soil Type from ArcGIS Vector
             soil_data = _query_arcgis_vector(soil_url, plan.longitude, plan.latitude)
             if isinstance(soil_data, list) and soil_data:
-                attributes = soil_data[0]
+                # The attributes are now nested in the feature object.
+                attributes = soil_data[0].get('attributes', {})
                 plan.soil_type = attributes.get('SoilType', 'Unknown Soil')
                 
                 # Safely handle 'nil' or other non-numeric values for SlopeAngle

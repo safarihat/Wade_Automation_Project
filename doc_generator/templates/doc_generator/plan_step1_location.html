@@ -120,8 +120,8 @@ document.addEventListener('DOMContentLoaded', function () {
     
     // Use the public LINZ Basemaps key with its correct service URL.
     const aerialTileUrl = `https://basemaps.linz.govt.nz/v1/tiles/aerial/WebMercatorQuad/{z}/{x}/{y}.png?api=${linzBasemapsApiKey}`;
-    // Use the private Koordinates key for the other layers.
-    const topoTileUrl = `https://tiles-cdn.koordinates.com/services;key=${linzApiKey}/tiles/v4/layer=52343,style=auto/EPSG:3857/{z}/{x}/{y}.png`;
+    // Use the official LINZ Basemaps service for the topo layer for consistency and reliability.
+    const topoTileUrl = `https://basemaps.linz.govt.nz/v1/tiles/topographic/WebMercatorQuad/{z}/{x}/{y}.png?api=${linzBasemapsApiKey}`;
     // The correct URL is for the bundled 'property' vector tile service.
 
     const map = new maplibregl.Map({

@@ -101,15 +101,16 @@ def _query_koordinates_vector(layer_id: int, lon: float, lat: float, api_key: st
         # Safely access and aggregate features from ALL layers in the response.
         all_features = []
         layers = data.get('vectorQuery', {}).get('layers')
-        
-        # Handle case where API returns an empty dictionary {} for out-of-extent queries
-        if isinstance(layers, dict) and not layers:
-            logger.warning(f"Koordinates vector query for layer {layer_id} at ({lon}, {lat}) returned an empty 'layers' object, likely outside extent.")
 
-        if isinstance(layers, list) and layers:
-            for layer in layers:
-                if isinstance(layer, dict):
-                    all_features.extend(layer.get('features', []))
+        # The 'layers' object from Koordinates is a dictionary keyed by layer ID, not a list.
+        if isinstance(layers, dict):
+            if not layers:
+                logger.warning(f"Koordinates vector query for layer {layer_id} at ({lon}, {lat}) returned an empty 'layers' object, likely outside extent.")
+            else:
+                # Iterate over the values of the layers dictionary
+                for layer_data in layers.values():
+                    if isinstance(layer_data, dict):
+                        all_features.extend(layer_data.get('features', []))
 
         result = []
         if all_features:
@@ -121,18 +122,27 @@ def _query_koordinates_vector(layer_id: int, lon: float, lat: float, api_key: st
             except redis.RedisError as e:
                 logger.warning(f"Redis SET failed for Koordinates vector: {e}.")
         
-        logger.info(f"No Koordinates features found for layer {layer_id} at ({lon}, {lat}).")
-        return [] # Return empty list for no features
+        if not result:
+            logger.info(f"No Koordinates features found for layer {layer_id} at ({lon}, {lat}). Caching empty result.")
+        
+        return result
     except requests.RequestException as e:
         logger.error(f"Koordinates vector query failed for layer {layer_id}: {e}", exc_info=True)
         return None # Return None on error
-
-def _query_koordinates_raster(layer_ids: dict[str, int], lon: float, lat: float, api_key: str) -> dict | None:
+def _query_koordinates_raster(layer_ids: dict[str, int] | int, lon: float, lat: float, api_key: str) -> dict | None:
     """
     Queries one or more Koordinates raster layers by their IDs.
-    `layer_ids` is a dictionary mapping a name (e.g., 'elevation') to a layer ID (e.g., 51768).
-    Returns a dictionary of the results (e.g., {'elevation': 100.5, 'slope': 12.3}) or None on failure.
+    `layer_ids` can be a dictionary mapping a name to a layer ID (e.g., {'elevation': 51768})
+    or a single layer ID integer.
+    If a single ID is passed, the result will be in the format {'value': 123.45}.
+    Returns a dictionary of the results or None on failure.
     """
+    # If a single layer ID is passed, wrap it in a dictionary for consistent processing.
+    # This makes the function more robust and reusable.
+    if isinstance(layer_ids, int):
+        layer_id_int = layer_ids
+        layer_ids = {'value': layer_id_int}
+
     url = "https://koordinates.com/services/query/v1/raster.json"
     
     # Create a mapping from layer ID back to the name for parsing the response
@@ -292,8 +302,9 @@ def _make_arcgis_request(url: str, params: dict) -> dict | None:
 
 def _query_arcgis_vector(service_url: str, lon: float, lat: float) -> list | None:
     """
-    Queries an ArcGIS vector layer with caching and robust retries.
-    Returns a list of feature attributes or None on failure.
+    Queries an ArcGIS vector layer with caching and robust retries. Returns a
+    list of features (as dictionaries with 'attributes' and 'geometry') or an
+    empty list on failure.
     """
     # The service_url parameter will now be the new FeatureServer Layer 5 URL directly.
     # No need for domain fix here as the new URL is correct.
@@ -304,7 +315,8 @@ def _query_arcgis_vector(service_url: str, lon: float, lat: float) -> list | Non
             cached_result = redis_client.get(cache_key)
             if cached_result:
                 logger.info(f"Cache HIT for ArcGIS vector: {service_url}")
-                return json.loads(cached_result)
+                # The result is now a list of full features, not just attributes
+                return json.loads(cached_result) 
         except redis.RedisError as e:
             logger.warning(f"Redis GET failed: {e}. Proceeding without cache.")
 
@@ -317,8 +329,9 @@ def _query_arcgis_vector(service_url: str, lon: float, lat: float) -> list | Non
             'geometryType': 'esriGeometryPoint',
             'inSR': 2193,
             'spatialRel': 'esriSpatialRelIntersects',
+            'outSR': 4326,  # Request output geometry in WGS84 (standard for GeoJSON)
             'outFields': '*',
-            'returnGeometry': 'false',
+            'returnGeometry': 'true', # Changed to true to get geometry
             'f': 'json'
         }
 
@@ -331,7 +344,16 @@ def _query_arcgis_vector(service_url: str, lon: float, lat: float) -> list | Non
         logger.info(f"ArcGIS vector response from {service_url}: {json.dumps(data)}")
 
         if 'features' in data and data['features']:
-            result = [f['attributes'] for f in data['features']]
+            # Convert Esri JSON features to standard GeoJSON features for MapLibre.
+            result = [
+                {
+                    'type': 'Feature',
+                    'properties': esri_feature.get('attributes', {}),
+                    'geometry': esri_feature.get('geometry')
+                }
+                for esri_feature in data['features']
+            ]
+
             if redis_client:
                 try:
                     redis_client.set(cache_key, json.dumps(result), ex=3600) # Cache for 1 hour

@@ -15,9 +15,12 @@ urlpatterns = [
     # the old URL to the new, canonical one. This is better practice.
     path('freshwater/create/', RedirectView.as_view(pattern_name='doc_generator:plan_wizard_start', permanent=True), name='freshwater_plan_create'),
     path('api/get-parcel-geometry/', views.get_parcel_geometry, name='api_get_parcel_geometry'),
+    path('api/nzlri-erosion/', views.NZLRIErosionLayerView.as_view(), name='api_nzlri_erosion'),
+    path('api/protected-areas/', views.ProtectedAreasLayerView.as_view(), name='api_protected_areas'),
+    path('api/groundwater-zones/', views.GroundwaterZonesLayerView.as_view(), name='api_groundwater_zones'),
     path('wizard/<int:pk>/details/', views.plan_wizard_details, name='plan_wizard_details'),
     path('wizard/<int:pk>/status/', views.check_plan_status, name='api_check_plan_status'),
-    path('api/vulnerability-analysis/<int:pk>/', views.api_generate_vulnerability_analysis, name='api_generate_vulnerability_analysis'),
+    path('api/vulnerability-analysis/<int:pk>/', views.api_generate_vulnerability_analysis, name='api_generate_vulnerability_analysis'), # This was already correct, but ensuring consistency.
     path('wizard/<int:pk>/map-vulnerabilities/', views.plan_wizard_map_vulnerabilities, name='plan_wizard_map_vulnerabilities'),
     path('wizard/<int:pk>/map-activities/', views.plan_wizard_map_activities, name='plan_wizard_map_activities'),
     # Add more steps here in the future

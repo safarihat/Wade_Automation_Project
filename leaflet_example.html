@@ -50,47 +50,56 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // 1. Initialize the map with a default view (e.g., center of New Zealand)
-        //    The view will be updated dynamically when the user enters coordinates.
         const map = L.map('map').setView([-41.2865, 174.7762], 5);
         let marker = null;
+        let geojsonLayer = null;
 
-        // 2. Add the OpenStreetMap tile layer
-        //    You can change the tile URL to use other providers if needed.
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
-            // 3. Add proper attribution as required by OpenStreetMap's license.
             attribution: '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map);
 
-        // 4. Get the coordinate input field from the form.
-        //    Django renders the form field 'geolocation_paste' with the id 'id_geolocation_paste'.
         const coordInput = document.getElementById('id_geolocation_paste');
 
-        // 5. Listen for changes in the input field to update the map.
         coordInput.addEventListener('input', function () {
-            // 6. Read the value and parse the coordinates.
-            //    The input is expected to be a string like "-46.286, 168.020".
             const coords = this.value.split(',').map(s => parseFloat(s.trim()));
 
             if (coords.length === 2 && !isNaN(coords[0]) && !isNaN(coords[1])) {
                 const lat = coords[0];
                 const lon = coords[1];
 
-                // 7. Set the map view to the new coordinates with a chosen zoom level.
-                //    You can adjust the zoom level (e.g., 15 for a closer view).
                 const zoomLevel = 12;
                 map.setView([lat, lon], zoomLevel);
 
-                // Remove the old marker if it exists
                 if (marker) {
                     map.removeLayer(marker);
                 }
 
-                // Add a new marker at the location
                 marker = L.marker([lat, lon]).addTo(map)
                     .bindPopup(`Coordinates: ${lat.toFixed(5)}, ${lon.toFixed(5)}`)
                     .openPopup();
+
+                // Fetch GeoJSON data from LRIS query service
+                const queryUrl = `https://lris.scinfo.org.nz/services/query/v1/vector.json/?v=1.2&layer=48054&x=${lon}&y=${lat}&radius=10000&max_results=100&geometry=true&with_field_names=true`;
+
+                fetch(queryUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (geojsonLayer) {
+                            map.removeLayer(geojsonLayer);
+                        }
+                        geojsonLayer = L.geoJSON(data, {
+                            style: function (feature) {
+                                return {
+                                    color: "#ff0000",
+                                    weight: 1,
+                                    opacity: 1,
+                                    fillColor: "#ff0000",
+                                    fillOpacity: 0.3
+                                };
+                            }
+                        }).addTo(map);
+                    }).catch(error => console.error('Error fetching LRIS data:', error));
             }
         });
     });

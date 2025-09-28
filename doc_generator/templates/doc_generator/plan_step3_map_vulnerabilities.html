@@ -6,15 +6,12 @@
 {% block extra_head %}
     <!-- MapLibre GL CSS -->
     <link href='https://unpkg.com/maplibre-gl@4.1.2/dist/maplibre-gl.css' rel='stylesheet' />
-    <!-- Mapbox GL Draw CSS (compatible with MapLibre) -->
-    <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.4.0/mapbox-gl-draw.css' type='text/css' />
     <style>
-        .map-container-wrapper {
+        .mini-map-container {
             position: relative;
-            /* Make the map container more square */
-            padding-top: 90%; /* 10:9 ratio, closer to a square */
+            padding-top: 75%; /* 4:3 aspect ratio */
         }
-        #map { position: absolute; top: 0; left: 0; height: 100%; width: 100%; border-radius: 8px; border: 1px solid #dee2e6; }
+        .mini-map { position: absolute; top: 0; left: 0; height: 100%; width: 100%; border-radius: 8px; border: 1px solid #dee2e6; }
         .sidebar {
             padding: 1.5rem;
             background-color: #f8f9fa;
@@ -31,17 +28,47 @@
             font-family: sans-serif;
             z-index: 1;
         }
+        .map-legend {
+            position: absolute;
+            bottom: 30px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            border-radius: 4px;
+            font-family: sans-serif;
+            z-index: 1;
+            font-size: 0.8rem;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .map-legend h6 {
+            margin: 0 0 5px 0;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+        .legend-key {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            margin-right: 8px;
+        }
         /* Style for the AI-generated table */
         #dynamic-table-container table {
             font-size: 0.85rem;
             border: 1px solid #dee2e6;
+            table-layout: fixed; /* Ensures consistent column widths */
+            width: 100%;
         }
         #dynamic-table-container th,
         #dynamic-table-container td {
             vertical-align: middle;
+            padding: 0.75rem; /* Increased padding for readability */
+            word-wrap: break-word; /* Helps prevent long text from breaking layout */
         }
         #dynamic-table-container ul {
             padding-left: 1.2rem; margin-bottom: 0;
+        }
+        .summary-box {
+            min-height: 200px; font-size: 0.9rem; white-space: pre-wrap; position: relative; overflow-y: auto;
         }
     </style>
 {% endblock %}
@@ -50,54 +77,128 @@
 <main class="page-section">
     <div class="container-fluid">
         <h1 class="text-center">Step 3: Map Inherent Vulnerabilities</h1>
-        <p class="lead text-center">Below is a map of your property and an AI-generated technical summary of its environmental context and inherent risks. Review this overview before proceeding.</p>
+        <p class="lead text-center mb-4">Below is a map of your property and an AI-generated analysis of its environmental context and inherent risks. Review this overview before proceeding.</p>
  
-        <!-- Main two-column layout for map and summary -->
-        <div class="row justify-content-center mt-4 g-4">
-            <div class="col-lg-7 col-xl-8">
-                <div class="map-container-wrapper mb-4">
-                    <div id="map"></div>
-                    <div id="map-overlay" class="map-overlay">
-                        <input id="aerial-layer" type="radio" name="rtoggle" value="aerial" checked="checked"><label for="aerial-layer">Aerial</label>
-                        <input id="topo-layer" type="radio" name="rtoggle" value="topo"><label for="topo-layer">Topo</label>
-                        <hr style="margin: 4px 0;">
-                        <input type="checkbox" id="lucas-toggle"><label for="lucas-toggle">Land Use</label>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-5 col-xl-4">
-                <div class="sidebar">
-                    <h5>Technical Vulnerability Summary</h5>
-                    <div id="analysis-output" class="p-3 bg-white border rounded" style="min-height: 400px; font-size: 0.9rem; white-space: pre-wrap; position: relative; overflow-y: auto;">
-                        <!-- AI analysis will be loaded here -->
-                        <div id="analysis-loader" class="text-center text-muted pt-5">
+        <section class="mt-4">
+            <!-- Technical Summary Section -->
+            <div class="row justify-content-center">
+                <div class="col-lg-10 col-xl-9">
+                    <h5 class="mb-3">Technical Overview</h5>
+                    <div id="technical-summary-output" class="p-3 bg-white border rounded summary-box">
+                        <div id="technical-summary-loader" class="text-center text-muted pt-5">
                             <div class="spinner-border spinner-border-sm" role="status"></div>
                             <p class="mt-2 small">Generating technical summary...</p>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
- 
-        <!-- AI-Generated Table Section -->
-        <div class="row justify-content-center mt-4">
-            <div class="col-lg-12">
-                <h5 class="mt-4">AI-Generated Biophysical Vulnerabilities</h5>
-                <p>The following table is generated by AI based on the specific environmental context of your property.</p>
-                <div id="dynamic-table-container" class="table-responsive">
-                    <!-- The dynamic table will be inserted here by JavaScript -->
+        </section>
+
+        <section class="mt-4">
+            <!-- Catchment Context Review Section -->
+            <div class="row justify-content-center">
+                <div class="col-lg-10 col-xl-9">
+                    <h5 class="mb-3">Catchment Context Review</h5>
+                    <div id="catchment-summary-output" class="p-3 bg-white border rounded summary-box">
+                        <div id="catchment-summary-loader" class="text-center text-muted pt-5">
+                            <div class="spinner-border spinner-border-sm" role="status"></div>
+                            <p class="mt-2 small">Generating catchment context...</p>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <form method="post" class="mt-3">
-            {% csrf_token %}
-            <input type="hidden" name="vulnerability_features" id="id_vulnerability_features">
-            <div class="d-flex justify-content-between mt-5">
-                <a href="{% url 'doc_generator:plan_wizard_details' pk=plan.pk %}" class="btn btn-lg btn-outline-secondary"><i class="fas fa-chevron-left me-2"></i>Back to Details</a>
-                <button type="submit" class="btn btn-lg btn-gradient ms-3">Save & Continue<i class="fas fa-chevron-right ms-2"></i></button>
+        <section class="mt-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-10 col-xl-9">
+                    <h3 class="text-center mb-4">Inherent Vulnerability Maps</h3>
+                    <p class="text-center lead mb-5">The following maps show key environmental data layers for your property. Each map is accompanied by an AI-generated explanation of what the data means in your specific context.</p>
+                </div>
             </div>
-        </form>
+
+            <!-- Land Use Map -->
+            <div class="row justify-content-center mb-5">
+                <div class="col-lg-10 col-xl-9">
+                    <h5 class="mb-3">Map: Land Use (LCDB)</h5>
+                    <div class="mini-map-container mb-3">
+                        <div id="map-land-use" class="mini-map"></div>
+                        <div id="land-use-legend" class="map-legend" style="display: none;"></div>
+                    </div>
+                    <div id="explanation-land-use" class="p-3 bg-light border rounded">
+                        <div class="text-center text-muted small"><div class="spinner-border spinner-border-sm me-2" role="status"></div>Loading explanation...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Erosion Map -->
+            <div class="row justify-content-center mb-5">
+                <div class="col-lg-10 col-xl-9">
+                    <h5 class="mb-3">Map: Erosion Severity (NZLRI)</h5>
+                    <div class="mini-map-container mb-3">
+                        <div id="map-erosion" class="mini-map"></div>
+                        <div id="erosion-legend" class="map-legend">
+                            <h6>Erosion Severity</h6>
+                            <div><span class="legend-key" style="background-color: #ffffcc;"></span>Slight</div>
+                            <div><span class="legend-key" style="background-color: #fed976;"></span>Minor</div>
+                            <div><span class="legend-key" style="background-color: #feb24c;"></span>Moderate</div>
+                            <div><span class="legend-key" style="background-color: #fd8d3c;"></span>Severe</div>
+                            <div><span class="legend-key" style="background-color: #f03b20;"></span>Extreme</div>
+                        </div>
+                    </div>
+                    <div id="explanation-erosion" class="p-3 bg-light border rounded">
+                        <div class="text-center text-muted small"><div class="spinner-border spinner-border-sm me-2" role="status"></div>Loading explanation...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Protected Areas Map -->
+            <div class="row justify-content-center mb-5">
+                <div class="col-lg-10 col-xl-9">
+                    <h5 class="mb-3">Map: Protected Areas (DOC)</h5>
+                    <div class="mini-map-container mb-3">
+                        <div id="map-protected-areas" class="mini-map"></div>
+                        <div id="protected-areas-legend" class="map-legend" style="display: none;"></div>
+                    </div>
+                    <div id="explanation-protected-areas" class="p-3 bg-light border rounded">
+                        <div class="text-center text-muted small"><div class="spinner-border spinner-border-sm me-2" role="status"></div>Loading explanation...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Groundwater Zones Map -->
+            <div class="row justify-content-center mb-5">
+                <div class="col-lg-10 col-xl-9">
+                    <h5 class="mb-3">Map: Groundwater Management Zones</h5>
+                    <div class="mini-map-container mb-3">
+                        <div id="map-groundwater-zones" class="mini-map"></div>
+                        <div id="groundwater-zones-legend" class="map-legend" style="display: none;"></div>
+                    </div>
+                    <div id="explanation-groundwater-zones" class="p-3 bg-light border rounded">
+                        <div class="text-center text-muted small"><div class="spinner-border spinner-border-sm me-2" role="status"></div>Loading explanation...</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+ 
+        <section class="mt-4">
+            <!-- AI-Generated Table Section -->
+            <div class="row justify-content-center">
+                <div class="col-lg-10 col-xl-9">
+                    <h5 class="mt-2 mb-3">AI-Generated Biophysical Vulnerabilities Table</h5>
+                    <p>The following table is generated by AI based on the specific environmental context of your property.</p>
+                    <div id="dynamic-table-container" class="table-responsive">
+                        <!-- The dynamic table will be inserted here by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navigation buttons -->
+        <div class="d-flex justify-content-between mt-5">
+            <a href="{% url 'doc_generator:plan_wizard_details' pk=plan.pk %}" class="btn btn-lg btn-outline-secondary"><i class="fas fa-chevron-left me-2"></i>Back to Details</a>
+            <a href="{% url 'doc_generator:plan_wizard_map_activities' pk=plan.pk %}" class="btn btn-lg btn-gradient ms-3">Continue<i class="fas fa-chevron-right ms-2"></i></a>
+        </div>
     </div>
 
     <!-- Data container for JS -->
@@ -108,7 +209,7 @@
          data-linz-key="{{ LINZ_API_KEY|safe }}"
          data-linz-basemaps-key="{{ LINZ_BASEMAPS_API_KEY|safe }}"
          data-koordinates-key="{{ KOORDINATES_API_KEY|safe }}"
-         data-existing-features="{{ vulnerability_features_json|escapejs }}"
+         data-lris-key="{{ LRIS_API_KEY|safe }}"
          style="display:none;"></div>
 </main>
 {% endblock %}
@@ -116,253 +217,351 @@
 {% block extra_js %}
 <!-- MapLibre GL JS -->
 <script src='https://unpkg.com/maplibre-gl@4.1.2/dist/maplibre-gl.js'></script>
-<!-- Mapbox GL Draw (works with MapLibre) -->
-<script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.4.0/mapbox-gl-draw.js'></script>
 <!-- Turf.js for geospatial computations -->
 <script src='https://unpkg.com/@turf/turf@6/turf.min.js'></script>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function() {
+    // --- 1. CONFIGURATION ---
     const dataEl = document.getElementById('map-data');
-    const lat = parseFloat(dataEl.dataset.lat) || -41.2865; // Fallback: Wellington lat
-    const lon = parseFloat(dataEl.dataset.lon) || 174.7762; // Fallback: Wellington lon
-    const linzKey = dataEl.dataset.linzKey || '';
-    const linzBasemapsKey = dataEl.dataset.linzBasemapsKey || '';
-    const koordinatesKey = dataEl.dataset.koordinatesKey || '';
-    const existingFeatures = JSON.parse(dataEl.dataset.existingFeatures || 'null');
-    const hiddenInput = document.getElementById('id_vulnerability_features');
-    const vulnerabilityTypes = {
-        'farm_boundary': { color: '#e60049', name: 'Farm Boundary' },
-        'leased_land': { color: '#9b19f5', name: 'Leased Land' },
-        'land_use_zone': { color: '#0bb4ff', name: 'Land Use Zone' },
-        'land_unit': { color: '#50e991', name: 'Land Unit' },
-        'soil_type': { color: '#ffa300', name: 'Soil Type' },
-        'surface_water_body': { color: '#00bfa0', name: 'Surface/Artificial Water' },
-        'slope_landform': { color: '#e6d800', name: 'Slope/Landform' },
-        'iwg_zone': { color: '#ffb3e6', name: 'Winter Grazing' },
-        'critical_source_area': { color: '#7e7d7e', name: 'Critical Source Area' },
-        'drainage_system': { color: '#a349a4', name: 'Drainage System' },
-        'irrigation_infra': { color: '#2a7fff', name: 'Irrigation/Frost' },
-        'uncategorized': { color: '#999999', name: 'Uncategorized' }
+    const config = {
+        planPk: dataEl.dataset.planPk,
+        center: {
+            lat: parseFloat(dataEl.dataset.lat) || -41.2865,
+            lon: parseFloat(dataEl.dataset.lon) || 174.7762,
+        },
+        apiKeys: {
+            linzBasemaps: dataEl.dataset.linzBasemapsKey || '',
+            koordinates: dataEl.dataset.koordinatesKey || '',
+        },
+        urls: {
+            aerial: `https://basemaps.linz.govt.nz/v1/tiles/aerial/WebMercatorQuad/{z}/{x}/{y}.png?api=${dataEl.dataset.linzBasemapsKey}`,
+            topo: `https://basemaps.linz.govt.nz/v1/tiles/topographic/WebMercatorQuad/{z}/{x}/{y}.png?api=${dataEl.dataset.linzBasemapsKey}`,
+            lucas: `https://tiles-cdn.koordinates.com/services;key=${dataEl.dataset.koordinatesKey}/tiles/v4/layer=117733/EPSG:3857/{z}/{x}/{y}.png`, // This is a raster tile, it's fine.
+            protectedAreas: `/doc-generator/api/protected-areas/?lat=${dataEl.dataset.lat}&lon=${dataEl.dataset.lon}`,
+            groundwaterZones: `/doc-generator/api/groundwater-zones/?lat=${dataEl.dataset.lat}&lon=${dataEl.dataset.lon}`,
+            erosion: `/doc-generator/api/nzlri-erosion/?lat=${dataEl.dataset.lat}&lon=${dataEl.dataset.lon}`,
+            parcel: `{% url 'doc_generator:api_get_parcel_geometry' %}?lat=${dataEl.dataset.lat}&lon=${dataEl.dataset.lon}`,
+            analysis: `/doc-generator/api/vulnerability-analysis/${dataEl.dataset.planPk}/`,
+        }
     };
 
-    // --- Consistent Map Initialization from Step 1 ---
-    const aerialTileUrl = `https://basemaps.linz.govt.nz/v1/tiles/aerial/WebMercatorQuad/{z}/{x}/{y}.png?api=${linzBasemapsKey}`;
-    const topoTileUrl = `https://tiles-cdn.koordinates.com/services;key=${linzKey}/tiles/v4/layer=52343,style=auto/EPSG:3857/{z}/{x}/{y}.png`;
-    // LUCAS NZ Land Use Map 2020 v005 from MfE, hosted on Koordinates. Layer ID: 117733
-    const lucasTileUrl = `https://tiles-cdn.koordinates.com/services;key=${koordinatesKey}/tiles/v4/layer=117733,style=auto/EPSG:3857/{z}/{x}/{y}.png`;
+    // --- 2. MAP MANAGER ---
+    const MapManager = {
+        maps: {},
 
-    // Initialize MapLibre
-    const map = new maplibregl.Map({
-        container: 'map',
-        style: {
-            "version": 8,
-            "sources": {
-                "linz-aerial": {
-                    "type": "raster",
-                    "tiles": [ aerialTileUrl ],
-                    "tileSize": 256,
-                    "attribution": "© LINZ"
-                },
-                "linz-topo": {
-                    "type": "raster",
-                    "tiles": [ topoTileUrl ],
-                    "tileSize": 256,
-                    "attribution": "© LINZ"
-                },
-                "lucas-landuse": {
-                    "type": "raster",
-                    "tiles": [ lucasTileUrl ],
-                    "tileSize": 256,
-                    "attribution": "© MfE, Manaaki Whenua"
-                }
-            },
-            "layers": [
-                {
-                    "id": "linz-aerial-layer",
-                    "type": "raster",
-                    "source": "linz-aerial" // Visible by default
-                },
-                {
-                    "id": "linz-topo-layer",
-                    "type": "raster",
-                    "source": "linz-topo",
-                    "layout": { "visibility": "none" } // Hidden by default
-                },
-                {
-                    "id": "lucas-landuse-layer",
-                    "type": "raster",
-                    "source": "lucas-landuse",
-                    "layout": { "visibility": "none" }, // Hidden by default
-                    "paint": { "raster-opacity": 0.7 }
-                }
-            ]
+        // Helper to populate a legend
+        populateLegend: function(legendContainerId, title, items) {
+            const legendContainer = document.getElementById(legendContainerId);
+            if (!legendContainer) return;
+
+            let html = `<h6>${title}</h6>`;
+            items.forEach(item => {
+                const style = item.type === 'line' ? `border-bottom: 3px solid ${item.color}; width: 20px;` : `background-color: ${item.color};`;
+                html += `<div><span class="legend-key" style="${style}"></span>${item.label}</div>`;
+            });
+            legendContainer.innerHTML = html;
+            legendContainer.style.display = 'block'; // Ensure legend is visible
         },
-        center: [lon, lat],
-        zoom: 14
-    });
 
-    // --- Layer switcher logic from Step 1 ---
-    document.getElementById('map-overlay').addEventListener('change', (event) => {
-        // Only act on the radio buttons for base layer switching by checking their name attribute.
-        if (event.target.name === 'rtoggle') {
-            const layerId = event.target.value;
-            if (layerId === 'aerial') {
-                map.setLayoutProperty('linz-aerial-layer', 'visibility', 'visible');
-                map.setLayoutProperty('linz-topo-layer', 'visibility', 'none');
-            } else {
-                map.setLayoutProperty('linz-aerial-layer', 'visibility', 'none');
-                map.setLayoutProperty('linz-topo-layer', 'visibility', 'visible');
+        createMap: async function(mapConfig) {
+            const map = new maplibregl.Map({
+                container: mapConfig.container,
+                style: {
+                    version: 8,
+                    sources: {
+                        'linz-aerial': { type: 'raster', tiles: [config.urls.aerial], tileSize: 256, attribution: '© LINZ' }, // Add aerial source
+                        'linz-topo': { type: 'raster', tiles: [config.urls.topo], tileSize: 256, attribution: '© LINZ' }, // Keep topo source
+                    },
+                    layers: [
+                        { id: 'linz-aerial-layer', type: 'raster', source: 'linz-aerial' }, // Make aerial visible by default
+                        { id: 'linz-topo-layer', type: 'raster', source: 'linz-topo', layout: { visibility: 'none' } }, // Topo hidden by default
+                    ]
+                },
+                center: [config.center.lon, config.center.lat],
+                zoom: 12 // Wider zoom for context
+            });
+
+            // Add a scale control to each map
+            const scale = new maplibregl.ScaleControl({
+                maxWidth: 100, // in pixels
+                unit: 'metric'
+            });
+            map.addControl(scale);
+
+            this.maps[mapConfig.id] = map;
+
+            map.on('error', (e) => {
+                if (e && e.error && e.error.status === 404) return; // Suppress tile errors
+                console.error(`Map error in ${mapConfig.container}:`, e);
+            });
+
+            await new Promise(resolve => map.on('load', resolve));
+
+            // Load parcel boundary first and fit bounds
+            const parcelGeoJSON = await this.loadParcelBoundary(map);
+            if (parcelGeoJSON) {
+                const bbox = turf.bbox(parcelGeoJSON);
+                map.fitBounds(bbox, { padding: 50, duration: 0, maxZoom: 14 });
             }
-        }
-    });
 
-    // LUCAS layer toggle logic
-    document.getElementById('lucas-toggle').addEventListener('change', (event) => {
-        const visibility = event.target.checked ? 'visible' : 'none';
-        if (map.getLayer('lucas-landuse-layer')) {
-            map.setLayoutProperty('lucas-landuse-layer', 'visibility', visibility);
-        }
-    });
-
-    // Drawing controls
-    const draw = new MapboxDraw({
-        displayControlsDefault: false,
-        controls: { point: true, line_string: true, polygon: true, trash: true },
-        defaultMode: 'draw_polygon',
-        styles: [
-            { id: 'gl-draw-polygon-fill', type: 'fill', filter: ['all', ['==', '$type', 'Polygon'], ['!=', 'mode', 'static']], paint: { 'fill-color': ['get', 'color'], 'fill-opacity': 0.4 }},
-            { id: 'gl-draw-polygon-stroke-active', type: 'line', filter: ['all', ['==', '$type', 'Polygon'], ['==', 'active', 'true']], layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': '#fbb03b', 'line-width': 3 }},
-            { id: 'gl-draw-polygon-stroke-inactive', type: 'line', filter: ['all', ['==', '$type', 'Polygon'], ['!=', 'active', 'true']], layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': ['get', 'color'], 'line-width': 3 }},
-            { id: 'gl-draw-line-active', type: 'line', filter: ['all', ['==', '$type', 'LineString'], ['==', 'active', 'true']], layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': '#fbb03b', 'line-width': 3 }},
-            { id: 'gl-draw-line-inactive', type: 'line', filter: ['all', ['==', '$type', 'LineString'], ['!=', 'active', 'true']], layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': ['get', 'color'], 'line-width': 3 }},
-            { id: 'gl-draw-point-active', type: 'circle', filter: ['all', ['==', '$type', 'Point'], ['==', 'active', 'true']], paint: { 'circle-radius': 5, 'circle-color': '#fbb03b' }},
-            { id: 'gl-draw-point-inactive', type: 'circle', filter: ['all', ['==', '$type', 'Point'], ['!=', 'active', 'true']], paint: { 'circle-radius': 5, 'circle-color': ['get', 'color'] }}
-        ]
-    });
-    map.addControl(draw);
-
-    function updateForm() {
-        const data = draw.getAll();
-        hiddenInput.value = data.features.length ? JSON.stringify(data) : '';
-    }
-
-    function applyDefaultPropertiesOnCreate(feature) {
-        const defaultType = 'uncategorized';
-        draw.setFeatureProperty(feature.id, 'vulnerability_type', defaultType);
-        draw.setFeatureProperty(feature.id, 'description', feature.properties && feature.properties.description ? feature.properties.description : '');
-        draw.setFeatureProperty(feature.id, 'color', vulnerabilityTypes[defaultType].color);
-    }
-
-    // --- Function to fetch and display parcel geometry (from Step 1) ---
-    async function fetchAndDrawParcel(lat, lon) {
-        const parcelApiUrl = `{% url 'doc_generator:api_get_parcel_geometry' %}?lat=${lat}&lon=${lon}`;
-        try {
-            const response = await fetch(parcelApiUrl);
-            const geojsonData = await response.json();
-
-            if (map.getSource('parcel-boundary')) {
-                map.removeLayer('parcel-boundary-layer');
-                map.removeSource('parcel-boundary');
+            // Add the specific layer for this map
+            const beforeId = 'parcel-boundary-layer';
+            switch (mapConfig.layerType) {
+                case 'raster':
+                    this.addRasterLayer(map, mapConfig.id, mapConfig.url, mapConfig.attribution, mapConfig.paint, beforeId);
+                    // For LCDB, add a generic legend entry
+                    if (mapConfig.id === 'land-use') {
+                        this.populateLegend('land-use-legend', 'Land Use', [{ color: 'rgba(128, 128, 128, 0.7)', label: 'Various Land Cover Types' }]);
+                    }
+                    break;
+                case 'vector':
+                    // This case is no longer used for rivers/protected areas, but kept for future use.
+                    this.addVectorLayer(map, mapConfig.id, mapConfig.url, mapConfig.sourceLayer, mapConfig.attribution, mapConfig.style, beforeId); 
+                    break;
+                case 'geojson':
+                    if (mapConfig.id === 'erosion') {
+                        await this.loadErosionLayer(map, beforeId);
+                    } else {
+                        await this.loadGeoJsonLayer(map, mapConfig, beforeId);
+                    }
+                    break;
             }
-    
-            if (geojsonData && geojsonData.features && geojsonData.features.length > 0) {
-                map.addSource('parcel-boundary', { 'type': 'geojson', 'data': geojsonData });
-                map.addLayer({
-                    'id': 'parcel-boundary-layer',
-                    'beforeId': 'gl-draw-polygon-fill', // Draw parcel under drawn features
-                    'type': 'line',
-                    'source': 'parcel-boundary',
-                    'paint': { 'line-color': '#FF0000', 'line-width': 2.5 }
+        },
+
+        addRasterLayer: function(map, id, url, attribution, paint = {}, beforeId = null) {
+            if (map.getSource(id)) return;
+            map.addSource(id, { type: 'raster', tiles: [url], tileSize: 256, attribution });
+            map.addLayer({ id: `${id}-layer`, type: 'raster', source: id, paint }, beforeId);
+        },
+
+        addVectorLayer: function(map, id, url, sourceLayer, attribution, style, beforeId = null) {
+            if (map.getSource(id)) return;
+            map.addSource(id, { type: 'vector', tiles: [url], attribution, minzoom: 5, maxzoom: 14 });
+            map.addLayer({
+                id: `${id}-layer`,
+                type: style.type,
+                source: id,
+                'source-layer': sourceLayer,
+                paint: style.paint
+            }, beforeId);
+        },
+
+        loadParcelBoundary: async function(map) {
+            try {
+                const response = await fetch(config.urls.parcel);
+                const geojsonData = await response.json();
+                if (geojsonData?.features?.length > 0) {
+                    if (map.getSource('parcel-boundary')) return geojsonData; // Already loaded
+                    map.addSource('parcel-boundary', { type: 'geojson', data: geojsonData });
+                    map.addLayer({
+                        id: 'parcel-boundary-layer',
+                        type: 'line',
+                        source: 'parcel-boundary',
+                        paint: { 'line-color': '#FF0000', 'line-width': 2.5 }
+                    });
+                    return geojsonData;
+                }
+            } catch (error) {
+                console.error("Failed to fetch parcel geometry for map:", error);
+            }
+            return null;
+        },
+
+        loadGeoJsonLayer: async function(map, mapConfig, beforeId) {
+            const layerId = `${mapConfig.id}-layer`;
+            const sourceId = `${mapConfig.id}-source`;
+            const legend = document.getElementById(`${mapConfig.id}-legend`);
+
+            try {
+                const response = await fetch(mapConfig.url);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const featureCollection = await response.json();
+
+                if (featureCollection?.features?.length > 0) {
+                    map.addSource(sourceId, { type: 'geojson', data: featureCollection });
+                    if (!map.getLayer(layerId)) { // Check again in case of race conditions
+                        map.addLayer({
+                            id: layerId,
+                            type: mapConfig.style.type,
+                            source: sourceId,
+                            paint: mapConfig.style.paint
+                        }, beforeId);
+                    }
+                    // Handle dynamic legends for maps that have them configured
+                    this.populateLegend(`${mapConfig.id}-legend`, mapConfig.legend.title, mapConfig.legend.items);
+
+                    // If a popup generator is defined, add the click handler
+                    if (mapConfig.popupGenerator) {
+                        this.addPopupOnClick(map, layerId, mapConfig.popupGenerator);
+                    }
+                } else {
+                    console.log(`No GeoJSON features returned for ${mapConfig.id}.`);
+                    document.getElementById(`explanation-${mapConfig.id}`).innerHTML = `<p class="text-muted small">No ${mapConfig.id.replace('-', ' ')} data is available for this specific location.</p>`;
+                    if (legend) legend.style.display = 'none';
+                }
+            } catch (error) {
+                console.error(`Failed to fetch/load GeoJSON for ${mapConfig.id}:`, error);
+                document.getElementById(`explanation-${mapConfig.id}`).innerHTML = `<p class="text-danger small">Could not load ${mapConfig.id.replace('-', ' ')} layer: ${error.message}</p>`;
+                if (legend) legend.style.display = 'none';
+            }
+        },
+
+        loadErosionLayer: async function(map, beforeId) {
+            const layerId = 'erosion-severity-layer';
+            const sourceId = 'erosion-severity-source';
+            const legend = document.getElementById('erosion-legend'); // Get the legend element
+
+            if (map.getLayer(layerId)) return;
+
+            try {
+                const response = await fetch(config.urls.erosion);
+                const responseText = await response.text();
+
+                if (!response.ok) {
+                    let errorMessage = `HTTP error! status: ${response.status}`;
+                    try {
+                        const errorData = JSON.parse(responseText);
+                        errorMessage = errorData.error || errorMessage;
+                    } catch (e) {
+                        errorMessage = `Server returned non-JSON error (status: ${response.status}).`;
+                    }
+                    throw new Error(errorMessage);
+                }
+
+                let rawData;
+                try {
+                    rawData = JSON.parse(responseText);
+                } catch (e) {
+                    throw new Error("Received invalid JSON data from the server.");
+                }
+                
+                const featureCollection = this.fixLrisGeoJson(rawData);
+
+                if (featureCollection?.features?.length > 0) {
+                    if (!map.getSource(sourceId)) {
+                        map.addSource(sourceId, { type: 'geojson', data: featureCollection });
+                    }
+
+                    if (!map.getLayer(layerId)) {
+                        map.addLayer({
+                            id: layerId,
+                            type: 'fill',
+                            source: sourceId,
+                            paint: {
+                                'fill-color': ['match', ['get', 'Severity'], '1', '#ffffcc', '2', '#fed976', '3', '#feb24c', '4', '#fd8d3c', '5', '#f03b20', '#cccccc'],
+                                'fill-opacity': 0.6,
+                                'fill-outline-color': '#333'
+                            }
+                        }, beforeId);
+                    }
+                    legend.style.display = 'block'; // Show legend on success
+                } else {
+                    console.log("No erosion data returned for this location.");
+                    document.getElementById('explanation-erosion').innerHTML = '<p class="text-muted small">No erosion data is available for this specific location.</p>';
+                    legend.style.display = 'none'; // Hide legend if no data
+                }
+            } catch (error) {
+                console.error("Failed to fetch erosion data:", error);
+                document.getElementById('explanation-erosion').innerHTML = `<p class="text-danger small">Could not load erosion layer: ${error.message}</p>`;
+                legend.style.display = 'none'; // Hide legend on failure
+            }
+        },
+
+        fixLrisGeoJson: function(geojsonData) {
+            const allFeatures = [];
+            const layersObject = geojsonData?.vectorQuery?.layers;
+            if (layersObject) {
+                Object.values(layersObject).forEach(layer => {
+                    if (layer.features) {
+                        layer.features.forEach(originalFeature => {
+                            // Create a new, clean feature object instead of deep copying
+                            const newFeature = {
+                                type: "Feature",
+                                properties: originalFeature.properties || {},
+                                geometry: {
+                                    type: originalFeature.geometry.type,
+                                    coordinates: originalFeature.geometry.coordinates
+                                }
+                            };
+
+                            if (newFeature.geometry && newFeature.geometry.type === 'Polygon' && Array.isArray(newFeature.geometry.coordinates) && newFeature.geometry.coordinates.length > 0 && !Array.isArray(newFeature.geometry.coordinates[0])) {
+                                const flatCoords = newFeature.geometry.coordinates;
+                                const nestedCoords = [];
+                                for (let i = 0; i < flatCoords.length; i += 2) {
+                                    nestedCoords.push([flatCoords[i], flatCoords[i + 1]]);
+                                }
+                                // A valid GeoJSON Polygon's coordinates are an array of rings.
+                                newFeature.geometry.coordinates = [nestedCoords];
+                            }
+                            allFeatures.push(newFeature);
+                        });
+                    }
                 });
             }
-        } catch (error) {
-            console.error("Failed to fetch parcel geometry:", error);
+            return { type: 'FeatureCollection', features: allFeatures };
         }
-    }
+    };
 
-    map.on('load', async () => {
-        // Fetch the parcel boundary first but don't wait for it to finish rendering
-        const parcelPromise = fetchAndDrawParcel(lat, lon).then(() => {
-            // This block runs after the parcel has been fetched and added to the map.
-            const parcelSource = map.getSource('parcel-boundary');
-            if (parcelSource && parcelSource._data && parcelSource._data.features.length > 0) {
-                const bbox = turf.bbox(parcelSource._data);
-                map.fitBounds(bbox, { padding: 50, duration: 0 });
-            }
-        });
-
-        // If there are existing drawn features, load them into the draw control.
-        // We do this in parallel with fetching the parcel.
-        if (existingFeatures && existingFeatures.features && existingFeatures.features.length > 0) {
-            for (const f of existingFeatures.features) {
-                const t = (f.properties && f.properties.vulnerability_type) || 'uncategorized';
-                const color = (vulnerabilityTypes[t] || vulnerabilityTypes['uncategorized']).color;
-                if (!f.properties) f.properties = {};
-                f.properties.color = color;
-            }
-            draw.set(existingFeatures);
-            // If features exist, zoom to them instead of the parcel.
-            const bbox = turf.bbox(existingFeatures);
-            map.fitBounds(bbox, { padding: 50, duration: 0 });
-        } else {
-            // If no features exist, wait for the parcel to finish fetching and then zoom.
-            await parcelPromise;
-            const parcelSource = map.getSource('parcel-boundary');
-            if (parcelSource) {
-                const parcelData = parcelSource._data;
-                if (parcelData && parcelData.features && parcelData.features.length > 0) {
-                    const bbox = turf.bbox(parcelData);
-                    map.fitBounds(bbox, { padding: 50, duration: 0 });
-                }
-            }
-        }
-
-        updateForm();
-    });
-
-    map.on('draw.create', (e) => {
-        applyDefaultPropertiesOnCreate(e.features[0]);
-        updateForm();
-    });
-    map.on('draw.delete', updateForm);
-    map.on('draw.update', updateForm);
-
-    // --- Automatic Vulnerability Analysis ---
+    // --- 3. AI ANALYSIS ---
     async function generateVulnerabilityAnalysis() {
-        const planPk = dataEl.dataset.planPk;
-        const analysisUrl = `/doc-generator/api/vulnerability-analysis/${planPk}/`;
-        const outputEl = document.getElementById('analysis-output');
-        const loaderEl = document.getElementById('analysis-loader');
+        const techSummaryOutput = document.getElementById('technical-summary-output');
+        const catchmentSummaryOutput = document.getElementById('catchment-summary-output');
+        const techLoader = document.getElementById('technical-summary-loader');
+        const catchmentLoader = document.getElementById('catchment-summary-loader');
+        const explanationLandUse = document.getElementById('explanation-land-use');
+        const explanationErosion = document.getElementById('explanation-erosion');
+        const explanationProtected = document.getElementById('explanation-protected-areas');
+        const explanationGroundwater = document.getElementById('explanation-groundwater-zones');
+
 
         try {
-            const response = await fetch(analysisUrl);
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({ error: `Network response was not ok: ${response.statusText}` }));
-                throw new Error(errorData.error || `Network response was not ok: ${response.statusText}`);
-            }
-            const data = await response.json();
-            
-            loaderEl.style.display = 'none'; // Hide loader
-            outputEl.textContent = data.technical_summary || 'No analysis summary was returned.';
+            const response = await fetch(config.urls.analysis);
+            const responseText = await response.text(); // Read response body once as text
 
-            // --- NEW: Build the dynamic table ---
+            if (!response.ok) {
+                let errorMessage = `HTTP error! status: ${response.status}`;
+                try {
+                    const errorData = JSON.parse(responseText); // Try parsing as JSON
+                    errorMessage = errorData.error || errorMessage;
+                } catch (e) {
+                    console.error("Server returned non-JSON error response for analysis:", responseText);
+                    errorMessage = `Server returned an unexpected error format for analysis (status: ${response.status}).`;
+                }
+                throw new Error(errorMessage);
+            }
+
+            let data;
+            try {
+                data = JSON.parse(responseText); // Parse as JSON for success case
+            } catch (e) {
+                console.error("Failed to parse vulnerability analysis data as JSON:", responseText);
+                throw new Error("Received invalid JSON data for vulnerability analysis from the server.");
+            }
+            
+            techLoader.style.display = 'none';
+            techSummaryOutput.textContent = data.technical_summary || 'No technical summary was returned.';
+
+            catchmentLoader.style.display = 'none';
+            catchmentSummaryOutput.textContent = data.catchment_context_summary || 'No catchment context summary was returned.';
+
+            // Populate individual explanations
+            if (data.layer_explanations) {
+                explanationLandUse.innerHTML = data.layer_explanations.land_use || 'No explanation available.';
+                explanationErosion.innerHTML = data.layer_explanations.erosion || 'No explanation available.';
+                explanationProtected.innerHTML = data.layer_explanations.protected_areas || 'No explanation available.';
+                explanationGroundwater.innerHTML = data.layer_explanations.groundwater_zones || 'No explanation available.';
+            }
+
             const tableContainer = document.getElementById('dynamic-table-container');
             if (data.biophysical_table && Array.isArray(data.biophysical_table)) {
                 const table = document.createElement('table');
                 table.className = 'table table-bordered table-striped mt-2';
-
                 table.innerHTML = `
-                    <caption style="caption-side: top; font-size: 0.8rem; color: #6c757d;">
-                        Biophysical features and resulting vulnerabilities for the property.
-                    </caption>
-                    <thead class="table-light">
-                        <tr>
-                            <th>Biophysical Feature</th>
-                            <th>Considerations</th>
-                            <th>Resulting Vulnerability Climate</th>
-                        </tr>
-                    </thead>
+                    <caption style="caption-side: top; font-size: 0.8rem; color: #6c757d;">Biophysical features and resulting vulnerabilities for the property.</caption>
+                    <thead class="table-light"><tr><th>Biophysical Feature</th><th>Considerations</th><th>Resulting Vulnerability</th></tr></thead>
                     <tbody>
                         ${data.biophysical_table.map(row => `
                             <tr>
@@ -375,15 +574,91 @@ document.addEventListener('DOMContentLoaded', function () {
                 `;
                 tableContainer.appendChild(table);
             }
-
         } catch (error) {
             console.error('Failed to fetch or parse vulnerability analysis:', error);
-            loaderEl.style.display = 'none'; // Hide loader
-            outputEl.innerHTML = `<p class="text-danger"><strong>Could not load analysis.</strong><br>Please check your API key configurations and network connection, then refresh the page.<br><br><em>Error: ${error.message}</em></p>`;
+            const errorMessage = `<p class="text-danger"><strong>Could not load analysis.</strong><br>Please check your API key configurations and network connection, then refresh the page.<br><br><em>Error: ${error.message}</em></p>`;
+            techLoader.style.display = 'none';
+            catchmentLoader.style.display = 'none';
+            techSummaryOutput.innerHTML = errorMessage;
+            catchmentSummaryOutput.innerHTML = errorMessage;
         }
     }
 
-    generateVulnerabilityAnalysis(); // Trigger analysis on page load.
+    // --- 4. INITIALIZATION ---
+    async function initializePage() {
+        // Define all maps to be created
+        const mapConfigs = [
+            {
+                id: 'land-use',
+                container: 'map-land-use',
+                layerType: 'raster',
+                url: config.urls.lucas,
+                attribution: '© MfE, Manaaki Whenua',
+                paint: { 'raster-opacity': 0.7 }
+            },
+            {
+                id: 'erosion',
+                container: 'map-erosion',
+                layerType: 'geojson',
+                url: config.urls.erosion,
+                style: {
+                    type: 'fill',
+                    paint: {
+                        'fill-color': ['match', ['get', 'Severity'], '1', '#ffffcc', '2', '#fed976', '3', '#feb24c', '4', '#fd8d3c', '5', '#f03b20', '#cccccc'],
+                        'fill-opacity': 0.6,
+                        'fill-outline-color': '#333'
+                    }
+                }
+                // Legend is static HTML
+            },
+            {
+                id: 'protected-areas',
+                container: 'map-protected-areas',
+                layerType: 'geojson',
+                url: config.urls.protectedAreas,
+                attribution: '© DOC',
+                style: { type: 'fill', paint: { 'fill-color': '#4575b4', 'fill-opacity': 0.5 } },
+                legend: {
+                    title: 'Protected Areas',
+                    items: [{ color: '#4575b4', label: 'Public Conservation Area' }]
+                }
+            },
+            {
+                id: 'groundwater-zones',
+                container: 'map-groundwater-zones',
+                layerType: 'geojson',
+                url: config.urls.groundwaterZones,
+                attribution: '© Environment Southland',
+                style: { type: 'fill', paint: { 'fill-color': '#1f78b4', 'fill-opacity': 0.5, 'fill-outline-color': '#000' } },
+                legend: {
+                    title: 'Groundwater Zones',
+                    items: [{ color: '#1f78b4', label: 'Management Zone' }]
+                },
+                popupGenerator: (props) => {
+                    let content = `<strong>${props.Name || 'Unnamed Zone'}</strong>`;
+                    if (props.Lithology) {
+                        content += `<br><strong>Lithology:</strong> ${props.Lithology}`;
+                    }
+                    if (props.FactsheetPDF && props.FactsheetPDF.startsWith('http')) {
+                        content += `<br><a href="${props.FactsheetPDF}" target="_blank" rel="noopener noreferrer">View Factsheet</a>`;
+                    }
+                    return content;
+                }
+            }
+        ];
+
+        // Create all maps concurrently
+        const mapPromises = mapConfigs.map(cfg => MapManager.createMap(cfg));
+        
+        // Fetch AI analysis while maps are loading
+        const analysisPromise = generateVulnerabilityAnalysis();
+
+        // Wait for all to complete
+        await Promise.all([...mapPromises, analysisPromise]);
+        console.log("All maps and analysis have been initialized.");
+    }
+
+    initializePage();
 });
 </script>
 {% endblock %}

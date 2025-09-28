@@ -91,10 +91,9 @@
                 const lon = coords[1];
 
                 // Set the map view to the new coordinates with a chosen zoom level.
-                // You can adjust the zoom level here.
-                const zoomLevel = 11; // Mapbox/MapLibre zoom is slightly different from Leaflet
+                const zoomLevel = 11;
                 map.flyTo({
-                    center: [lon, lat], // Note: Mapbox/MapLibre use [lon, lat]
+                    center: [lon, lat],
                     zoom: zoomLevel
                 });
 
@@ -107,8 +106,135 @@
                 marker = new maplibregl.Marker()
                     .setLngLat([lon, lat])
                     .addTo(map);
+
+                // Fetch GeoJSON data from LRIS query service
+                const queryUrl = `https://lris.scinfo.org.nz/services/query/v1/vector.json/?v=1.2&layer=48054&x=${lon}&y=${lat}&radius=10000&max_results=100&geometry=true&with_field_names=true`;
+
+                fetch(queryUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (map.getSource('lris-geojson')) {
+                            map.getSource('lris-geojson').setData(data);
+                        } else {
+                            map.addSource('lris-geojson', {
+                                'type': 'geojson',
+                                'data': data
+                            });
+                            map.addLayer({
+                                'id': 'lris-geojson-fill',
+                                'type': 'fill',
+                                'source': 'lris-geojson',
+                                'paint': {
+                                    'fill-color': '#ff0000',
+                                    'fill-opacity': 0.3
+                                }
+                            });
+                            map.addLayer({
+                                'id': 'lris-geojson-line',
+                                'type': 'line',
+                                'source': 'lris-geojson',
+                                'paint': {
+                                    'line-color': '#ff0000',
+                                    'line-width': 1
+                                }
+                            });
+                        }
+                    }).catch(error => console.error('Error fetching LRIS data:', error));
             }
         });
+
+        // --- START: Groundwater Zones Layer ---
+        // Wait for the map to be fully loaded before adding new sources and layers.
+        map.on('load', () => {
+            const groundwaterSourceId = 'groundwater-zones-source';
+            const groundwaterFillLayerId = 'groundwater-zones-fill';
+            const groundwaterLineLayerId = 'groundwater-zones-outline';
+
+            // Define the coordinates. You can make these dynamic based on user input.
+            const lat = -46.28693651;
+            const lon = 168.0201183;
+
+            // Construct the GeoJSON URL.
+            const geojsonUrl = `/doc-generator/api/groundwater-zones/?lat=${lat}&lon=${lon}`;
+
+            // Add the GeoJSON source for groundwater zones.
+            map.addSource(groundwaterSourceId, {
+                type: 'geojson',
+                data: geojsonUrl
+            });
+
+            // Add error handling for the source.
+            // This will catch issues like a 404 Not Found or invalid GeoJSON format.
+            map.getSource(groundwaterSourceId).on('error', (e) => {
+                console.error('An error occurred while loading the groundwater GeoJSON data:', e);
+            });
+
+            // Add a 'fill' layer to render the polygon interiors.
+            // This layer only renders features that are Polygons or MultiPolygons.
+            map.addLayer({
+                id: groundwaterFillLayerId,
+                type: 'fill',
+                source: groundwaterSourceId,
+                paint: {
+                    'fill-color': '#007cbf', // A distinct blue color
+                    'fill-opacity': 0.5
+                },
+                filter: ['any', ['==', '$type', 'Polygon'], ['==', '$type', 'MultiPolygon']]
+            });
+
+            // Add a 'line' layer to create a border for the polygons.
+            map.addLayer({
+                id: groundwaterLineLayerId,
+                type: 'line',
+                source: groundwaterSourceId,
+                paint: {
+                    'line-color': '#004d7a', // A darker blue for the outline
+                    'line-width': 1.5
+                },
+                filter: ['any', ['==', '$type', 'Polygon'], ['==', '$type', 'MultiPolygon']]
+            });
+
+            // --- Optional: Popup on Click ---
+
+            // When a click event occurs on a feature in the fill layer, open a popup.
+            map.on('click', groundwaterFillLayerId, (e) => {
+                if (e.features.length > 0) {
+                    const feature = e.features[0];
+                    const properties = feature.properties;
+                    let popupContent = '<div style="max-width: 250px; font-family: sans-serif;"><strong>Groundwater Zone</strong><br><hr style="margin: 2px 0;">';
+
+                    // Build a simple key-value list from the feature's properties.
+                    let hasProperties = false;
+                    for (const key in properties) {
+                        hasProperties = true;
+                        popupContent += `<strong>${key}:</strong> ${properties[key]}<br>`;
+                    }
+
+                    if (!hasProperties) {
+                        popupContent += 'No properties for this feature.';
+                    }
+
+                    popupContent += '</div>';
+
+                    // Create a popup and add it to the map.
+                    new maplibregl.Popup()
+                        .setLngLat(e.lngLat)
+                        .setHTML(popupContent)
+                        .addTo(map);
+                }
+            });
+
+            // Change the cursor to a pointer when the mouse is over the fill layer.
+            map.on('mouseenter', groundwaterFillLayerId, () => {
+                map.getCanvas().style.cursor = 'pointer';
+            });
+
+            // Change it back to a pointer when it leaves.
+            map.on('mouseleave', groundwaterFillLayerId, () => {
+                map.getCanvas().style.cursor = '';
+            });
+        });
+        // --- END: Groundwater Zones Layer ---
     });
 </script>
 {% endblock %}

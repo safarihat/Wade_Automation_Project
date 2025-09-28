@@ -7,6 +7,8 @@ from django.urls import reverse
 from django.contrib import messages
 from django.contrib.gis.geos import Point
 from django.db import transaction
+from django.views import View
+import pyproj
 from django.conf import settings
 from django.http import JsonResponse, HttpResponseBadRequest
 from doc_generator.forms import AdminDetailsForm, LocationForm
@@ -32,6 +34,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+# The user requested this to be added.
+logger = logging.getLogger(__name__)
 
 @login_required
 def freshwater_plan_preview(request, pk):
@@ -211,6 +215,119 @@ def get_parcel_geometry(request):
         return JsonResponse({'error': 'Failed to retrieve parcel data from LINZ.'}, status=502)
 
 
+
+class NZLRIErosionLayerView(View):
+    """
+    An API endpoint that proxies requests to the LRIS API for the 
+    NZLRI Erosion Type and Severity layer (48054), handling API key authentication.
+    """
+    # Data Source: Landcare Research, licensed under the Landcare Data Use License.
+    
+    def get(self, request, *args, **kwargs):
+        lat = request.GET.get('lat')
+        lon = request.GET.get('lon')
+
+        if not lat or not lon:
+            return HttpResponseBadRequest("Missing 'lat' or 'lon' parameters.")
+
+        if not settings.LRIS_API_KEY:
+            logger.error("LRIS_API_KEY is not configured in environment settings.")
+            return JsonResponse({'error': 'API key for LRIS service is not configured.'}, status=500)
+
+        query_url = "https://lris.scinfo.org.nz/services/query/v1/vector.json/"
+        params = {
+            'v': '1.2',
+            'layer': 48054,
+            'x': lon,
+            'y': lat,
+            'radius': 10000,
+            'max_results': 100,
+            'geometry': 'true',
+            'with_field_names': 'true',
+            'key': settings.LRIS_API_KEY
+        }
+
+        try:
+            response = requests.get(query_url, params=params, timeout=30)
+            response.raise_for_status()
+            geojson_data = response.json()
+            
+            # GeoJSON standard (RFC 7946) specifies coordinates MUST be in WGS84 (EPSG:4326).
+            # We assume the service complies and returns WGS84 GeoJSON, so no transformation is needed.
+            return JsonResponse(geojson_data)
+
+        except json.JSONDecodeError:
+            logger.error(f"LRIS API returned non-JSON response. Status: {response.status_code}, Content: {response.text[:500]}...") # Log first 500 chars
+            return JsonResponse(
+                {'error': 'Failed to parse LRIS API response as JSON. It might be returning an HTML error page.'},
+                status=500
+            )
+        except requests.exceptions.HTTPError as e:
+            logger.error(f"LRIS API request failed with status {e.response.status_code}: {e.response.text}")
+            return JsonResponse(
+                {'error': f'Failed to fetch data from LRIS service. Status: {e.response.status_code}'}, 
+                status=e.response.status_code
+            )
+        except requests.RequestException as e:
+            logger.error(f"LRIS API request failed: {e}")
+            return JsonResponse({'error': f'Failed to fetch data from LRIS service: {str(e)}'}, status=502)
+
+
+class ProtectedAreasLayerView(View):
+    """
+    API endpoint to proxy requests for DOC Public Conservation Areas from Koordinates.
+    """
+    def get(self, request, *args, **kwargs):
+        lat = request.GET.get('lat')
+        lon = request.GET.get('lon')
+        if not lat or not lon:
+            return HttpResponseBadRequest("Missing 'lat' or 'lon' parameters.")
+
+        try:
+            koordinates_api_key = settings.KOORDINATES_API_KEY
+            if not koordinates_api_key:
+                logger.error("Koordinates API key is not configured.")
+                return JsonResponse({'error': 'Koordinates API key is not configured.'}, status=500)
+
+            layer_id = 754  # DOC Public Conservation Areas
+            features = _query_koordinates_vector(layer_id, float(lon), float(lat), koordinates_api_key, radius=10000, max_results=50)
+
+            if features is None:
+                return JsonResponse({'error': 'Failed to retrieve data from Koordinates service.', 'details': 'The query function returned None.'}, status=502)
+
+            # The helper already returns a list of feature-like dicts. Wrap in a FeatureCollection.
+            feature_collection = {'type': 'FeatureCollection', 'features': features}
+            return JsonResponse(feature_collection)
+        except Exception as e:
+            logger.exception("Error fetching data from Koordinates for ProtectedAreasLayerView")
+            return JsonResponse({"error": "Koordinates proxy failed", "details": str(e)}, status=500)
+
+
+class GroundwaterZonesLayerView(View):
+    """
+    API endpoint to proxy requests for Groundwater Management Zones from Environment Southland.
+    """
+    def get(self, request, *args, **kwargs):
+        lat = request.GET.get('lat')
+        lon = request.GET.get('lon')
+        if not lat or not lon:
+            return HttpResponseBadRequest("Missing 'lat' or 'lon' parameters.")
+        
+        try:
+            # The _query_arcgis_vector helper function is perfect for this.
+            # It handles point-in-polygon queries and returns GeoJSON-like features.
+            arcgis_url = 'https://maps.es.govt.nz/server/rest/services/Public/WaterAndLand/MapServer/3/query'
+            features = _query_arcgis_vector(arcgis_url, float(lon), float(lat))
+
+            # The helper returns a list of features. We wrap it in a FeatureCollection.
+            # The helper also ensures geometry is included, which is needed for the map.
+            feature_collection = {'type': 'FeatureCollection', 'features': features or []}
+            return JsonResponse(feature_collection)
+        except Exception as e:
+            logger.exception("Error fetching data from ArcGIS for GroundwaterZonesLayerView")
+            return JsonResponse({"error": "ArcGIS proxy failed for Groundwater Zones", "details": str(e)}, status=500)
+
+
 @login_required
 def plan_wizard_map_vulnerabilities(request, pk):
     """
@@ -240,6 +357,7 @@ def plan_wizard_map_vulnerabilities(request, pk):
         'LINZ_API_KEY': settings.LINZ_API_KEY,
         'LINZ_BASEMAPS_API_KEY': settings.LINZ_BASEMAPS_API_KEY,
         'KOORDINATES_API_KEY': settings.KOORDINATES_API_KEY,
+        'LRIS_API_KEY': settings.LRIS_API_KEY,
         'vulnerability_features_json': json.dumps(plan.vulnerability_features) if plan.vulnerability_features else 'null',
     }
     return render(request, 'doc_generator/plan_step3_map_vulnerabilities.html', context)
@@ -306,10 +424,11 @@ def api_generate_vulnerability_analysis(request, pk):
     DATA_LAYERS = {
         'regional_soil': {'type': 'arcgis_vector', 'name': 'Regional Soil Data', 'url': 'https://services3.arcgis.com/v5RzLI7nHYeFImL4/arcgis/rest/services/Freshwater_farm_plan_contextual_data_hosted/FeatureServer/5/query'},
         # --- Koordinates Vector Layers ---
-        'land_cover': {'id': 104640, 'type': 'vector', 'name': 'LCDB v5.0 Land Cover', 'radius': 1000},
-        'erosion': {'id': 25197, 'type': 'vector', 'name': 'Highly Erodible Land', 'radius': 1000},
+        'land_cover': {'id': 117733, 'type': 'koordinates_raster', 'name': 'LCDB v5.0 Land Cover'},
+        'erosion': {'id': 48054, 'type': 'vector', 'name': 'NZLRI Erosion Type and Severity', 'radius': 1000},
         'protected_areas': {'id': 754, 'type': 'vector', 'name': 'DOC Public Conservation Areas', 'radius': 1000},
         'land_parcels': {'id': 53682, 'type': 'vector', 'name': 'NZ Land Parcels', 'radius': 100},
+        'groundwater_zones': {'type': 'arcgis_vector', 'name': 'Groundwater Management Zones', 'url': 'https://maps.es.govt.nz/server/rest/services/Public/WaterAndLand/MapServer/3/query'},
     }
 
     try:
@@ -329,13 +448,17 @@ def api_generate_vulnerability_analysis(request, pk):
                 result_obj["layer_id"] = layer_id
                 radius = layer_info.get('radius', 100)
                 result = _query_koordinates_vector(layer_id, plan.longitude, plan.latitude, koordinates_api_key, radius=radius)
+            elif layer_info['type'] == 'koordinates_raster':
+                result = _query_koordinates_raster(layer_info['id'], plan.longitude, plan.latitude, koordinates_api_key)
             
             # Safely update result_obj, handling None from _query functions
             if result is not None:
                 if isinstance(result, list) and layer_info['type'] in ['arcgis_vector', 'vector']:
                     result_obj["features"] = result
                 elif isinstance(result, dict) and layer_info['type'] == 'koordinates_raster':
-                    result_obj.update(result)
+                    # The function now returns a dict like {'value': 123}.
+                    # We'll keep this structure for the LLM.
+                    result_obj["data"] = result
                 else:
                     logger.warning(f"Unexpected result type from {layer_name}: {type(result)}")
                     result_obj["features" if "vector" in layer_info['type'] else "values"] = {}
@@ -344,7 +467,7 @@ def api_generate_vulnerability_analysis(request, pk):
                 if layer_info['type'] in ['arcgis_vector', 'vector']:
                     result_obj["features"] = []
                 elif layer_info['type'] == 'koordinates_raster':
-                    result_obj.update({key: None for key in layer_info.get('ids', {})})
+                    result_obj["data"] = {}
 
             geospatial_context[key] = result_obj
             time.sleep(1) # Rate limiting for the free tier
@@ -374,6 +497,7 @@ def api_generate_vulnerability_analysis(request, pk):
         protection_context = format_context(geospatial_context.get('protected_areas', {}))
         slope_context = format_context(geospatial_context.get('calculated_slope', {}))
         parcels_context = format_context(geospatial_context.get('land_parcels', {}))
+        groundwater_context = format_context(geospatial_context.get('groundwater_zones', {}))
 
         # 3. Set up and use the RAG chain to get regional policy context
         model_name = "sentence-transformers/all-MiniLM-L6-v2"
@@ -387,7 +511,7 @@ def api_generate_vulnerability_analysis(request, pk):
         template = """You are an expert environmental consultant specializing in New Zealand's freshwater regulations.
         Your task is to analyze site-specific data and produce a JSON object containing a technical summary and a structured table of biophysical vulnerabilities.
         The primary context for regulations and environmental values comes from the retrieved documents for the specific catchment: **{catchment_name}**.
-        Synthesize the following information. Each data source is provided as a JSON object. The regional soil data is high resolution and should be prioritized.
+        Synthesize the following information. Each data source is provided as a JSON object.
         1.  **Data Source 1: Regional Policy Documents for {council}**
         {context}
         
@@ -409,11 +533,21 @@ def api_generate_vulnerability_analysis(request, pk):
         7.  **Data Source 7: Site-Specific Protected Area Status (National DOC)** (JSON object)
         {protection_data}
 
+        8.  **Data Source 8: Site-Specific Groundwater Zone Data (from Environment Southland)** (JSON object)
+        {groundwater_data}
+
         ---
         **Task:**
         Based on all the provided data, generate a JSON object that follows this exact format:
         {{
-            "technical_summary": "A markdown-formatted text summary of the key environmental characteristics and primary inherent risks for the property. Interpret the data, don't just list it. Cite your sources (e.g., 'According to LCDB data...').",
+            "technical_summary": "A high-level, markdown-formatted overview summarizing the most critical findings from all data sources (1-8). This should be a brief executive summary of the property's environmental context and key risks. Refer to the maps and their legends for visual context.",
+            "catchment_context_summary": "A markdown-formatted text summary of the key catchment-level context, based ONLY on the retrieved regional policy documents (Source 1). Explain the {catchment_name}'s identity, its main environmental challenges, and key values (e.g., cultural, ecological, recreational). Explicitly draw correlations between the catchment context and the technical data presented in the 'technical_summary' (e.g., 'The high erosion risk identified in the technical summary is particularly concerning given the catchment's sensitivity to sediment runoff as highlighted in regional policies.').",
+            "layer_explanations": {{
+                "land_use": "A markdown explanation of what the Land Cover (LCDB) data (Source 5) shows for the property and its immediate surroundings. Describe the dominant land cover types and their potential implications, referring to the visual representation on the map.",
+                "erosion": "A markdown explanation of the erosion risk based on the NZLRI data (Source 6). Describe the severity and type of erosion identified on or near the property.",
+                "protected_areas": "A markdown explanation of any nearby DOC Public Conservation Areas (Source 7). State whether the property intersects or is near any protected areas and what that might imply.",
+                "groundwater_zones": "A markdown explanation of the groundwater management zone(s) the property is in, based on the data from Environment Southland (Source 8). Describe the zone name, its lithology, and any implications."
+            }},
             "biophysical_table": [
                 {{
                     "feature": "Climate",
@@ -422,18 +556,15 @@ def api_generate_vulnerability_analysis(request, pk):
                 }},
                 {{
                     "feature": "Landform",
-                    "considerations": ["e.g., 'DEM-derived slope is 12 degrees.', 'ArcGIS data indicates SlopeAngle is 11.'"],
+                    "considerations": ["e.g., 'DEM-derived slope is 12 degrees (Source: Koordinates DEM).', 'ArcGIS data indicates SlopeAngle is 11 (Source: Regional Soil Data).'],
                     "vulnerabilities": ["e.g., 'Moderate risk of mass movement erosion on steeper faces.']
-                }},
-                {{
-                    "feature": "Soil",
-                    "considerations": ["e.g., 'Regional data identifies the soil as Waikiwi silt loam.', 'NutrientLeachingVulnerability is High.'"],
-                    "vulnerabilities": ["e.g., 'High permeability suggests a risk of nutrient loss to drainage.']
                 }}
             ]
         }}
         
         **Instructions for Interpretation:**
+        - For 'technical_summary': Provide a brief, high-level overview synthesizing all available information.
+        - For 'layer_explanations': For each key ('land_use', 'erosion', etc.), provide a detailed, markdown-formatted paragraph explaining what the corresponding data source reveals about the property itself. Be specific and contextual.
         - Populate the `biophysical_table` with entries for Climate, Landform, Soil, and other relevant features based on the provided data.
         - If data for a feature is missing (e.g., no soil data found), reflect this in the considerations and vulnerabilities (e.g., "No site-specific soil data available.").
         - The final output MUST be a single, valid JSON object and nothing else.
@@ -452,7 +583,8 @@ def api_generate_vulnerability_analysis(request, pk):
                 "erosion_data": lambda x: erosion_context,
                 "protection_data": lambda x: protection_context,
                 "slope_data": lambda x: slope_context,
-                "parcels_data": lambda x: parcels_context
+                "parcels_data": lambda x: parcels_context,
+                "groundwater_data": lambda x: groundwater_context
             }
             | prompt
             | llm

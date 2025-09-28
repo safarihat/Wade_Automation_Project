@@ -177,6 +177,11 @@ KOORDINATES_API_KEY = os.environ.get('KOORDINATES_API_KEY')
 if not KOORDINATES_API_KEY:
     print("Warning: KOORDINATES_API_KEY not found in .env file. Geospatial analysis will fail.")
 
+# LRIS (Manaaki Whenua) API Key for specific layers like Erosion Severity
+LRIS_API_KEY = os.environ.get('LRIS_API_KEY')
+if not LRIS_API_KEY:
+    print("Warning: LRIS_API_KEY not found in .env file. Erosion Severity layer may not work.")
+
 # Publicly available LINZ Basemaps API key for services like aerial imagery.
 # This key does not require referrer restrictions.
 # See: https://www.linz.govt.nz/data/linz-data-service/guides-and-documentation/linz-basemaps-service-api
