@@ -328,6 +328,7 @@ class GroundwaterZonesLayerView(View):
             return JsonResponse({"error": "ArcGIS proxy failed for Groundwater Zones", "details": str(e)}, status=500)
 
 
+
 @login_required
 def plan_wizard_map_vulnerabilities(request, pk):
     """
@@ -426,7 +427,7 @@ def api_generate_vulnerability_analysis(request, pk):
         # --- Koordinates Vector Layers ---
         'land_cover': {'id': 117733, 'type': 'koordinates_raster', 'name': 'LCDB v5.0 Land Cover'},
         'erosion': {'id': 48054, 'type': 'vector', 'name': 'NZLRI Erosion Type and Severity', 'radius': 1000},
-        'protected_areas': {'id': 754, 'type': 'vector', 'name': 'DOC Public Conservation Areas', 'radius': 1000},
+        'protected_areas': {'id': 754, 'type': 'vector', 'name': 'DOC Public Conservation Areas', 'radius': 5000},
         'land_parcels': {'id': 53682, 'type': 'vector', 'name': 'NZ Land Parcels', 'radius': 100},
         'groundwater_zones': {'type': 'arcgis_vector', 'name': 'Groundwater Management Zones', 'url': 'https://maps.es.govt.nz/server/rest/services/Public/WaterAndLand/MapServer/3/query'},
     }
@@ -453,23 +454,25 @@ def api_generate_vulnerability_analysis(request, pk):
             
             # Safely update result_obj, handling None from _query functions
             if result is not None:
-                if isinstance(result, list) and layer_info['type'] in ['arcgis_vector', 'vector']:
+                if isinstance(result, list) and layer_info['type'] == 'vector': # Koordinates vector
+                    result_obj["features"] = result
+                elif isinstance(result, list) and layer_info['type'] == 'arcgis_vector':
                     result_obj["features"] = result
                 elif isinstance(result, dict) and layer_info['type'] == 'koordinates_raster':
-                    # The function now returns a dict like {'value': 123}.
-                    # We'll keep this structure for the LLM.
                     result_obj["data"] = result
+                    logger.debug(f"Raster data for {layer_name}: {result_obj['data']}")
                 else:
                     logger.warning(f"Unexpected result type from {layer_name}: {type(result)}")
                     result_obj["features" if "vector" in layer_info['type'] else "values"] = {}
             else:
                 logger.info(f"No data or error for layer {layer_name}, returning empty fallback.")
                 if layer_info['type'] in ['arcgis_vector', 'vector']:
-                    result_obj["features"] = []
+                    result_obj["features"] = [] # Corrected from geospacial_context to result_obj
                 elif layer_info['type'] == 'koordinates_raster':
                     result_obj["data"] = {}
 
             geospatial_context[key] = result_obj
+            logger.debug(f"Geospatial context for {key}: {geospatial_context[key]}")
             time.sleep(1) # Rate limiting for the free tier
 
         # Always calculate slope from DEM
@@ -486,6 +489,8 @@ def api_generate_vulnerability_analysis(request, pk):
             # The LLM will be instructed to handle "info" or "error" keys.
             # We remove the geometry to save tokens, as the LLM can't use it directly.
             if 'features' in data_obj:
+                # Convert geojson.Feature objects to plain dictionaries for JSON serialization
+                data_obj['features'] = [f.to_dict() if hasattr(f, 'to_dict') else f for f in data_obj['features']]
                 for feature in data_obj['features']:
                     if 'geometry' in feature:
                         del feature['geometry']
@@ -500,6 +505,9 @@ def api_generate_vulnerability_analysis(request, pk):
         groundwater_context = format_context(geospatial_context.get('groundwater_zones', {}))
 
         # 3. Set up and use the RAG chain to get regional policy context
+        logger.debug(f"Formatted soil_context for LLM: {soil_context}")
+        logger.debug(f"Formatted protection_context for LLM: {protection_context}")
+
         model_name = "sentence-transformers/all-MiniLM-L6-v2"
         embeddings = HuggingFaceEmbeddings(model_name=model_name, model_kwargs={'device': 'cpu'})
         vector_store_path = settings.BASE_DIR / 'vector_store'

@@ -439,7 +439,7 @@ def populate_admin_details_task(self, freshwater_plan_id):
             if isinstance(catchment_data, list) and catchment_data:
                 # The correct property for this ArcGIS layer is 'Zone'.
                 # The attributes are now nested in the feature object.
-                raw_catchment_name = catchment_data[0].get('attributes', {}).get('Zone', 'Not found')
+                raw_catchment_name = catchment_data[0].get('properties', {}).get('Zone', 'Not found')
                 # Normalize the name by removing "catchment" and trimming whitespace.
                 normalized_name = raw_catchment_name.lower().replace('catchment', '').strip().title()
                 plan.catchment_name = normalized_name
@@ -467,7 +467,7 @@ def populate_admin_details_task(self, freshwater_plan_id):
             soil_data = _query_arcgis_vector(soil_url, plan.longitude, plan.latitude)
             if isinstance(soil_data, list) and soil_data:
                 # The attributes are now nested in the feature object.
-                attributes = soil_data[0].get('attributes', {})
+                attributes = soil_data[0].get('properties', {})
                 plan.soil_type = attributes.get('SoilType', 'Unknown Soil')
                 
                 # Safely handle 'nil' or other non-numeric values for SlopeAngle

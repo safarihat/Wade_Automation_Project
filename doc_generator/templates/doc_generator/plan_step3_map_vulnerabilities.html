@@ -179,6 +179,7 @@
                     </div>
                 </div>
             </div>
+
         </section>
  
         <section class="mt-4">
@@ -270,23 +271,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 style: {
                     version: 8,
                     sources: {
-                        'linz-aerial': { type: 'raster', tiles: [config.urls.aerial], tileSize: 256, attribution: '© LINZ' }, // Add aerial source
-                        'linz-topo': { type: 'raster', tiles: [config.urls.topo], tileSize: 256, attribution: '© LINZ' }, // Keep topo source
+                        'linz-aerial': { type: 'raster', tiles: [config.urls.aerial], tileSize: 256, attribution: '© LINZ' },
+                        'linz-topo': { type: 'raster', tiles: [config.urls.topo], tileSize: 256, attribution: '© LINZ' },
                     },
                     layers: [
-                        { id: 'linz-aerial-layer', type: 'raster', source: 'linz-aerial' }, // Make aerial visible by default
-                        { id: 'linz-topo-layer', type: 'raster', source: 'linz-topo', layout: { visibility: 'none' } }, // Topo hidden by default
+                        { id: 'linz-aerial-layer', type: 'raster', source: 'linz-aerial' },
+                        { id: 'linz-topo-layer', type: 'raster', source: 'linz-topo', layout: { visibility: 'none' } },
                     ]
                 },
                 center: [config.center.lon, config.center.lat],
-                zoom: 12 // Wider zoom for context
+                zoom: 12 // Fallback zoom
             });
 
-            // Add a scale control to each map
-            const scale = new maplibregl.ScaleControl({
-                maxWidth: 100, // in pixels
-                unit: 'metric'
-            });
+            const scale = new maplibregl.ScaleControl({ maxWidth: 100, unit: 'metric' });
             map.addControl(scale);
 
             this.maps[mapConfig.id] = map;
@@ -298,25 +295,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
             await new Promise(resolve => map.on('load', resolve));
 
-            // Load parcel boundary first and fit bounds
-            const parcelGeoJSON = await this.loadParcelBoundary(map);
-            if (parcelGeoJSON) {
-                const bbox = turf.bbox(parcelGeoJSON);
-                map.fitBounds(bbox, { padding: 50, duration: 0, maxZoom: 14 });
-            }
+            // Load parcel boundary for context
+            await this.loadParcelBoundary(map);
 
-            // Add the specific layer for this map
+            // Set initial view to a 6km bounding box for all maps
+            const centerPoint = turf.point([config.center.lon, config.center.lat]);
+            const buffer = turf.buffer(centerPoint, 3, {units: 'kilometers'}); // 3km radius = 6km diameter
+            const bbox = turf.bbox(buffer);
+            map.fitBounds(bbox, { padding: 20, duration: 0 });
+
+            // Add the specific data layer for this map
             const beforeId = 'parcel-boundary-layer';
             switch (mapConfig.layerType) {
                 case 'raster':
                     this.addRasterLayer(map, mapConfig.id, mapConfig.url, mapConfig.attribution, mapConfig.paint, beforeId);
-                    // For LCDB, add a generic legend entry
-                    if (mapConfig.id === 'land-use') {
-                        this.populateLegend('land-use-legend', 'Land Use', [{ color: 'rgba(128, 128, 128, 0.7)', label: 'Various Land Cover Types' }]);
-                    }
                     break;
                 case 'vector':
-                    // This case is no longer used for rivers/protected areas, but kept for future use.
                     this.addVectorLayer(map, mapConfig.id, mapConfig.url, mapConfig.sourceLayer, mapConfig.attribution, mapConfig.style, beforeId); 
                     break;
                 case 'geojson':
@@ -326,6 +320,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         await this.loadGeoJsonLayer(map, mapConfig, beforeId);
                     }
                     break;
+            }
+
+            // If the map has a legend configured, populate it.
+            if (mapConfig.legend) {
+                this.populateLegend(`${mapConfig.id}-legend`, mapConfig.legend.title, mapConfig.legend.items);
             }
         },
 
@@ -390,8 +389,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             paint: mapConfig.style.paint
                         }, beforeId);
                     }
-                    // Handle dynamic legends for maps that have them configured
-                    this.populateLegend(`${mapConfig.id}-legend`, mapConfig.legend.title, mapConfig.legend.items);
 
                     // If a popup generator is defined, add the click handler
                     if (mapConfig.popupGenerator) {
@@ -505,6 +502,22 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
+    // This function was missing. It adds the click handler for popups.
+    MapManager.addPopupOnClick = function(map, layerId, popupGenerator) {
+        map.on('click', layerId, (e) => {
+            const properties = e.features[0].properties;
+            const coordinates = e.lngLat;
+            const popupContent = popupGenerator(properties);
+
+            new maplibregl.Popup()
+                .setLngLat(coordinates)
+                .setHTML(popupContent)
+                .addTo(map);
+        });
+        map.on('mouseenter', layerId, () => { map.getCanvas().style.cursor = 'pointer'; });
+        map.on('mouseleave', layerId, () => { map.getCanvas().style.cursor = ''; });
+    };
+
     // --- 3. AI ANALYSIS ---
     async function generateVulnerabilityAnalysis() {
         const techSummaryOutput = document.getElementById('technical-summary-output');
@@ -594,22 +607,28 @@ document.addEventListener('DOMContentLoaded', function() {
                 layerType: 'raster',
                 url: config.urls.lucas,
                 attribution: '© MfE, Manaaki Whenua',
-                paint: { 'raster-opacity': 0.7 }
+                paint: { 'raster-opacity': 0.7 },
+                legend: {
+                    title: 'Land Use (Representative)',
+                    items: [
+                        { color: '#82c341', label: 'High-producing Grassland' },
+                        { color: '#c9cf36', label: 'Low-producing Grassland' },
+                        { color: '#006600', label: 'Exotic Forest' },
+                        { color: '#246a24', label: 'Indigenous Forest' },
+                        { color: '#f7b3d0', label: 'Gorse and/or Broom' },
+                        { color: '#4782c1', label: 'River / Lake' },
+                        { color: '#9c9c9c', label: 'Built-up Area' }
+                    ]
+                }
+                , viewDistanceKm: 15
             },
             {
                 id: 'erosion',
                 container: 'map-erosion',
                 layerType: 'geojson',
                 url: config.urls.erosion,
-                style: {
-                    type: 'fill',
-                    paint: {
-                        'fill-color': ['match', ['get', 'Severity'], '1', '#ffffcc', '2', '#fed976', '3', '#feb24c', '4', '#fd8d3c', '5', '#f03b20', '#cccccc'],
-                        'fill-opacity': 0.6,
-                        'fill-outline-color': '#333'
-                    }
-                }
                 // Legend is static HTML
+                viewDistanceKm: 15
             },
             {
                 id: 'protected-areas',

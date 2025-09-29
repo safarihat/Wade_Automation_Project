@@ -18,6 +18,7 @@ urlpatterns = [
     path('api/nzlri-erosion/', views.NZLRIErosionLayerView.as_view(), name='api_nzlri_erosion'),
     path('api/protected-areas/', views.ProtectedAreasLayerView.as_view(), name='api_protected_areas'),
     path('api/groundwater-zones/', views.GroundwaterZonesLayerView.as_view(), name='api_groundwater_zones'),
+    # The catchment area API endpoint for the map has been removed as per user request.
     path('wizard/<int:pk>/details/', views.plan_wizard_details, name='plan_wizard_details'),
     path('wizard/<int:pk>/status/', views.check_plan_status, name='api_check_plan_status'),
     path('api/vulnerability-analysis/<int:pk>/', views.api_generate_vulnerability_analysis, name='api_generate_vulnerability_analysis'), # This was already correct, but ensuring consistency.

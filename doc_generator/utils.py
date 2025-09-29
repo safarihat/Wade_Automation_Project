@@ -8,6 +8,8 @@ import logging
 import hashlib
 import redis
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type, RetryError
+from arcgis2geojson import arcgis2geojson
+import geojson
 
 import math
 MOCK_ARCGIS_DATA = os.environ.get('MOCK_ARCGIS_DATA', 'False') == 'True'
@@ -97,6 +99,7 @@ def _query_koordinates_vector(layer_id: int, lon: float, lat: float, api_key: st
         response.raise_for_status()
         data = response.json()
         logger.info(f"Koordinates vector response for layer {layer_id}: {json.dumps(data)}")
+        logger.debug(f"Raw Koordinates vector data for layer {layer_id}: {data}")
         
         # Safely access and aggregate features from ALL layers in the response.
         all_features = []
@@ -116,6 +119,7 @@ def _query_koordinates_vector(layer_id: int, lon: float, lat: float, api_key: st
         if all_features:
             result = [{"properties": f.get("properties", {}), "geometry": f.get("geometry", {}), "distance": f.get("distance")} for f in all_features]
         
+        logger.debug(f"Processed Koordinates vector result for layer {layer_id}: {result}")
         if redis_client:
             try:
                 redis_client.set(cache_key, json.dumps(result), ex=3600) # Cache for 1 hour
@@ -166,6 +170,7 @@ def _query_koordinates_raster(layer_ids: dict[str, int] | int, lon: float, lat: 
         response.raise_for_status()
         data = response.json()
         logger.info(f"Koordinates raster response for layers {layer_id_string}: {json.dumps(data)}")
+        logger.debug(f"Raw Koordinates raster data for layers {layer_id_string}: {data}")
         
         # The rasterQuery response has a 'layers' dictionary keyed by layer ID.
         results = {}
@@ -197,6 +202,7 @@ def _query_koordinates_raster(layer_ids: dict[str, int] | int, lon: float, lat: 
                 except (ValueError, TypeError):
                     logger.warning(f"Could not parse raster value '{value}' for layer {layer_id}.")
 
+        logger.debug(f"Processed Koordinates raster result for layers {layer_id_string}: {results}")
         if redis_client:
             try:
                 redis_client.set(cache_key, json.dumps(results), ex=3600) # Cache for 1 hour
@@ -302,71 +308,75 @@ def _make_arcgis_request(url: str, params: dict) -> dict | None:
 
 def _query_arcgis_vector(service_url: str, lon: float, lat: float) -> list | None:
     """
-    Queries an ArcGIS vector layer with caching and robust retries. Returns a
-    list of features (as dictionaries with 'attributes' and 'geometry') or an
-    empty list on failure.
+    Queries an ArcGIS vector layer, converts the response to valid GeoJSON features,
+    and validates each feature before returning a list.
     """
-    # The service_url parameter will now be the new FeatureServer Layer 5 URL directly.
-    # No need for domain fix here as the new URL is correct.
-
     cache_key = f"arcgis_vector:{hashlib.md5(f'{service_url}{lon}{lat}'.encode()).hexdigest()}"
     if redis_client:
         try:
             cached_result = redis_client.get(cache_key)
             if cached_result:
                 logger.info(f"Cache HIT for ArcGIS vector: {service_url}")
-                # The result is now a list of full features, not just attributes
-                return json.loads(cached_result) 
+                return json.loads(cached_result)
         except redis.RedisError as e:
             logger.warning(f"Redis GET failed: {e}. Proceeding without cache.")
 
     try:
-        x, y = transform_coords(lon, lat, 4326, 2193) # Transform to NZTM (EPSG:2193)
-        url = service_url # The service_url is already the full query endpoint
-
+        x, y = transform_coords(lon, lat, 4326, 2193)
         params = {
             'geometry': f'{x},{y}',
             'geometryType': 'esriGeometryPoint',
             'inSR': 2193,
             'spatialRel': 'esriSpatialRelIntersects',
-            'outSR': 4326,  # Request output geometry in WGS84 (standard for GeoJSON)
+            'outSR': 4326,
             'outFields': '*',
-            'returnGeometry': 'true', # Changed to true to get geometry
+            'returnGeometry': 'true',
             'f': 'json'
         }
 
-        data = _make_arcgis_request(url, params)
+        data = _make_arcgis_request(service_url, params)
 
-        if data is None: # Handle 4xx from _make_arcgis_request
-            logger.info(f"ArcGIS vector query returned no data (e.g., 4xx) for {service_url}.")
-            return [] # Return empty list as fallback
+        logger.debug(f"Raw ArcGIS vector data for {service_url}: {data}")
+        if data is None or 'features' not in data or not data['features']:
+            logger.info(f"No ArcGIS features found for {service_url} at ({lon}, {lat}).")
+            return []
 
-        logger.info(f"ArcGIS vector response from {service_url}: {json.dumps(data)}")
+        valid_features = []
+        for esri_feature in data['features']:
+            try:
+                # 1. Convert from Esri JSON to a GeoJSON-like dictionary
+                converted_feature = arcgis2geojson(esri_feature)
+                
+                # 2. Validate and construct a formal geojson.Feature object
+                # This will raise an error if the structure is invalid.
+                validated_feature = geojson.Feature(
+                    geometry=converted_feature['geometry'],
+                    properties=converted_feature['properties']
+                )
+                
+                # 3. Check if the feature is valid
+                if validated_feature.is_valid:
+                    valid_features.append(validated_feature)
+                else:
+                    logger.warning(f"Skipping invalid GeoJSON feature: {validated_feature.errors()}")
 
-        if 'features' in data and data['features']:
-            # Convert Esri JSON features to standard GeoJSON features for MapLibre.
-            result = [
-                {
-                    'type': 'Feature',
-                    'properties': esri_feature.get('attributes', {}),
-                    'geometry': esri_feature.get('geometry')
-                }
-                for esri_feature in data['features']
-            ]
+            except Exception as e:
+                logger.error(f"Critical error converting/validating feature: {esri_feature}", exc_info=True)
 
-            if redis_client:
-                try:
-                    redis_client.set(cache_key, json.dumps(result), ex=3600) # Cache for 1 hour
-                except redis.RedisError as e:
-                    logger.warning(f"Redis SET failed: {e}.")
-            return result
+        logger.debug(f"Validated ArcGIS features for {service_url}: {valid_features}")
+        logger.info(f"Successfully converted and validated {len(valid_features)} features.")
 
-        logger.info(f"No vector features found at this location from {service_url}.")
-        return [] # Return empty list for no features
+        if redis_client and valid_features:
+            try:
+                redis_client.set(cache_key, json.dumps(valid_features), ex=3600)
+            except redis.RedisError as e:
+                logger.warning(f"Redis SET failed for validated features: {e}.")
+
+        return valid_features
 
     except (RetryError, requests.RequestException) as e:
         logger.error(f"ArcGIS vector query failed after retries for {service_url}: {e}", exc_info=True)
-        return [] # Return empty list on persistent failure
+        return []
     except Exception as e:
         logger.error(f"An unexpected error occurred in _query_arcgis_vector: {e}", exc_info=True)
         return []
