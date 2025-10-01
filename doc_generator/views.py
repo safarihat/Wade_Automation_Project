@@ -21,6 +21,9 @@ from doc_generator.utils import (
 from doc_generator.models import FreshwaterPlan, RegionalCouncil
 from doc_generator.tasks import generate_plan_task, populate_admin_details_task
 
+import base64
+from django.core.files.base import ContentFile
+
 # LangChain components for RAG - needed for the new analysis view
 from langchain_community.vectorstores import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
@@ -86,10 +89,9 @@ def plan_wizard_start(request):
 
         if lat and lon:
             location_point = Point(float(lon), float(lat), srid=4326)
-            # Synchronously find the council to satisfy the NOT NULL constraint if DB is out of sync
             council_obj = RegionalCouncil.objects.filter(geom__contains=location_point).first()
 
-            # Create the initial plan object
+            # Create the plan instance first, without the snapshot
             plan = FreshwaterPlan.objects.create(
                 user=request.user,
                 latitude=float(lat),
@@ -97,6 +99,22 @@ def plan_wizard_start(request):
                 location=location_point,
                 council=council_obj.name if council_obj else "Unknown Council",
             )
+
+            # Now, handle the map snapshot upload
+            map_snapshot_data = request.POST.get('map_snapshot')
+            if map_snapshot_data and ';base64,' in map_snapshot_data:
+                try:
+                    # Decode the base64 string
+                    format, imgstr = map_snapshot_data.split(';base64,') 
+                    ext = format.split('/')[-1] 
+                    data = ContentFile(base64.b64decode(imgstr), name=f'plan_{plan.pk}_snapshot.{ext}')
+                    
+                    # Save the file to the ImageField
+                    plan.map_snapshot.save(data.name, data, save=True)
+
+                except Exception as e:
+                    logger.error(f"Error saving map snapshot for plan {plan.pk}: {e}")
+
             # Trigger the FAST background task to populate admin details
             populate_admin_details_task.delay(plan.pk)
             return redirect(reverse('doc_generator:plan_wizard_details', kwargs={'pk': plan.pk}))
@@ -385,13 +403,12 @@ def plan_wizard_map_activities(request, pk):
             messages.info(request, "Farming activity map features have been cleared.")
         
         plan.save(update_fields=['activity_features', 'updated_at'])
-        # Redirect to the next step when it's ready. For now, we can redirect to a placeholder or preview.
-        return redirect(reverse('freshwater_plan_preview', kwargs={'pk': plan.pk})) # Placeholder redirect
+        return redirect(reverse('doc_generator:freshwater_plan_preview', kwargs={'pk': plan.pk}))
 
     context = {
         'plan': plan,
-        'LINZ_BASEMAPS_API_KEY': settings.LINZ_BASEMAPS_API_KEY,
         'activity_features_json': json.dumps(plan.activity_features) if plan.activity_features else 'null',
+        'map_snapshot_url': plan.map_snapshot.url if plan.map_snapshot else ''
     }
     return render(request, 'doc_generator/plan_step4_map_activities.html', context)
 

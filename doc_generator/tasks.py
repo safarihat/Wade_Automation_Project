@@ -9,6 +9,7 @@ from django.template.loader import render_to_string
 from django.core.files.base import ContentFile
 from doc_generator.models import FreshwaterPlan
 from doc_generator.utils import (
+    transform_coords,
     _query_koordinates_vector,
     _query_arcgis_vector,
     _query_koordinates_raster,
@@ -96,7 +97,7 @@ def generate_plan_task(self, freshwater_plan_id):
         _generate_plan_text(freshwater_plan)
 
         # --- Part 1.5: Generate Static Map Image ---
-        # _generate_static_map_image(freshwater_plan)
+        _generate_static_map_image(freshwater_plan)
 
         # --- Part 2: Generate Watermarked PDF Preview ---
         _generate_pdf_preview(freshwater_plan)
@@ -189,49 +190,52 @@ def _generate_static_map_image(freshwater_plan: FreshwaterPlan):
     """
     Fetches a static map image from the LINZ Data Service (LDS) WMS
     and saves it to the FreshwaterPlan's map_image field.
+    This uses the LINZ Basemaps API, which is simpler than WMS.
     """
     if freshwater_plan.map_image:
         logger.info(f"Map image for ID {freshwater_plan.pk} already exists. Skipping generation.")
         return
-
     logger.info(f"Generating static map image for plan ID: {freshwater_plan.pk}")
 
     # 1. Transform coordinates to NZTM (EPSG:2193) as required by many LINZ services for BBOX.
-    center_point_wgs84 = freshwater_plan.location
-    center_point_nztm = center_point_wgs84.transform(2193, clone=True)
+    try:
+        # Use the utility function to transform coordinates.
+        lon_nztm, lat_nztm = transform_coords(freshwater_plan.longitude, freshwater_plan.latitude, 4326, 2193)
+    except Exception as e:
+        logger.error(f"Coordinate transformation failed for plan {freshwater_plan.pk}: {e}")
+        # If transformation fails, we cannot proceed.
+        return
 
     # 2. Define a 1km x 1km bounding box around the center point.
     half_size = 500  # meters
     bbox_nztm = (
-        center_point_nztm.x - half_size,
-        center_point_nztm.y - half_size,
-        center_point_nztm.x + half_size,
-        center_point_nztm.y + half_size,
+        lon_nztm - half_size,
+        lat_nztm - half_size,
+        lon_nztm + half_size,
+        lat_nztm + half_size,
     )
 
-    # 3. Construct the LINZ WMS GetMap request using the correct Basemaps service endpoint.
-    # The API key is passed as a standard query parameter. We use the data.linz.govt.nz WMS.
-    wms_url = "https://data.linz.govt.nz/services/wms/"
+    # 3. Construct the LINZ Basemaps GetMap request.
+    # This is a simple RESTful API, not a full WMS.
+    # See: https://www.linz.govt.nz/data/linz-data-service/guides-and-documentation/wms-and-wmts-guide
+    wms_url = "https://basemaps.linz.govt.nz/v1/wms"
     params = {
-        'key': settings.LINZ_API_KEY,
+        'api': settings.LINZ_BASEMAPS_API_KEY,
         'service': 'WMS',
         'request': 'GetMap',
-        'layers': 'layer-50767',  # The layer ID for NZTopo50 on data.linz.govt.nz WMS.
+        'layers': 'aerial',
         'styles': '',
         'format': 'image/png',
         'transparent': 'true',
-        'version': '1.3.0', # Using a more current WMS version
+        'version': '1.1.1',
         'width': 800,
         'height': 800,
-        'crs': 'EPSG:2193', # WMS 1.3.0 uses 'crs' instead of 'srs'
+        'srs': 'EPSG:2193',
         'bbox': ','.join(map(str, bbox_nztm)),
     }
 
     try:
-        # Manually construct the full URL to prevent `requests` from encoding the semicolon in the path.
-        query_string = "&".join([f"{k}={v}" for k, v in params.items() if v is not None])
-        full_url = f"{wms_url}?{query_string}"
-        response = requests.get(full_url, timeout=30) # Pass the fully constructed URL
+        response = requests.get(wms_url, params=params, timeout=30)
         response.raise_for_status()  # Raise an exception for bad status codes
 
         file_name = f"map_plan_{freshwater_plan.pk}.png"

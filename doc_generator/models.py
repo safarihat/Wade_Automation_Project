@@ -84,6 +84,7 @@ class FreshwaterPlan(models.Model):
     generation_progress = models.JSONField(default=list, blank=True, help_text="A log of steps taken during the generation process.")
     vulnerability_features = models.JSONField(blank=True, null=True, help_text="User-drawn vulnerability features (GeoJSON).")
     activity_features = models.JSONField(blank=True, null=True, help_text="User-drawn activity features (GeoJSON).")
+    map_snapshot = models.ImageField(upload_to='plan_snapshots/', blank=True, null=True, help_text="Snapshot of the map for the activities step.")
 
     payment_status = models.CharField(
         max_length=20,

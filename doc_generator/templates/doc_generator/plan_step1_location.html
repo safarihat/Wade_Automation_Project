@@ -2,10 +2,14 @@
 {% load static %}
 {% block title %}Step 1: Confirm Your Location{% endblock %}
 
-{% block content %}
+{% block extra_head %}
 <!-- MapLibre GL JS -->
 <link href='https://unpkg.com/maplibre-gl@4.1.2/dist/maplibre-gl.css' rel='stylesheet' />
+<!-- Turf.js for geospatial calculations (needed for bbox) -->
+<script src='https://unpkg.com/@turf/turf@6/turf.min.js'></script>
+{% endblock %}
 
+{% block content %}
 <style>
     #map {
         height: 700px; /* Increased map height for an even larger view */
@@ -67,7 +71,7 @@
     <h1>Step 1: Confirm Your Farm's Location</h1>
     <p>Paste your property's coordinates from Google Maps to center the map. Review the aerial imagery to ensure it is the correct location.</p>
     
-    <form method="post">
+    <form method="post" id="location-form">
         {% csrf_token %}
         <div class="form-group">
             {{ form.geolocation_paste.label_tag }}
@@ -81,6 +85,7 @@
         
         <input type="hidden" name="latitude" id="id_latitude" value="{{ form.latitude.value|default:'' }}">
         <input type="hidden" name="longitude" id="id_longitude" value="{{ form.longitude.value|default:'' }}">
+        <input type="hidden" name="map_snapshot" id="id_map_snapshot">
         
         <!-- Map Container -->
         <div style="position: relative;">
@@ -110,74 +115,38 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const linzApiKey = '{{ LINZ_API_KEY|safe }}';
     const linzBasemapsApiKey = '{{ LINZ_BASEMAPS_API_KEY|safe }}';
 
-    if (!linzApiKey || !linzBasemapsApiKey) {
+    if (!linzBasemapsApiKey) {
         document.getElementById('map').innerHTML = '<p class="text-center">Map cannot be displayed: API Key is not configured.</p>';
         return;
     }
     
-    // Use the public LINZ Basemaps key with its correct service URL.
     const aerialTileUrl = `https://basemaps.linz.govt.nz/v1/tiles/aerial/WebMercatorQuad/{z}/{x}/{y}.png?api=${linzBasemapsApiKey}`;
-    // Use the official LINZ Basemaps service for the topo layer for consistency and reliability.
     const topoTileUrl = `https://basemaps.linz.govt.nz/v1/tiles/topographic/WebMercatorQuad/{z}/{x}/{y}.png?api=${linzBasemapsApiKey}`;
-    // The correct URL is for the bundled 'property' vector tile service.
 
     const map = new maplibregl.Map({
         container: 'map',
         style: {
             "version": 8,
             "sources": {
-                "linz-aerial": {
-                    "type": "raster",
-                    "tiles": [ aerialTileUrl ],
-                    "tileSize": 256,
-                    "attribution": "© LINZ"
-                },
-                "linz-topo": {
-                    "type": "raster",
-                    "tiles": [ topoTileUrl ],
-                    "tileSize": 256,
-                    "attribution": "© LINZ"
-                }
+                "linz-aerial": { "type": "raster", "tiles": [ aerialTileUrl ], "tileSize": 256, "attribution": "© LINZ" },
+                "linz-topo": { "type": "raster", "tiles": [ topoTileUrl ], "tileSize": 256, "attribution": "© LINZ" }
             },
             "layers": [
-                {
-                    "id": "linz-aerial-layer",
-                    "type": "raster",
-                    "source": "linz-aerial" // Visible by default
-                },
-                {
-                    "id": "linz-topo-layer",
-                    "type": "raster",
-                    "source": "linz-topo",
-                    "layout": { "visibility": "none" } // Hidden by default
-                },
+                { "id": "linz-aerial-layer", "type": "raster", "source": "linz-aerial" },
+                { "id": "linz-topo-layer", "type": "raster", "source": "linz-topo", "layout": { "visibility": "none" } },
             ]
         },
-        center: [174.7762, -41.2865], // Default to Wellington
-        zoom: 4
+        center: [174.7762, -41.2865],
+        zoom: 4,
+        preserveDrawingBuffer: true // Crucial for canvas exporting
     });
 
-    // --- Loading Spinner Logic ---
     const spinner = document.querySelector('.map-loading-spinner');
-    map.on('dataloading', () => {
-        spinner.style.display = 'block';
-    });
-    map.on('data', (e) => {
-        // Hide spinner only when the map is fully loaded/settled
-        if (e.dataType === 'source' && map.isSourceLoaded('linz-aerial')) {
-            spinner.style.display = 'none';
-        }
-    });
-
-    // Add error handling to see which layer is failing
-    map.on('error', event => {
-        if (event.error) {
-            console.error(`A map error occurred with source '${event.sourceId}':`, event.error);
-        }
-    });
+    map.on('dataloading', () => spinner.style.display = 'block');
+    map.on('idle', () => spinner.style.display = 'none');
+    map.on('error', event => console.error(`A map error occurred:`, event.error));
 
     // Layer switcher logic
     document.getElementById('map-overlay').addEventListener('change', (event) => {
@@ -208,26 +177,24 @@ document.addEventListener('DOMContentLoaded', function () {
             const response = await fetch(parcelApiUrl);
             const geojsonData = await response.json();
 
-            // Remove old parcel layer if it exists
             if (map.getSource('parcel-boundary')) {
                 map.removeLayer('parcel-boundary-layer');
                 map.removeSource('parcel-boundary');
             }
 
             if (geojsonData && geojsonData.features && geojsonData.features.length > 0) {
-                map.addSource('parcel-boundary', {
-                    'type': 'geojson',
-                    'data': geojsonData
-                });
+                map.addSource('parcel-boundary', { 'type': 'geojson', 'data': geojsonData });
                 map.addLayer({
                     'id': 'parcel-boundary-layer',
                     'type': 'line',
                     'source': 'parcel-boundary',
-                    'paint': {
-                        'line-color': '#FF0000',
-                        'line-width': 2.5
-                    }
+                    'paint': { 'line-color': '#FF0000', 'line-width': 2.5 }
                 });
+                const bbox = turf.bbox(geojsonData);
+                map.fitBounds(bbox, { padding: 40 });
+            } else {
+                console.warn("No parcel geometry found. Centering on coordinates instead.");
+                map.flyTo({ center: [lon, lat], zoom: 15 });
             }
         } catch (error) {
             console.error("Failed to fetch parcel geometry:", error);
@@ -241,26 +208,50 @@ document.addEventListener('DOMContentLoaded', function () {
             const lat = coords[0];
             const lon = coords[1];
             if (lat >= -90 && lat <= 90 && lon >= -180 && lon <= 180) {
-                map.flyTo({ center: [lon, lat], zoom: 15 });
-
                 if (marker) marker.remove();
                 marker = new maplibregl.Marker({color: '#FF0000'}).setLngLat([lon, lat]).addTo(map);
 
-                // Populate hidden fields and show confirmation
                 document.getElementById('id_latitude').value = lat;
                 document.getElementById('id_longitude').value = lon;
                 document.getElementById('confirmation-section').style.display = 'block';
-                
-                // Smoothly scroll to the confirmation button so the user doesn't miss it.
                 document.getElementById('confirmation-section').scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-                // Fetch and draw the parcel for the new coordinates
                 fetchAndDrawParcel(lat, lon);
             } else {
                 document.getElementById('confirmation-section').style.display = 'none';
             }
         } else {
             document.getElementById('confirmation-section').style.display = 'none';
+        }
+    });
+
+    // --- Re-implemented Form Submission Logic for Snapshot ---
+    const form = document.getElementById('location-form');
+    form.addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        const submitButton = form.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+        submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Capturing Map...';
+
+        const performExport = () => {
+            try {
+                const snapshotDataUrl = map.getCanvas().toDataURL('image/png');
+                document.getElementById('id_map_snapshot').value = snapshotDataUrl;
+                form.submit();
+            } catch (error) {
+                console.error('Error capturing map with toDataURL:', error);
+                alert('Could not capture map snapshot. Please try again.');
+                submitButton.disabled = false;
+                submitButton.textContent = 'Yes, Continue to Next Step';
+            }
+        };
+
+        if (!map.loaded()) {
+            map.once('load', performExport);
+        } else {
+            map.once('idle', performExport);
+            map.triggerRepaint();
         }
     });
 });
