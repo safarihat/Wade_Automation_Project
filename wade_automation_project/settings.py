@@ -235,23 +235,41 @@ CELERY_TASK_SOFT_TIME_LIMIT = 540 # Soft time limit of 9 minutes
 # Disable ChromaDB telemetry
 CHROMA_TELEMETRY_ENABLED = os.environ.get('CHROMA_TELEMETRY_ENABLED', 'False') == 'True'
 
-# --- Vector Store Service Configuration ---
-# These settings control the behavior of the document chunking and embedding process.
-VECTOR_STORE_CHUNK_SIZE = 1000
-VECTOR_STORE_CHUNK_OVERLAP = 100
-VECTOR_STORE_EMBEDDING_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
-# Adjust this value (e.g., 100-500) based on your system's memory and GPU capabilities
-VECTOR_STORE_EMBEDDING_BATCH_SIZE = 100
-
 # --- Vector Store Build Mode ---
 # This setting determines which pipeline is used for building the vector store.
 # Use 'local' for a simpler, single-process build suitable for resource-constrained environments (default).
 # Use 'ray' for a high-performance, distributed build on machines with multiple CPU cores.
 VECTOR_STORE_MODE = os.environ.get('VECTOR_STORE_MODE', 'local')
 
+# --- Vector Store Service Configuration ---
+# These settings control the behavior of the document chunking and embedding process.
+DOCS_PATH = os.path.join(BASE_DIR, 'doc_generator', 'data', 'context')
+VECTOR_STORE_PATH = os.path.join(BASE_DIR, 'vector_store')
+VECTOR_STORE_EMBEDDING_MODEL_NAME = "sentence-transformers/all-mpnet-base-v2"
+VECTOR_STORE_CHUNK_SIZE = 1000
+VECTOR_STORE_CHUNK_OVERLAP = 200
+# Adjust this value based on your system's memory and GPU capabilities
+VECTOR_STORE_EMBEDDING_BATCH_SIZE = 16 # A smaller batch size is safer for memory
+
 # --- Crispy Forms Configuration ---
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+# --- Cache Configuration ---
+# Using Redis as the cache backend. This requires the `django-redis` package.
+# pip install django-redis
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": os.environ.get('REDIS_URL', 'redis://127.0.0.1:6379/1'),
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
+
+# --- Custom Application Settings ---
+LLM_CACHE_TTL_SECONDS = int(os.environ.get('LLM_CACHE_TTL_SECONDS', 60 * 60 * 4)) # Default to 4 hours
 
 # --- Logging Configuration ---
 LOGGING = {
