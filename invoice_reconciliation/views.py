@@ -7,6 +7,7 @@ from django.conf import settings
 from django.urls import reverse
 from django.contrib import messages
 from django.utils.dateparse import parse_date
+from django.db import transaction
 import os
 import csv
 from decimal import Decimal, InvalidOperation
@@ -146,6 +147,7 @@ def review_invoices(request):
 
 @login_required
 @user_has_access
+@transaction.atomic
 def confirm_invoices(request):
     if request.method != 'POST':
         messages.error(request, 'Invalid request method.')

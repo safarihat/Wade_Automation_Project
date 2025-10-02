@@ -16,17 +16,20 @@ from doc_generator.utils import (
     _query_koordinates_vector,
     _query_arcgis_vector,
     _query_koordinates_raster,
+    _query_arcgis_raster,
     _calculate_slope_from_dem,
 )
 from doc_generator.models import FreshwaterPlan, RegionalCouncil
+from doc_generator.services.llm_service import LLMService
 from doc_generator.tasks import generate_plan_task, populate_admin_details_task
 
 import base64
 from django.core.files.base import ContentFile
 
+from doc_generator.services.embedding_service import get_embedding_model
+
 # LangChain components for RAG - needed for the new analysis view
 from langchain_community.vectorstores import Chroma
-from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_groq import ChatGroq
 from langchain_core.prompts import PromptTemplate
 from groq import AuthenticationError
@@ -385,8 +388,8 @@ def plan_wizard_map_vulnerabilities(request, pk):
 @login_required
 def plan_wizard_map_activities(request, pk):
     """
-    Step 4 of the wizard: Map farming activities. (Placeholder)
-    Allows users to draw features like paddocks, tracks, and infrastructure.
+    Step 4 of the wizard: Map farming activities.
+    Allows users to draw features on a map.
     """
     plan = get_object_or_404(FreshwaterPlan, pk=pk, user=request.user)
 
@@ -397,13 +400,13 @@ def plan_wizard_map_activities(request, pk):
                 plan.activity_features = json.loads(activity_data)
                 messages.success(request, "Farming activity map features have been saved.")
             except json.JSONDecodeError:
-                messages.error(request, "There was an error saving your map data. Invalid format.")
+                messages.error(request, "There was an error saving the farming activities map data. Invalid format.")
         else:
             plan.activity_features = None
             messages.info(request, "Farming activity map features have been cleared.")
         
         plan.save(update_fields=['activity_features', 'updated_at'])
-        return redirect(reverse('doc_generator:freshwater_plan_preview', kwargs={'pk': plan.pk}))
+        return redirect(reverse('doc_generator:plan_wizard_risk_management', kwargs={'pk': plan.pk}))
 
     context = {
         'plan': plan,
@@ -411,6 +414,111 @@ def plan_wizard_map_activities(request, pk):
         'map_snapshot_url': plan.map_snapshot.url if plan.map_snapshot else ''
     }
     return render(request, 'doc_generator/plan_step4_map_activities.html', context)
+
+
+@login_required
+def plan_wizard_map_works(request, pk):
+    """
+    Step 5 of the wizard: Map existing and intended physical works.
+    """
+    plan = get_object_or_404(FreshwaterPlan, pk=pk, user=request.user)
+
+    if request.method == 'POST':
+        works_data = request.POST.get('physical_works_features')
+        if works_data:
+            try:
+                plan.physical_works_features = json.loads(works_data)
+                messages.success(request, "Physical works map features have been saved.")
+            except json.JSONDecodeError:
+                messages.error(request, "There was an error saving the physical works map data. Invalid format.")
+        else:
+            plan.physical_works_features = None
+            messages.info(request, "Physical works map features have been cleared.")
+        
+        plan.save(update_fields=['physical_works_features', 'updated_at'])
+        return redirect(reverse('doc_generator:freshwater_plan_preview', kwargs={'pk': plan.pk}))
+
+    context = {
+        'plan': plan,
+        'physical_works_features_json': json.dumps(plan.physical_works_features) if plan.physical_works_features else 'null',
+        'map_snapshot_url': plan.map_snapshot.url if plan.map_snapshot else ''
+    }
+    return render(request, 'doc_generator/plan_step5_map_works.html', context)
+
+
+@login_required
+def plan_wizard_risk_management(request, pk):
+    """
+    Step 5 of the wizard: Manage the risk assessment table.
+    """
+    plan = get_object_or_404(FreshwaterPlan, pk=pk, user=request.user)
+
+    if request.method == 'POST':
+        risk_data_json = request.POST.get('risk_data')
+        if risk_data_json:
+            try:
+                # The JS sends a JSON string, so we parse it
+                plan.risk_management_data = json.loads(risk_data_json)
+                plan.save(update_fields=['risk_management_data', 'updated_at'])
+                messages.success(request, "Your risk management table has been saved.")
+                # Redirect to the new Step 6: Map Works
+                return redirect(reverse('doc_generator:plan_wizard_map_works', kwargs={'pk': plan.pk}))
+            except json.JSONDecodeError:
+                messages.error(request, "There was an error saving the risk data. Invalid format.")
+        else:
+            # Handle case where data is empty
+            plan.risk_management_data = []
+            plan.save(update_fields=['risk_management_data', 'updated_at'])
+            messages.info(request, "Risk management table has been cleared.")
+            return redirect(reverse('doc_generator:plan_wizard_map_works', kwargs={'pk': plan.pk}))
+
+    # For a GET request, get the initial data from the service
+    # The service will return existing data or a placeholder
+    table_data = LLMService.generate_risk_matrix(plan)
+
+    context = {
+        'plan': plan,
+        'table_data': table_data, # Pass as a JSON string for the template
+    }
+    return render(request, 'doc_generator/plan_step5_risk_management.html', context)
+
+
+import os
+
+@login_required
+def api_generate_risk_report(request, pk):
+    """
+    An API endpoint to trigger the new modular risk analysis pipeline.
+    """
+    try:
+        plan = get_object_or_404(FreshwaterPlan, pk=pk, user=request.user)
+    except FreshwaterPlan.DoesNotExist:
+        return JsonResponse({"error": "Plan not found"}, status=404)
+
+    # --- Initialize the retriever ---
+    # This should be done once and reused if possible, e.g., as a global singleton
+    # or using Django's caching framework if performance becomes an issue.
+    try:
+        embeddings = get_embedding_model()
+        vector_store_path = os.path.join(settings.BASE_DIR, 'vector_store')
+        vector_store = Chroma(persist_directory=vector_store_path, embedding_function=embeddings)
+        retriever = vector_store.as_retriever(search_kwargs={"k": 10})
+    except Exception as e:
+        logger.error(f"Failed to initialize vector store retriever: {e}", exc_info=True)
+        return JsonResponse({"error": "Could not initialize the vector store. Has it been built?"}, status=500)
+    # --- End of retriever initialization ---
+
+    # Call the new service's main orchestration method
+    report_data = RiskAnalysisService.generate_risk_analysis(plan, retriever)
+
+    if "error" in report_data:
+        return JsonResponse(report_data, status=500)
+
+    # Save the structured report data to the plan for future use
+    plan.risk_management_data = report_data
+    plan.save(update_fields=['risk_management_data'])
+
+    return JsonResponse(report_data)
 
 
 # =============================================================================
@@ -438,7 +546,7 @@ def api_generate_vulnerability_analysis(request, pk):
 
     # Define the layers to be queried. We now mix Koordinates and ArcGIS sources.
     # Using example URLs for Southland. These should be verified.
-    # Koordinates Layer IDs: NZ 8m DEM (51768), NZ 8m Slope (51769)
+    # Koordinates Layer IDs: NZ 8m DEM (51768)
     DATA_LAYERS = {
         'regional_soil': {'type': 'arcgis_vector', 'name': 'Regional Soil Data', 'url': 'https://services3.arcgis.com/v5RzLI7nHYeFImL4/arcgis/rest/services/Freshwater_farm_plan_contextual_data_hosted/FeatureServer/5/query'},
         # --- Koordinates Vector Layers ---
@@ -467,7 +575,12 @@ def api_generate_vulnerability_analysis(request, pk):
                 radius = layer_info.get('radius', 100)
                 result = _query_koordinates_vector(layer_id, plan.longitude, plan.latitude, koordinates_api_key, radius=radius)
             elif layer_info['type'] == 'koordinates_raster':
-                result = _query_koordinates_raster(layer_info['id'], plan.longitude, plan.latitude, koordinates_api_key)
+                # The helper function expects a dictionary of {name: id}
+                # We pass the layer key as the name to get a correctly structured result.
+                layer_id_map = {key: layer_info['id']}
+                result = _query_koordinates_raster(layer_id_map, plan.longitude, plan.latitude, koordinates_api_key)
+            elif layer_info['type'] == 'arcgis_raster':
+                result = _query_arcgis_raster(layer_info['url'], plan.longitude, plan.latitude)
             
             # Safely update result_obj, handling None from _query functions
             if result is not None:
@@ -475,7 +588,7 @@ def api_generate_vulnerability_analysis(request, pk):
                     result_obj["features"] = result
                 elif isinstance(result, list) and layer_info['type'] == 'arcgis_vector':
                     result_obj["features"] = result
-                elif isinstance(result, dict) and layer_info['type'] == 'koordinates_raster':
+                elif isinstance(result, dict) and 'raster' in layer_info['type']:
                     result_obj["data"] = result
                     logger.debug(f"Raster data for {layer_name}: {result_obj['data']}")
                 else:
@@ -484,7 +597,7 @@ def api_generate_vulnerability_analysis(request, pk):
             else:
                 logger.info(f"No data or error for layer {layer_name}, returning empty fallback.")
                 if layer_info['type'] in ['arcgis_vector', 'vector']:
-                    result_obj["features"] = [] # Corrected from geospacial_context to result_obj
+                    result_obj["features"] = []
                 elif layer_info['type'] == 'koordinates_raster':
                     result_obj["data"] = {}
 
@@ -521,15 +634,22 @@ def api_generate_vulnerability_analysis(request, pk):
         parcels_context = format_context(geospatial_context.get('land_parcels', {}))
         groundwater_context = format_context(geospatial_context.get('groundwater_zones', {}))
 
-        # 3. Set up and use the RAG chain to get regional policy context
-        logger.debug(f"Formatted soil_context for LLM: {soil_context}")
-        logger.debug(f"Formatted protection_context for LLM: {protection_context}")
-
-        model_name = "sentence-transformers/all-MiniLM-L6-v2"
-        embeddings = HuggingFaceEmbeddings(model_name=model_name, model_kwargs={'device': 'cpu'})
+        # 3. Set up RAG chain with Multi-Query Retrieval for regional policy context
+        logger.info("Setting up RAG chain with multi-query retrieval.")
+        embeddings = get_embedding_model()
         vector_store_path = settings.BASE_DIR / 'vector_store'
         vector_store = Chroma(persist_directory=str(vector_store_path), embedding_function=embeddings)
         retriever = vector_store.as_retriever(search_kwargs={'k': 3})
+
+        # Add catchment_name to geospatial_context for the service method's fallback
+        geospatial_context['catchment_name'] = plan.catchment_name
+        
+        # Use the new service method to perform intelligent, multi-query retrieval
+        retrieved_docs = LLMService.generate_retrieval_context(geospatial_context, retriever)
+        combined_context = "\n\n---\n\n".join(retrieved_docs)
+        
+        logger.debug(f"Final combined context for LLM: {combined_context[:1000]}...") # Log first 1000 chars
+
         llm = ChatGroq(model_name="llama-3.1-8b-instant", groq_api_key=settings.GROQ_API_KEY)
         output_parser = JsonOutputParser()
         
@@ -577,12 +697,12 @@ def api_generate_vulnerability_analysis(request, pk):
                 {{
                     "feature": "Climate",
                     "considerations": ["A list of considerations based on the data, e.g., 'High annual rainfall noted in regional context.'"],
-                    "vulnerabilities": ["A list of resulting vulnerabilities, e.g., 'Increased risk of flooding.', 'Potential for sheet erosion.']
+                    "vulnerabilities": ["A list of resulting vulnerabilities, e.g., 'Increased risk of flooding.', 'Potential for sheet erosion.'"]
                 }},
                 {{
                     "feature": "Landform",
-                    "considerations": ["e.g., 'DEM-derived slope is 12 degrees (Source: Koordinates DEM).', 'ArcGIS data indicates SlopeAngle is 11 (Source: Regional Soil Data).'],
-                    "vulnerabilities": ["e.g., 'Moderate risk of mass movement erosion on steeper faces.']
+                    "considerations": ["e.g., 'DEM-derived slope is 12 degrees (Source: Koordinates DEM).', 'ArcGIS data indicates SlopeAngle is 11 (Source: Regional Soil Data).'"],
+                    "vulnerabilities": ["e.g., 'Moderate risk of mass movement erosion on steeper faces.'"]
                 }}
             ]
         }}
@@ -596,27 +716,26 @@ def api_generate_vulnerability_analysis(request, pk):
         """
         prompt = PromptTemplate.from_template(template)
 
-        # This is the correct LCEL structure for a RAG chain.
-        # The retriever is invoked with the catchment name to get specific context.
+        # The RAG chain now takes the pre-fetched context directly.
         rag_chain = (
-            {
-                "context": lambda x: retriever.invoke(x["catchment_name"]),
-                "catchment_name": lambda x: x["catchment_name"],
-                "council": lambda x: plan.council,
-                "soil_data": lambda x: soil_context,
-                "land_cover_data": lambda x: land_cover_context,
-                "erosion_data": lambda x: erosion_context,
-                "protection_data": lambda x: protection_context,
-                "slope_data": lambda x: slope_context,
-                "parcels_data": lambda x: parcels_context,
-                "groundwater_data": lambda x: groundwater_context
-            }
-            | prompt
+            prompt
             | llm
             | output_parser
         )
 
-        analysis_data = rag_chain.invoke({"catchment_name": plan.catchment_name})
+        # Invoke the chain with all the necessary data.
+        analysis_data = rag_chain.invoke({
+            "context": combined_context,
+            "catchment_name": plan.catchment_name,
+            "council": plan.council,
+            "soil_data": soil_context,
+            "land_cover_data": land_cover_context,
+            "erosion_data": erosion_context,
+            "protection_data": protection_context,
+            "slope_data": slope_context,
+            "parcels_data": parcels_context,
+            "groundwater_data": groundwater_context
+        })
 
         return JsonResponse(analysis_data)
 

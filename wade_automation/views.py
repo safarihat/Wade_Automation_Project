@@ -103,7 +103,7 @@ def customer_dashboard(request):
             'key': 'invoice_reconciliation',
             'name': 'Invoice Reconciliation',
             'description': 'Upload, view, export, and push invoices to Xero.',
-            'url': '/invoices/dashboard/',
+            'url': reverse('invoices:invoice_dashboard'),
             'icon': None,  # You can add a static icon path later
         })
 

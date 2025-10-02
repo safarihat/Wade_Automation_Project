@@ -13,6 +13,7 @@ from doc_generator.utils import (
     _query_koordinates_vector,
     _query_arcgis_vector,
     _query_koordinates_raster,
+    _query_arcgis_raster,
     _calculate_slope_from_dem,
 )
 import hashlib
@@ -468,7 +469,7 @@ def populate_admin_details_task(self, freshwater_plan_id):
                     plan.total_farm_area_ha = None
 
             # Fetch Soil Type from ArcGIS Vector
-            soil_data = _query_arcgis_vector(soil_url, plan.longitude, plan.latitude)
+            soil_data = _query_arcgis_vector(soil_url, plan.longitude, plan.latitude) # This is for vector properties
             if isinstance(soil_data, list) and soil_data:
                 # The attributes are now nested in the feature object.
                 attributes = soil_data[0].get('properties', {})

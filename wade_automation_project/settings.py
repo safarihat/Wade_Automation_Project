@@ -235,6 +235,67 @@ CELERY_TASK_SOFT_TIME_LIMIT = 540 # Soft time limit of 9 minutes
 # Disable ChromaDB telemetry
 CHROMA_TELEMETRY_ENABLED = os.environ.get('CHROMA_TELEMETRY_ENABLED', 'False') == 'True'
 
+# --- Vector Store Service Configuration ---
+# These settings control the behavior of the document chunking and embedding process.
+VECTOR_STORE_CHUNK_SIZE = 1000
+VECTOR_STORE_CHUNK_OVERLAP = 100
+VECTOR_STORE_EMBEDDING_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
+# Adjust this value (e.g., 100-500) based on your system's memory and GPU capabilities
+VECTOR_STORE_EMBEDDING_BATCH_SIZE = 100
+
+# --- Vector Store Build Mode ---
+# This setting determines which pipeline is used for building the vector store.
+# Use 'local' for a simpler, single-process build suitable for resource-constrained environments (default).
+# Use 'ray' for a high-performance, distributed build on machines with multiple CPU cores.
+VECTOR_STORE_MODE = os.environ.get('VECTOR_STORE_MODE', 'local')
+
 # --- Crispy Forms Configuration ---
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+# --- Logging Configuration ---
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': BASE_DIR / 'logs/django.log',
+            'maxBytes': 1024 * 1024 * 5,  # 5 MB
+            'backupCount': 2,
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'doc_generator': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'invoice_reconciliation': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
+}
