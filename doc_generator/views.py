@@ -12,7 +12,7 @@ import pyproj
 from django.conf import settings
 from django.http import JsonResponse, HttpResponseBadRequest
 from doc_generator.forms import AdminDetailsForm, LocationForm
-from doc_generator.utils import (
+from doc_generator.geospatial_utils import (
     _query_koordinates_vector,
     _query_arcgis_vector,
     _query_koordinates_raster,
@@ -21,6 +21,7 @@ from doc_generator.utils import (
 )
 from doc_generator.models import FreshwaterPlan, RegionalCouncil
 from doc_generator.services.llm_service import LLMService
+from doc_generator.services.vulnerability_service import VulnerabilityService
 from doc_generator.tasks import generate_plan_task, populate_admin_details_task
 
 import base64
@@ -508,15 +509,28 @@ def api_generate_risk_report(request, pk):
         return JsonResponse({"error": "Could not initialize the vector store. Has it been built?"}, status=500)
     # --- End of retriever initialization ---
 
-    # Call the new service's main orchestration method
-    report_data = RiskAnalysisService.generate_risk_analysis(plan, retriever)
+    # Initialize the LLM
+    llm = ChatGroq(model_name="llama-3.1-8b-instant", groq_api_key=settings.GROQ_API_KEY)
+
+    # Prepare the context for the service
+    site_context = {
+        "council_authority_name": plan.council_authority_name,
+        "catchment_name": plan.catchment_name,
+        "soil_type": plan.soil_type,
+        "arcgis_slope_angle": plan.arcgis_slope_angle,
+        "erodibility": plan.erodibility,
+    }
+
+    # Call the correct service's main orchestration method
+    service = VulnerabilityService(llm=llm, retriever=retriever, site_context=site_context)
+    report_data = service.run_full_analysis()
 
     if "error" in report_data:
         return JsonResponse(report_data, status=500)
 
     # Save the structured report data to the plan for future use
-    plan.risk_management_data = report_data
-    plan.save(update_fields=['risk_management_data'])
+    plan.risk_management_data = report_data.get('biophysical_table', [])
+    plan.save(update_fields=['risk_management_data', 'updated_at'])
 
     return JsonResponse(report_data)
 
@@ -756,4 +770,41 @@ def api_generate_vulnerability_analysis(request, pk):
         raise # Re-raise other import errors
     except Exception as e:
         logger.error(f"Error in vulnerability analysis for plan {pk}: {e}", exc_info=True)
+        return JsonResponse({'error': 'An unexpected error occurred while generating the analysis.'}, status=500)
+
+@login_required
+def api_generate_vulnerability_analysis_v2(request, pk):
+    """
+    API endpoint for the new, decomposed vulnerability analysis pipeline.
+    """
+    plan = get_object_or_404(FreshwaterPlan, pk=pk, user=request.user)
+
+    # --- Initialize Services ---
+    try:
+        embeddings = get_embedding_model()
+        vector_store_path = os.path.join(settings.BASE_DIR, 'vector_store')
+        vector_store = Chroma(persist_directory=vector_store_path, embedding_function=embeddings)
+        retriever = vector_store.as_retriever(search_kwargs={"k": 10})
+        llm = ChatGroq(model_name="llama-3.1-8b-instant", groq_api_key=settings.GROQ_API_KEY)
+    except Exception as e:
+        logger.error(f"Failed to initialize services for V2 analysis: {e}", exc_info=True)
+        return JsonResponse({"error": "Could not initialize required AI or data services."}, status=500)
+
+    # --- Prepare Context ---
+    site_context = {
+        "council_authority_name": plan.council_authority_name,
+        "catchment_name": plan.catchment_name,
+        "soil_type": plan.soil_type,
+        "arcgis_slope_angle": plan.arcgis_slope_angle,
+        "erodibility": plan.erodibility,
+    }
+
+    # --- Run Analysis ---
+    try:
+        # The service now only needs the retriever, not the pre-fetched docs
+        service = VulnerabilityService(llm=llm, retriever=retriever, site_context=site_context)
+        report = service.run_full_analysis()
+        return JsonResponse(report)
+    except Exception as e:
+        logger.error(f"Error in V2 vulnerability analysis for plan {pk}: {e}", exc_info=True)
         return JsonResponse({'error': 'An unexpected error occurred while generating the analysis.'}, status=500)

@@ -1,0 +1,270 @@
+{% extends 'wade_automation/base.html' %}
+{% load static %}
+{% block title %}Step 6: Map Physical Works{% endblock %}
+
+{% block extra_head %}
+<!-- Leaflet.js CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<!-- Leaflet.js Draw Plugin CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
+
+<style>
+    h1 {
+        font-weight: 600;
+    }
+    #map {
+        position: relative;
+        width: 100%;
+        height: 75vh; /* Responsive height */
+        border: 2px solid #dee2e6;
+        border-radius: 8px;
+        overflow: hidden;
+        background-color: #f0f0f0;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .sidebar-column {
+        background-color: #f8f9fa;
+        padding: 24px;
+        border-radius: 8px;
+        height: 75vh;
+        overflow-y: auto;
+    }
+    .palette-title {
+        font-weight: bold;
+        font-size: 0.9rem;
+        margin-bottom: 12px;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    /* Custom style for text labels on the map */
+    .leaflet-text-label {
+        background-color: rgba(255, 255, 255, 0.9);
+        border: 1px solid #555;
+        border-radius: 4px;
+        padding: 4px 8px;
+        font-weight: bold;
+        text-align: center;
+        white-space: nowrap;
+        box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+        cursor: move;
+    }
+    .leaflet-text-input {
+        background: white;
+        border: 2px solid #0d6efd;
+        border-radius: 4px;
+        padding: 3px 7px;
+        font-weight: bold;
+        box-shadow: 0 1px 5px rgba(0,0,0,0.6);
+        outline: none;
+    }
+    .map-controls-container {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        display: flex;
+        gap: 10px;
+    }
+    .info-box {
+        background-color: #fff;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 16px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row mb-3">
+        <div class="col">
+            <h1>Step 6: Map Existing and Intended Physical Works</h1>
+            <p class="lead text-muted">Draw any new physical works planned for the farm as part of your action plan.</p>
+        </div>
+    </div>
+
+    <form method="post" id="map-form">
+        {% csrf_token %}
+        <input type="hidden" name="physical_works_features" id="id_physical_works_features">
+
+        <div class="row">
+            <!-- Main Canvas Column -->
+            <div class="col-lg-9" style="position: relative;">
+                <div id="map"></div>
+                <div class="map-controls-container">
+                    <button type="button" id="recenter-map-btn" class="btn btn-lg btn-primary shadow"><i class="fas fa-expand-arrows-alt me-2"></i>Recenter</button>
+                    <button type="button" id="add-text-btn" class="btn btn-lg btn-success shadow"><i class="fas fa-font me-2"></i>Add Label</button>
+                </div>
+            </div>
+            
+            <!-- Sidebar Column -->
+            <div class="col-lg-3">
+                <div class="sidebar-column">
+                    <div class="mb-4">
+                        <div class="palette-title">Drawing Hints</div>
+                        <ul class="list-unstyled small text-muted" style="padding-left: 1.2em;">
+                            <li class="mb-2"><i class="fas fa-mouse-pointer fa-fw text-primary me-1"></i>Use the drawing tools on the map to add features.</li>
+                            <li class="mb-2"><i class="fas fa-edit fa-fw text-primary me-1"></i>Use 'Edit layers' to move or delete your drawings.</li>
+                            <li class="mb-2"><i class="fas fa-expand-arrows-alt fa-fw text-primary me-1"></i>Hit 'Recenter' if the map moves by accident.</li>
+                        </ul>
+                    </div>
+                    <div class="mt-4 info-box">
+                        <div class="palette-title">What to Map Here</div>
+                        <div class="small text-muted">
+                            <p><strong>New physical works</strong></p>
+                            <p>A freshwater farm plan must contain maps that show new physical works to be undertaken on the farm as set out in the action plan. Examples of physical works are set out in subclause (2).</p>
+                            <p class="mt-2">Common examples include new fencing, riparian planting, effluent systems, or crossings.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between mt-4">
+            <a href="{% url 'doc_generator:plan_wizard_risk_management' pk=plan.pk %}" class="btn btn-lg btn-outline-secondary"><i class="fas fa-chevron-left me-2"></i>Back to Risk Management</a>
+            <button type="submit" class="btn btn-lg btn-gradient">Save and Continue<i class="fas fa-chevron-right ms-2"></i></button>
+        </div>
+    </form>
+</div>
+
+<!-- Leaflet.js -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<!-- Leaflet.js Draw Plugin -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const mapSnapshotUrl = '{{ map_snapshot_url|safe }}';
+    const worksFeaturesJson = '{{ physical_works_features_json|safe }}';
+    const hiddenInput = document.getElementById('id_physical_works_features');
+
+    if (!mapSnapshotUrl) {
+        document.getElementById('map').innerHTML = '<div class="alert alert-danger m-3">Map snapshot not found. Cannot initialize map.</div>';
+        return;
+    }
+
+    const map = L.map('map', { crs: L.CRS.Simple, minZoom: -2, maxZoom: 4, center: [0, 0], zoom: 0 });
+
+    const imageOverlay = L.imageOverlay(mapSnapshotUrl, [[0, 0], [1, 1]]);
+    imageOverlay.on('load', function() {
+        const img = this._image;
+        const imgWidth = img.naturalWidth;
+        const imgHeight = img.naturalHeight;
+        const bounds = [[-imgHeight / 2, -imgWidth / 2], [imgHeight / 2, imgWidth / 2]];
+        
+        this.setBounds(bounds);
+        map.fitBounds(bounds);
+        initializeDrawingTools();
+
+        document.getElementById('recenter-map-btn').addEventListener('click', () => map.fitBounds(bounds));
+    });
+    imageOverlay.on('error', () => {
+        document.getElementById('map').innerHTML = '<div class="alert alert-danger m-3">Could not load map snapshot image.</div>';
+    });
+    imageOverlay.addTo(map);
+
+    function initializeDrawingTools() {
+        const drawnItems = new L.FeatureGroup();
+        map.addLayer(drawnItems);
+
+        const drawControl = new L.Control.Draw({
+            edit: { featureGroup: drawnItems, remove: true },
+            draw: {
+                polygon: { shapeOptions: { color: '#28a745' } }, // Green for works
+                polyline: { shapeOptions: { color: '#28a745' } },
+                rectangle: { shapeOptions: { color: '#28a745' } },
+                circle: true,
+                marker: false,
+                circlemarker: false
+            }
+        });
+        map.addControl(drawControl);
+
+        if (worksFeaturesJson && worksFeaturesJson !== 'null') {
+            try {
+                const geoJsonData = JSON.parse(worksFeaturesJson);
+                L.geoJSON(geoJsonData, {
+                    pointToLayer: (feature, latlng) => createStaticTextMarker(latlng, feature.properties.label),
+                    onEachFeature: (feature, layer) => {
+                        layer.bindPopup(feature.properties?.label || 'A drawn shape.');
+                        drawnItems.addLayer(layer);
+                    }
+                });
+            } catch (e) {
+                console.error("Could not parse or load existing GeoJSON data:", e);
+            }
+        }
+
+        const updateHiddenInput = () => hiddenInput.value = JSON.stringify(drawnItems.toGeoJSON());
+
+        map.on(L.Draw.Event.CREATED, (event) => {
+            drawnItems.addLayer(event.layer);
+            updateHiddenInput();
+        });
+        map.on('draw:edited', updateHiddenInput);
+        map.on('draw:deleted', updateHiddenInput);
+
+        let placingText = false;
+        const addTextBtn = document.getElementById('add-text-btn');
+        addTextBtn.addEventListener('click', (e) => {
+            placingText = !placingText;
+            addTextBtn.classList.toggle('active', placingText);
+            L.DomUtil.toggleClass(map._container, 'leaflet-crosshair', placingText);
+            e.stopPropagation();
+        });
+
+        map.on('click', (e) => {
+            if (placingText) {
+                createEditableTextMarker(e.latlng);
+                placingText = false;
+                addTextBtn.classList.remove('active');
+                L.DomUtil.removeClass(map._container, 'leaflet-crosshair');
+            }
+        });
+
+        function createStaticTextMarker(latlng, text) {
+            const marker = L.marker(latlng, {
+                icon: L.divIcon({ className: 'leaflet-text-label', html: `<span>${text}</span>` }),
+                draggable: true
+            });
+            marker.feature = { type: "Feature", properties: { label: text, isText: true } };
+            marker.on('dblclick', () => {
+                drawnItems.removeLayer(marker);
+                updateHiddenInput();
+                createEditableTextMarker(marker.getLatLng(), text);
+            });
+            marker.on('dragend', updateHiddenInput);
+            return marker;
+        }
+
+        function createEditableTextMarker(latlng, existingText = '') {
+            const inputMarker = L.marker(latlng, {
+                icon: L.divIcon({
+                    className: 'leaflet-text-input-container',
+                    html: `<input type="text" class="leaflet-text-input" value="${existingText}" placeholder="Enter text...">`,
+                    iconAnchor: [0, 14]
+                })
+            }).addTo(map);
+            const inputEl = inputMarker.getElement().querySelector('input');
+            inputEl.focus();
+            inputEl.select();
+
+            const saveText = () => {
+                const newText = inputEl.value;
+                map.removeLayer(inputMarker);
+                if (newText) {
+                    drawnItems.addLayer(createStaticTextMarker(latlng, newText));
+                    updateHiddenInput();
+                }
+                L.DomEvent.off(inputEl, 'keydown', onKeyDown).off(inputEl, 'blur', saveText);
+            };
+            const onKeyDown = (e) => { if (e.key === 'Enter') saveText(); };
+            L.DomEvent.on(inputEl, 'keydown', onKeyDown).on(inputEl, 'blur', saveText);
+        }
+    }
+});
+</script>
+{% endblock %}

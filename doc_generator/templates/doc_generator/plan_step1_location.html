@@ -69,7 +69,11 @@
 
 <div class="form-container">
     <h1>Step 1: Confirm Your Farm's Location</h1>
-    <p>Paste your property's coordinates from Google Maps to center the map. Review the aerial imagery to ensure it is the correct location.</p>
+    <ul style="padding-left: 1.5rem;" class="lead text-muted">
+        <li>Paste your property's coordinates from Google Maps to center the map.</li>
+        <li>Review the aerial imagery to ensure it is the correct location.</li>
+        <li>Please wait for the map to zoom in before clicking confirm.</li>
+    </ul>
     
     <form method="post" id="location-form">
         {% csrf_token %}

@@ -324,7 +324,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // If the map has a legend configured, populate it.
             if (mapConfig.legend) {
-                this.populateLegend(`${mapConfig.id}-legend`, mapConfig.legend.title, mapConfig.legend.items);
+                // Only show the legend if the layer was successfully added.
+                if (map.getLayer(`${mapConfig.id}-layer`)) {
+                    this.populateLegend(`${mapConfig.id}-legend`, mapConfig.legend.title, mapConfig.legend.items);
+                }
             }
         },
 

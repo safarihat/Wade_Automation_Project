@@ -19,7 +19,7 @@
         border: 2px solid #dee2e6;
         border-radius: 8px;
         overflow: hidden;
-        background-color: #f0f0f0; /* Fallback color */
+        background-color: #f0f0f0;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
     .sidebar-column {
@@ -27,7 +27,7 @@
         padding: 24px;
         border-radius: 8px;
         height: 75vh;
-        overflow-y: auto;
+        overflow-y: auto; /* Keep sidebar scrollable */
     }
     .tool-palette {
         display: flex;
@@ -88,7 +88,7 @@
         position: absolute;
         bottom: 20px;
         left: 50%;
-        transform: translateX(-50%);
+        transform: translateX(-50%); /* Center the buttons */
         z-index: 1000; /* Ensure buttons are on top of the map */
         display: flex;
         gap: 10px;
@@ -132,22 +132,22 @@
                     <button type="button" id="add-text-btn" class="btn btn-lg btn-success shadow"><i class="fas fa-font me-2"></i>Add Label</button>
                 </div>
             </div>
-
+            
             <!-- Sidebar Column -->
             <div class="col-lg-3">
                 <div class="sidebar-column">
 
                     <!-- Drawing Hints -->
-                    <div>
+                    <div class="mb-4">
                         <div class="palette-title">Drawing Hints</div>
-                        <ul class="list-unstyled small text-muted">
-                            <li class="mb-2"><i class="fas fa-mouse-pointer fa-fw text-primary me-1"></i>Draw your actual and planned farming activities on the map.</li>
+                        <ul class="list-unstyled small text-muted" style="padding-left: 1.2em;">
+                            <li class="mb-2"><i class="fas fa-mouse-pointer fa-fw text-primary me-1"></i>Use the drawing tools on the map to add features.</li>
                             <li class="mb-2"><i class="fas fa-book-open fa-fw text-primary me-1"></i>Check the regulatory requirements below for guidance.</li>
                             <li class="mb-2"><i class="fas fa-edit fa-fw text-primary me-1"></i>Use 'Edit layers' to move or delete your drawings.</li>
                             <li class="mb-2"><i class="fas fa-expand-arrows-alt fa-fw text-primary me-1"></i>Hit 'Recenter' if the map moves by accident.</li>
                             <li class="mb-2"><i class="fas fa-desktop fa-fw text-primary me-1"></i>Use fullscreen (hit F11) to give yourself more space.</li>
-                            <li class="mt-3 mb-2"><i class="fas fa-draw-polygon fa-fw text-primary me-1"></i>To draw a <strong>zone</strong>, use the 'Draw a polygon' tool. Click to add points, then click your first point to finish. Make sure you add a text label describing the zone or feature</li>
-                            <li class="mt-2"><i class="fas fa-wave-square fa-fw text-primary me-1"></i>To trace a <strong>fenceline</strong>, use the 'Draw a polyline' tool. Add points, then click the last point again to finish. Add your text labels</li>
+                            <li class="mt-3 mb-2"><i class="fas fa-draw-polygon fa-fw text-primary me-1"></i>To draw a <strong>zone</strong>, use the 'Draw a polygon' tool. Click to add points, then click your first point to finish.</li>
+                            <li class="mt-2"><i class="fas fa-wave-square fa-fw text-primary me-1"></i>To trace a <strong>fenceline</strong>, use the 'Draw a polyline' tool. Add points, then click the last point again to finish.</li>
                         </ul>
                     </div>
                     <!-- Instructions -->
@@ -199,7 +199,7 @@
 
         <div class="d-flex justify-content-between mt-4">
             <a href="{% url 'doc_generator:plan_wizard_map_vulnerabilities' pk=plan.pk %}" class="btn btn-lg btn-outline-secondary"><i class="fas fa-chevron-left me-2"></i>Back</a>
-            <button type="submit" class="btn btn-lg btn-gradient">Save and Continue<i class="fas fa-chevron-right ms-2"></i></button>
+            <button type="submit" class="btn btn-lg btn-gradient">Save and Continue to Risk Management<i class="fas fa-chevron-right ms-2"></i></button>
         </div>
     </form>
 </div>
@@ -230,7 +230,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // --- 2. Load Image Snapshot as Map Layer ---
-    // This method lets Leaflet handle the image loading and sizing, which is more reliable.
     const imageOverlay = L.imageOverlay(mapSnapshotUrl, [[0, 0], [1, 1]]); // Temporary bounds
     imageOverlay.on('load', function() {
         // Once the image is loaded, get its dimensions and set the correct bounds
@@ -260,49 +259,37 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     // --- 3. Function to Initialize Drawing Tools ---
-    // This is called only after the map image has successfully loaded.
     function initializeDrawingTools() {
         const drawnItems = new L.FeatureGroup();
         map.addLayer(drawnItems);
 
         const drawControl = new L.Control.Draw({
-            edit: {
-                featureGroup: drawnItems,
-                remove: true
-            },
+            edit: { featureGroup: drawnItems, remove: true },
             draw: {
                 polygon: { shapeOptions: { color: '#0d6efd' } },
                 polyline: { shapeOptions: { color: '#0d6efd' } },
                 rectangle: { shapeOptions: { color: '#0d6efd' } },
                 circle: true,
-                marker: false, // We use a custom icon placer, so disable the default marker
+                marker: false, // We use a custom icon placer
                 circlemarker: false
             }
         });
         map.addControl(drawControl);
 
-        // --- 4. Load Existing Data ---
+        // Load Existing Data
         if (activityFeaturesJson && activityFeaturesJson !== 'null') {
             try {
                 const geoJsonData = JSON.parse(activityFeaturesJson);
                 L.geoJSON(geoJsonData, {
                     pointToLayer: function (feature, latlng) {
                         if (feature.properties && feature.properties.isText) {
-                            // Recreate text labels
                             return createStaticTextMarker(latlng, feature.properties.label);
                         }
-                        // Fallback for standard points
                         return L.marker(latlng);
                     },
                     onEachFeature: function (feature, layer) {
-                        if (feature.properties && feature.properties.label) {
-                            layer.bindPopup(feature.properties.label);
-                        } else {
-                            // Only bind popups to non-text layers to avoid conflicts
-                            layer.bindPopup('A drawn shape.');
-                        }
+                        layer.bindPopup(feature.properties?.label || 'A drawn shape.');
                         drawnItems.addLayer(layer);
-
                     }
                 });
             } catch (e) {
@@ -310,41 +297,33 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
-        // --- 5. Handle Drawing Events ---
+        // Handle Drawing Events
         function updateHiddenInput() {
             const geoJSON = drawnItems.toGeoJSON();
             hiddenInput.value = JSON.stringify(geoJSON);
         }
 
         map.on(L.Draw.Event.CREATED, function (event) {
-            const layer = event.layer;
-            drawnItems.addLayer(layer);
+            drawnItems.addLayer(event.layer);
             updateHiddenInput();
         });
 
         map.on('draw:edited', updateHiddenInput);
         map.on('draw:deleted', updateHiddenInput);
 
-        // --- 6. Text Label Placement and Editing Logic ---
+        // Text Label Logic
         let placingText = false;
         const addTextBtn = document.getElementById('add-text-btn');
 
-        function enterTextMode() {
-            addTextBtn.classList.add('active');
-            placingText = true;
-            L.DomUtil.addClass(map._container, 'leaflet-crosshair');
-        }
-        function exitPlacingMode() {
-            addTextBtn.classList.remove('active');
-            L.DomUtil.removeClass(map._container, 'leaflet-crosshair');
-            placingText = false;
-        }
-
         addTextBtn.addEventListener('click', function(e) {
             if (placingText) {
-                exitPlacingMode();
+                placingText = false;
+                addTextBtn.classList.remove('active');
+                L.DomUtil.removeClass(map._container, 'leaflet-crosshair');
             } else {
-                enterTextMode();
+                placingText = true;
+                addTextBtn.classList.add('active');
+                L.DomUtil.addClass(map._container, 'leaflet-crosshair');
             }
             e.stopPropagation();
         });
@@ -352,79 +331,70 @@ document.addEventListener('DOMContentLoaded', function () {
         map.on('click', function (e) {
             if (placingText) {
                 createEditableTextMarker(e.latlng);
-                exitPlacingMode();
+                placingText = false;
+                addTextBtn.classList.remove('active');
+                L.DomUtil.removeClass(map._container, 'leaflet-crosshair');
             }
         });
-
-        // --- Helper functions for text labels ---
-
-        // Creates a static, draggable text label
-        function createStaticTextMarker(latlng, text) {
-            const textIcon = L.divIcon({
-                className: 'leaflet-text-label',
-                html: `<span>${text}</span>`,
-            });
-            const marker = L.marker(latlng, { icon: textIcon, draggable: true });
-
-            marker.feature = marker.feature || {};
-            marker.feature.type = "Feature";
-            marker.feature.properties = { label: text, isText: true };
-
-            // Double-click to edit
-            marker.on('dblclick', () => {
-                drawnItems.removeLayer(marker);
-                updateHiddenInput();
-                createEditableTextMarker(marker.getLatLng(), marker.feature.properties.label);
-            });
-
-            // Update position on drag
-            marker.on('dragend', updateHiddenInput);
-
-            return marker;
-        }
-
-        // Creates a temporary marker with an input field
-        function createEditableTextMarker(latlng, existingText = '') {
-            const inputHtml = `<input type="text" class="leaflet-text-input" value="${existingText}" placeholder="Enter text...">`;
-            const textInputIcon = L.divIcon({
-                className: 'leaflet-text-input-container',
-                html: inputHtml,
-                iconAnchor: [0, 14] // Position correctly relative to click
-            });
-
-            const inputMarker = L.marker(latlng, { icon: textInputIcon }).addTo(map);
-            const inputEl = inputMarker.getElement().querySelector('input');
-            
-            // Auto-focus and select text
-            inputEl.focus();
-            inputEl.select();
-
-            const saveText = () => {
-                const newText = inputEl.value;
-                map.removeLayer(inputMarker); // Remove the temporary input marker
-                if (newText) {
-                    const newStaticMarker = createStaticTextMarker(latlng, newText);
-                    drawnItems.addLayer(newStaticMarker);
-                    updateHiddenInput();
-                }
-                // Remove event listeners to prevent memory leaks
-                L.DomEvent.off(inputEl, 'keydown', onKeyDown);
-                L.DomEvent.off(inputEl, 'blur', saveText);
-            };
-
-            const onKeyDown = (e) => { if (e.key === 'Enter') saveText(); };
-
-            L.DomEvent.on(inputEl, 'keydown', onKeyDown);
-            L.DomEvent.on(inputEl, 'blur', saveText);
-        }
     }
 
-    // --- 7. Form Submission ---
-    document.getElementById('map-form').addEventListener('submit', function() {
-        // The updateHiddenInput function is called on every draw/edit/delete event,
-        // so the data should be up-to-date. No extra action needed here unless
-        // there are other form elements to process.
-    });
+    // --- Helper functions for text labels ---
+    function createStaticTextMarker(latlng, text) {
+        const updateHiddenInput = () => hiddenInput.value = JSON.stringify(map.getLayer('drawnItems').toGeoJSON());
+
+        const textIcon = L.divIcon({
+            className: 'leaflet-text-label',
+            html: `<span>${text}</span>`,
+        });
+        const marker = L.marker(latlng, { icon: textIcon, draggable: true });
+
+        marker.feature = marker.feature || { type: "Feature", properties: { label: text, isText: true } };
+
+        marker.on('dblclick', () => {
+            map.getLayer('drawnItems').removeLayer(marker);
+            updateHiddenInput();
+            createEditableTextMarker(marker.getLatLng(), marker.feature.properties.label);
+        });
+
+        marker.on('dragend', updateHiddenInput);
+        return marker;
+    }
+
+    function createEditableTextMarker(latlng, existingText = '') {
+        const updateHiddenInput = () => hiddenInput.value = JSON.stringify(map.getLayer('drawnItems').toGeoJSON());
+
+        const inputHtml = `<input type="text" class="leaflet-text-input" value="${existingText}" placeholder="Enter text...">`;
+        const textInputIcon = L.divIcon({
+            className: 'leaflet-text-input-container',
+            html: inputHtml,
+            iconAnchor: [0, 14]
+        });
+
+        const inputMarker = L.marker(latlng, { icon: textInputIcon }).addTo(map);
+        const inputEl = inputMarker.getElement().querySelector('input');
+        
+        inputEl.focus();
+        inputEl.select();
+
+        const saveText = () => {
+            const newText = inputEl.value;
+            map.removeLayer(inputMarker);
+            if (newText) {
+                const newStaticMarker = createStaticTextMarker(latlng, newText);
+                map.getLayer('drawnItems').addLayer(newStaticMarker);
+                updateHiddenInput();
+            }
+            L.DomEvent.off(inputEl, 'keydown', onKeyDown);
+            L.DomEvent.off(inputEl, 'blur', saveText);
+        };
+
+        const onKeyDown = (e) => { if (e.key === 'Enter') saveText(); };
+
+        L.DomEvent.on(inputEl, 'keydown', onKeyDown);
+        L.DomEvent.on(inputEl, 'blur', saveText);
+    }
+
+    // Form submission is handled by the browser, hidden inputs are updated on-the-fly.
 });
 </script>
 {% endblock %}

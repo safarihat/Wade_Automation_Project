@@ -1,0 +1,238 @@
+C:\Users\safar\miniconda3\envs\wade_env\Lib\site-packages\pypdf\_crypt_providers\_cryptography.py:32: CryptographyDeprecationWarning: ARC4 has been moved to cryptography.hazmat.decrepit.ciphers.algorithms.ARC4 and will be removed from cryptography.hazmat.primitives.ciphers.algorithms in 48.0.0.
+  from cryptography.hazmat.primitives.ciphers.algorithms import AES, ARC4
+Starting to build or update the vector store...
+Fetching 1 files:   0%|          | 0/1 [00:00<?, ?it/s]Fetching 1 files: 100%|##########| 1/1 [00:00<?, ?it/s]
+The `max_size` parameter is deprecated and will be removed in v4.26. Please specify in `size['longest_edge'] instead`.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+[audit-guidance.pdf] Processed but no meaningful content found or chunked.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+[developing-fwfp.pdf] Processed but no meaningful content found or chunked.
+[NPSFM-amended-october-2024.pdf] Processed but no meaningful content found or chunked.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+[Resource Management Freshwater Farm Plans Regulations 2023.pdf] Processed but no meaningful content found or chunked.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+[action-for-healthy-waterways-section-32-evaluation-report.pdf] Processed but no meaningful content found or chunked.
+No features in text.
+No features in text.
+[Catchment_context_Aparima-and_Pourakino.pdf] Processed but no meaningful content found or chunked.
+[Catchment_Context_Bluff.pdf] Processed but no meaningful content found or chunked.
+No features in text.
+No features in text.
+[Catchment_Context_Mataura.pdf] Processed but no meaningful content found or chunked.
+No features in text.
+[Catchment_Context_Orepuki.pdf] Processed but no meaningful content found or chunked.
+No features in text.
+No features in text.
+[Catchment_Context_Oreti_and_Invercargill.pdf] Processed but no meaningful content found or chunked.
+No features in text.
+No features in text.
+[Catchment_Context_TeWaewaeBay.pdf] Processed but no meaningful content found or chunked.
+No features in text.
+No features in text.
+[Catchment_Context_Tokanui.pdf] Processed but no meaningful content found or chunked.
+No features in text.
+No features in text.
+No features in text.
+[Catchment_Context_Waiau.pdf] Processed but no meaningful content found or chunked.
+No features in text.
+No features in text.
+[Catchment_Context_Waikawa_Catlins.pdf] Processed but no meaningful content found or chunked.
+No features in text.
+[Catchment_Context_Waimatuku_and_Taunamau.pdf] Processed but no meaningful content found or chunked.
+No features in text.
+[Catchment_Context_Waituna.pdf] Processed but no meaningful content found or chunked.
+[MfE-Supporting-Southland-with-Freshwater-Farm-Planning-proactive-release.pdf] Processed but no meaningful content found or chunked.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+[package-3-freshwater-discussion-document.pdf] Processed but no meaningful content found or chunked.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+[Resource Management National Environmental Standards for Freshwater Regulations 2020 (1).pdf] Processed but no meaningful content found or chunked.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+[Risk management guidelines  for councils.pdf] Processed but no meaningful content found or chunked.
+[Southland - Artificial subsurface drainage.pdf] Processed but no meaningful content found or chunked.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+No features in text.
+[southland - council freshwater plan.pdf] Processed but no meaningful content found or chunked.
+[Southland - Overland Flow Risk in Southland.pdf] Processed but no meaningful content found or chunked.
+[Southland - Spatial analysis of winter forage cropping.pdf] Processed but no meaningful content found or chunked.

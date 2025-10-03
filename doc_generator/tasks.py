@@ -8,7 +8,7 @@ from django.conf import settings
 from django.template.loader import render_to_string
 from django.core.files.base import ContentFile
 from doc_generator.models import FreshwaterPlan
-from doc_generator.utils import (
+from doc_generator.geospatial_utils import (
     transform_coords,
     _query_koordinates_vector,
     _query_arcgis_vector,
@@ -39,12 +39,12 @@ except ImportError as e:
     letter = None
 
 # LangChain components for RAG
-from langchain_chroma import Chroma
-from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_community.vectorstores import Chroma
 from langchain_groq import ChatGroq
 from langchain_core.prompts import PromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
+from .services.embedding_service import get_embedding_model
 
 # Setup logger
 logger = logging.getLogger(__name__)
@@ -121,12 +121,8 @@ def _generate_plan_text(freshwater_plan: FreshwaterPlan):
         return
 
     logger.info(f"[1/3] Initializing RAG components for plan ID: {freshwater_plan.pk}")
-    model_name = "sentence-transformers/all-MiniLM-L6-v2"
-    # Explicitly set the device to 'cpu' to avoid "meta tensor" errors
-    # that can occur with newer versions of torch and sentence-transformers.
-    model_kwargs = {'device': 'cpu'}
-    embeddings = HuggingFaceEmbeddings(model_name=model_name, model_kwargs=model_kwargs)
-
+    # Use the singleton service to ensure model consistency across the app
+    embeddings = get_embedding_model()
     vector_store_path = os.path.join(settings.BASE_DIR, 'vector_store')
     vector_store = Chroma(persist_directory=vector_store_path, embedding_function=embeddings)
     
@@ -386,8 +382,8 @@ def populate_admin_details_task(self, freshwater_plan_id):
         # Step 1: Log Council Confirmation
         _update_progress(plan.pk, f"Verifying council authority for {plan.council} area...", "pending")
         try:
-            model_name = "sentence-transformers/all-MiniLM-L6-v2"
-            embeddings = HuggingFaceEmbeddings(model_name=model_name, model_kwargs={'device': 'cpu'})
+            # Use the singleton service to ensure model consistency
+            embeddings = get_embedding_model()
             vector_store_path = os.path.join(settings.BASE_DIR, 'vector_store')
             vector_store = Chroma(persist_directory=vector_store_path, embedding_function=embeddings)
             retriever = vector_store.as_retriever(search_kwargs={'k': 1})

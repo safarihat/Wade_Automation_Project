@@ -24,6 +24,15 @@ urlpatterns = [
     path('api/vulnerability-analysis/<int:pk>/', views.api_generate_vulnerability_analysis, name='api_generate_vulnerability_analysis'), # This was already correct, but ensuring consistency.
     path('wizard/<int:pk>/map-vulnerabilities/', views.plan_wizard_map_vulnerabilities, name='plan_wizard_map_vulnerabilities'),
     path('wizard/<int:pk>/map-activities/', views.plan_wizard_map_activities, name='plan_wizard_map_activities'),
+    path('wizard/<int:pk>/map-works/', views.plan_wizard_map_works, name='plan_wizard_map_works'),
+    path('wizard/<int:pk>/risk-management/', views.plan_wizard_risk_management, name='plan_wizard_risk_management'),
+
+    # New API endpoint for the modular risk analysis pipeline
+    path('api/risk-analysis/<int:pk>/', views.api_generate_risk_report, name='api_generate_risk_report'),
+
+    # V2 endpoint for the improved vulnerability analysis pipeline
+    path('api/vulnerability-analysis/v2/<int:pk>/', views.api_generate_vulnerability_analysis_v2, name='api_generate_vulnerability_analysis_v2'),
+
     # Add more steps here in the future
     # path('wizard/<int:pk>/summary/', views.plan_wizard_summary, name='plan_wizard_summary'),
 ]
