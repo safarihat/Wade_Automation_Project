@@ -9,7 +9,7 @@ from typing import List, Dict, Any, Optional
 
 from django.conf import settings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.vectorstores import Chroma
+from langchain_chroma import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
 from unstructured.partition.pdf import partition_pdf
 

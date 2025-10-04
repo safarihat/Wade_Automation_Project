@@ -56,7 +56,8 @@
         <div class="d-flex align-items-center gap-2">
             <button type="button" id="add-row-btn" class="btn btn-success"><i class="fas fa-plus me-1"></i> Add Row</button>
             <button type="button" id="remove-selected-rows-btn" class="btn btn-outline-danger"><i class="fas fa-trash me-1"></i> Remove Selected</button>
-            <button id="generate-risk-btn" class="btn btn-gradient btn-lg"><i class="fas fa-robot me-2"></i> Generate AI Risk Analysis</button>
+            <!-- <button id="generate-risk-btn" class="btn btn-gradient btn-lg"><i class="fas fa-robot me-2"></i> Generate AI Risk Analysis</button> -->
+            <!-- Functionality temporarily disabled -->
         </div>
     </div>
     <div id="loading-spinner" class="text-center my-5" style="display: none;">
@@ -307,38 +308,40 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // AI Generation Button
-    generateBtn.addEventListener('click', function() {
-        loadingSpinner.style.display = 'block';
-        tableBody.innerHTML = ''; // Clear table while loading
+    /*
+    // Functionality temporarily disabled
+    // if (generateBtn) {
+    //     generateBtn.addEventListener('click', function() {
+    //         loadingSpinner.style.display = 'block';
+    //         tableBody.innerHTML = ''; // Clear table while loading
 
-        fetch(`/doc_generator/api/vulnerability-analysis/v2/${planId}/`) // Call the new V2 endpoint
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.error) {
-                    throw new Error(data.error);
-                }
-                // Assuming the AI returns data in a format compatible with loadTableData
-                // The AI output is a structured JSON, we need to extract the table data from it.
-                const aiGeneratedTableData = data.biophysical_table || []; 
-                loadTableData(aiGeneratedTableData);
-                // Optionally, you might want to populate other parts of the form/page with AI insights
-            })
-            .catch(error => {
-                console.error('Error generating risk analysis:', error);
-                alert(`An error occurred: ${error.message}`);
-                // Add a row indicating failure
-                const errorRow = tableBody.insertRow();
-                errorRow.innerHTML = `<td colspan="10" class="text-center text-danger">Failed to generate risk analysis: ${error.message}</td>`;
-            })
-            .finally(() => {
-                loadingSpinner.style.display = 'none';
-            });
-    });
+    //         fetch(`/doc_generator/api/populate-risk-table/${planId}/`) // Call the dedicated endpoint for the risk table
+    //             .then(response => {
+    //                 if (!response.ok) {
+    //                     throw new Error(`HTTP error! status: ${response.status}`);
+    //                 }
+    //                 return response.json();
+    //             })
+    //             .then(data => {
+    //                 if (data.error) {
+    //                     throw new Error(data.error);
+    //                 }
+    //                 // The endpoint returns an array of objects for the table
+    //                 const aiGeneratedTableData = data; 
+    //                 loadTableData(aiGeneratedTableData);
+    //             })
+    //             .catch(error => {
+    //                 console.error('Error generating risk analysis:', error);
+    //                 alert(`An error occurred: ${error.message}`);
+    //                 const errorRow = tableBody.insertRow();
+    //                 errorRow.innerHTML = `<td colspan="10" class="text-center text-danger">Failed to generate risk analysis: ${error.message}</td>`;
+    //             })
+    //             .finally(() => {
+    //                 loadingSpinner.style.display = 'none';
+    //             });
+    //     });
+    // }
+    */
 
     // Initial load of data
     const initialData = {{ plan.risk_management_data|default:'[]'|safe }};

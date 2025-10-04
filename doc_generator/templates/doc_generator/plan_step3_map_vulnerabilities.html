@@ -243,7 +243,7 @@ document.addEventListener('DOMContentLoaded', function() {
             groundwaterZones: `/doc-generator/api/groundwater-zones/?lat=${dataEl.dataset.lat}&lon=${dataEl.dataset.lon}`,
             erosion: `/doc-generator/api/nzlri-erosion/?lat=${dataEl.dataset.lat}&lon=${dataEl.dataset.lon}`,
             parcel: `{% url 'doc_generator:api_get_parcel_geometry' %}?lat=${dataEl.dataset.lat}&lon=${dataEl.dataset.lon}`,
-            analysis: `/doc-generator/api/vulnerability-analysis/${dataEl.dataset.planPk}/`,
+            analysis: `/doc-generator/api/vulnerability-analysis/v2/${dataEl.dataset.planPk}/`,
         }
     };
 
@@ -435,7 +435,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 try {
                     rawData = JSON.parse(responseText);
                 } catch (e) {
-                    throw new Error("Received invalid JSON data from the server.");
+                    throw new Error("Received invalid JSON data for vulnerability analysis from the server.");
                 }
                 
                 const featureCollection = this.fixLrisGeoJson(rawData);
@@ -532,10 +532,23 @@ document.addEventListener('DOMContentLoaded', function() {
         const explanationProtected = document.getElementById('explanation-protected-areas');
         const explanationGroundwater = document.getElementById('explanation-groundwater-zones');
 
+        // Ensure selectors match HTML
+        console.log('DOM Selectors Check:');
+        console.log('  #technical-summary-output:', techSummaryOutput ? 'Found' : 'Not Found');
+        console.log('  #catchment-summary-output:', catchmentSummaryOutput ? 'Found' : 'Not Found');
+        console.log('  #explanation-land-use:', explanationLandUse ? 'Found' : 'Not Found');
+        console.log('  #explanation-erosion:', explanationErosion ? 'Found' : 'Not Found');
+        console.log('  #explanation-protected-areas:', explanationProtected ? 'Found' : 'Not Found');
+        console.log('  #explanation-groundwater-zones:', explanationGroundwater ? 'Found' : 'Not Found');
+        console.log('  #dynamic-table-container:', document.getElementById('dynamic-table-container') ? 'Found' : 'Not Found');
+
 
         try {
+            console.log('Fetching vulnerability analysis from:', config.urls.analysis);
             const response = await fetch(config.urls.analysis);
+            console.log('Vulnerability Analysis API Response:', response);
             const responseText = await response.text(); // Read response body once as text
+            console.log('Vulnerability Analysis API Response Text:', responseText);
 
             if (!response.ok) {
                 let errorMessage = `HTTP error! status: ${response.status}`;
@@ -543,7 +556,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     const errorData = JSON.parse(responseText); // Try parsing as JSON
                     errorMessage = errorData.error || errorMessage;
                 } catch (e) {
-                    console.error("Server returned non-JSON error response for analysis:", responseText);
+                    console.error("Server returned non-JSON error response for analysis:", responseText, e.stack);
                     errorMessage = `Server returned an unexpected error format for analysis (status: ${response.status}).`;
                 }
                 throw new Error(errorMessage);
@@ -552,34 +565,58 @@ document.addEventListener('DOMContentLoaded', function() {
             let data;
             try {
                 data = JSON.parse(responseText); // Parse as JSON for success case
+                console.log('Parsed Data:', data);
+                console.log('Value of data.data before assignment:', data.data); // NEW LOG
             } catch (e) {
-                console.error("Failed to parse vulnerability analysis data as JSON:", responseText);
+                console.error("Failed to parse vulnerability analysis data as JSON:", responseText, e.stack);
                 throw new Error("Received invalid JSON data for vulnerability analysis from the server.");
             }
             
+            console.log('API response structure:', data);
+            const reportData = data.data;
+            console.log('Report Data (extracted from data.data):', reportData);
+            console.log('Type of reportData:', typeof reportData); // NEW LOG
+            if (!reportData) { // NEW CHECK
+                console.error('reportData is undefined or null. Cannot proceed with DOM updates.');
+                throw new Error('Vulnerability analysis report data is missing or invalid.');
+            }
+
+            // Update DOM elements
+            console.log('Attempting to update DOM with reportData...');
+
             techLoader.style.display = 'none';
-            techSummaryOutput.textContent = data.technical_summary || 'No technical summary was returned.';
+            techSummaryOutput.innerHTML = reportData.technical_summary || 'No technical summary was returned. Check server logs or API response.';
+            console.log('Technical Summary updated:', techSummaryOutput.innerHTML);
 
             catchmentLoader.style.display = 'none';
-            catchmentSummaryOutput.textContent = data.catchment_context_summary || 'No catchment context summary was returned.';
+            catchmentSummaryOutput.innerHTML = reportData.catchment_context_summary || 'No catchment context summary was returned. Check server logs or API response.';
+            console.log('Catchment Summary updated:', catchmentSummaryOutput.innerHTML);
 
             // Populate individual explanations
-            if (data.layer_explanations) {
-                explanationLandUse.innerHTML = data.layer_explanations.land_use || 'No explanation available.';
-                explanationErosion.innerHTML = data.layer_explanations.erosion || 'No explanation available.';
-                explanationProtected.innerHTML = data.layer_explanations.protected_areas || 'No explanation available.';
-                explanationGroundwater.innerHTML = data.layer_explanations.groundwater_zones || 'No explanation available.';
+            if (reportData.layer_explanations) {
+                explanationLandUse.innerHTML = reportData.layer_explanations.land_use || 'No explanation available. Check server logs or API response.';
+                explanationErosion.innerHTML = reportData.layer_explanations.erosion || 'No explanation available. Check server logs or API response.';
+                explanationProtected.innerHTML = reportData.layer_explanations.protected_areas || 'No explanation available. Check server logs or API response.';
+                explanationGroundwater.innerHTML = reportData.layer_explanations.groundwater_zones || 'No explanation available. Check server logs or API response.';
+                console.log('Layer explanations updated.');
+            } else {
+                const noExplanationMessage = 'No layer explanations were returned. Check server logs or API response.';
+                explanationLandUse.innerHTML = noExplanationMessage;
+                explanationErosion.innerHTML = noExplanationMessage;
+                explanationProtected.innerHTML = noExplanationMessage;
+                explanationGroundwater.innerHTML = noExplanationMessage;
+                console.log('No layer explanations found in reportData.');
             }
 
             const tableContainer = document.getElementById('dynamic-table-container');
-            if (data.biophysical_table && Array.isArray(data.biophysical_table)) {
+            if (reportData.biophysical_table && Array.isArray(reportData.biophysical_table) && reportData.biophysical_table.length > 0) {
                 const table = document.createElement('table');
                 table.className = 'table table-bordered table-striped mt-2';
                 table.innerHTML = `
                     <caption style="caption-side: top; font-size: 0.8rem; color: #6c757d;">Biophysical features and resulting vulnerabilities for the property.</caption>
                     <thead class="table-light"><tr><th>Biophysical Feature</th><th>Considerations</th><th>Resulting Vulnerability</th></tr></thead>
                     <tbody>
-                        ${data.biophysical_table.map(row => `
+                        ${reportData.biophysical_table.map(row => `
                             <tr>
                                 <td>${row.feature || ''}</td>
                                 <td><ul>${(row.considerations || []).map(item => `<li>${item}</li>`).join('')}</ul></td>
@@ -589,14 +626,26 @@ document.addEventListener('DOMContentLoaded', function() {
                     </tbody>
                 `;
                 tableContainer.appendChild(table);
+                console.log('Biophysical table rendered with data.');
+            } else {
+                tableContainer.innerHTML = '<p class="text-muted small">No biophysical vulnerability data was returned by the analysis. Check server logs or API response.</p>';
+                console.log('Biophysical table not rendered: No data or empty array.');
             }
+            console.log('DOM update complete.');
+
         } catch (error) {
-            console.error('Failed to fetch or parse vulnerability analysis:', error);
+            console.error('Failed to fetch or parse vulnerability analysis:', error.message, error.stack);
             const errorMessage = `<p class="text-danger"><strong>Could not load analysis.</strong><br>Please check your API key configurations and network connection, then refresh the page.<br><br><em>Error: ${error.message}</em></p>`;
             techLoader.style.display = 'none';
             catchmentLoader.style.display = 'none';
             techSummaryOutput.innerHTML = errorMessage;
             catchmentSummaryOutput.innerHTML = errorMessage;
+            // Also update the explanation sections with an error message
+            explanationLandUse.innerHTML = errorMessage;
+            explanationErosion.innerHTML = errorMessage;
+            explanationProtected.innerHTML = errorMessage;
+            explanationGroundwater.innerHTML = errorMessage;
+            console.log('Error message displayed in all relevant sections.');
         }
     }
 

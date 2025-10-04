@@ -10,7 +10,7 @@ from django.db import transaction
 from django.views import View
 import pyproj
 from django.conf import settings
-from django.http import JsonResponse, HttpResponseBadRequest
+from django.http import JsonResponse, HttpResponseBadRequest, StreamingHttpResponse
 from doc_generator.forms import AdminDetailsForm, LocationForm
 from doc_generator.geospatial_utils import (
     _query_koordinates_vector,
@@ -28,14 +28,13 @@ import base64
 from django.core.files.base import ContentFile
 
 from doc_generator.services.embedding_service import get_embedding_model
-
 # LangChain components for RAG - needed for the new analysis view
-from langchain_community.vectorstores import Chroma
+from langchain_chroma import Chroma
 from langchain_groq import ChatGroq
 from langchain_core.prompts import PromptTemplate
 from groq import AuthenticationError
 from langchain_core.runnables import RunnablePassthrough
-from langchain_core.output_parsers import JsonOutputParser
+from langchain_core.output_parsers import JsonOutputParser, StrOutputParser
 
 import logging
 
@@ -519,6 +518,7 @@ def api_generate_risk_report(request, pk):
         "soil_type": plan.soil_type,
         "arcgis_slope_angle": plan.arcgis_slope_angle,
         "erodibility": plan.erodibility,
+        "soil_drainage_class": plan.soil_drainage_class,
     }
 
     # Call the correct service's main orchestration method
@@ -667,7 +667,7 @@ def api_generate_vulnerability_analysis(request, pk):
         llm = ChatGroq(model_name="llama-3.1-8b-instant", groq_api_key=settings.GROQ_API_KEY)
         output_parser = JsonOutputParser()
         
-        template = """You are an expert environmental consultant specializing in New Zealand's freshwater regulations.
+        template = '''You are an expert environmental consultant specializing in New Zealand's freshwater regulations.
         Your task is to analyze site-specific data and produce a JSON object containing a technical summary and a structured table of biophysical vulnerabilities.
         The primary context for regulations and environmental values comes from the retrieved documents for the specific catchment: **{catchment_name}**.
         Synthesize the following information. Each data source is provided as a JSON object.
@@ -700,7 +700,7 @@ def api_generate_vulnerability_analysis(request, pk):
         Based on all the provided data, generate a JSON object that follows this exact format:
         {{
             "technical_summary": "A high-level, markdown-formatted overview summarizing the most critical findings from all data sources (1-8). This should be a brief executive summary of the property's environmental context and key risks. Refer to the maps and their legends for visual context.",
-            "catchment_context_summary": "A markdown-formatted text summary of the key catchment-level context, based ONLY on the retrieved regional policy documents (Source 1). Explain the {catchment_name}'s identity, its main environmental challenges, and key values (e.g., cultural, ecological, recreational). Explicitly draw correlations between the catchment context and the technical data presented in the 'technical_summary' (e.g., 'The high erosion risk identified in the technical summary is particularly concerning given the catchment's sensitivity to sediment runoff as highlighted in regional policies.').",
+            "catchment_context_summary": "A markdown-formatted text summary of the key catchment-level context, based ONLY on the retrieved regional policy documents (Source 1). Explain the {catchment_name}'s identity, its main environmental challenges, and key values (e.g., cultural, ecological, recreational). Explicitly draw correlations between the catchment context and the technical data presented in the 'technical_summary' (e.g., 'The high erosion risk identified in the technical summary is particularly concerning given the catchment\'s sensitivity to sediment runoff as highlighted in regional policies.').",
             "layer_explanations": {{
                 "land_use": "A markdown explanation of what the Land Cover (LCDB) data (Source 5) shows for the property and its immediate surroundings. Describe the dominant land cover types and their potential implications, referring to the visual representation on the map.",
                 "erosion": "A markdown explanation of the erosion risk based on the NZLRI data (Source 6). Describe the severity and type of erosion identified on or near the property.",
@@ -727,7 +727,7 @@ def api_generate_vulnerability_analysis(request, pk):
         - Populate the `biophysical_table` with entries for Climate, Landform, Soil, and other relevant features based on the provided data.
         - If data for a feature is missing (e.g., no soil data found), reflect this in the considerations and vulnerabilities (e.g., "No site-specific soil data available.").
         - The final output MUST be a single, valid JSON object and nothing else.
-        """
+        '''
         prompt = PromptTemplate.from_template(template)
 
         # The RAG chain now takes the pre-fetched context directly.
@@ -772,10 +772,35 @@ def api_generate_vulnerability_analysis(request, pk):
         logger.error(f"Error in vulnerability analysis for plan {pk}: {e}", exc_info=True)
         return JsonResponse({'error': 'An unexpected error occurred while generating the analysis.'}, status=500)
 
+def _simplify_geospatial_data_for_llm(raw_data: dict) -> dict:
+    """
+    Simplifies raw geospatial data dictionaries to reduce token size for LLM prompts.
+    Extracts key properties and values, discarding raw geometry.
+    """
+    simplified = {}
+    
+    # Simplify vector features (erosion, protected areas, groundwater)
+    for key in ['erosion', 'protected_areas', 'groundwater_zones']:
+        if raw_data.get(key, {}).get('features'):
+            # Extract only the 'properties' from each feature to save tokens
+            simplified[key] = {
+                "feature_count": len(raw_data[key]['features']),
+                "properties": [f.get('properties', {}) for f in raw_data[key]['features']]
+            }
+        else:
+            simplified[key] = {"feature_count": 0, "properties": []}
+
+    # Simplify raster data (land cover)
+    if raw_data.get('land_cover', {}).get('data'):
+        simplified['land_cover'] = raw_data['land_cover']['data']
+
+    return simplified
+
 @login_required
 def api_generate_vulnerability_analysis_v2(request, pk):
     """
-    API endpoint for the new, decomposed vulnerability analysis pipeline.
+    API endpoint for the new, resilient vulnerability analysis pipeline.
+    Always returns HTTP 200, with errors included in the JSON body.
     """
     plan = get_object_or_404(FreshwaterPlan, pk=pk, user=request.user)
 
@@ -784,27 +809,139 @@ def api_generate_vulnerability_analysis_v2(request, pk):
         embeddings = get_embedding_model()
         vector_store_path = os.path.join(settings.BASE_DIR, 'vector_store')
         vector_store = Chroma(persist_directory=vector_store_path, embedding_function=embeddings)
-        retriever = vector_store.as_retriever(search_kwargs={"k": 10})
-        llm = ChatGroq(model_name="llama-3.1-8b-instant", groq_api_key=settings.GROQ_API_KEY)
+        retriever = vector_store.as_retriever(search_kwargs={"k": 5})
     except Exception as e:
         logger.error(f"Failed to initialize services for V2 analysis: {e}", exc_info=True)
-        return JsonResponse({"error": "Could not initialize required AI or data services."}, status=500)
+        # Return a structured error but with a 200 OK, so the frontend can handle it
+        error_report = {
+            "technical_summary": "Not available – service initialization failed.",
+            "catchment_context_summary": "Not available – service initialization failed.",
+            "errors": ["Could not initialize required AI or data services."]
+        }
+        return JsonResponse(error_report)
 
     # --- Prepare Context ---
+    # Fetching data from various geospatial services
+    erosion_data = _query_arcgis_vector('https://services3.arcgis.com/v5RzLI7nHYeFImL4/arcgis/rest/services/Freshwater_farm_plan_contextual_data_hosted/FeatureServer/5/query', plan.longitude, plan.latitude)
+    protected_areas_data = _query_koordinates_vector(754, plan.longitude, plan.latitude, settings.KOORDINATES_API_KEY, radius=5000)
+    groundwater_data = _query_arcgis_vector('https://maps.es.govt.nz/server/rest/services/Public/WaterAndLand/MapServer/3/query', plan.longitude, plan.latitude)
+    land_cover_data = _query_koordinates_raster({'land_cover': 117733}, plan.longitude, plan.latitude, settings.KOORDINATES_API_KEY)
+    
     site_context = {
         "council_authority_name": plan.council_authority_name,
         "catchment_name": plan.catchment_name,
         "soil_type": plan.soil_type,
         "arcgis_slope_angle": plan.arcgis_slope_angle,
         "erodibility": plan.erodibility,
+        "soil_drainage_class": plan.soil_drainage_class,
+        "latitude": plan.latitude,
+        "longitude": plan.longitude,
+        **_simplify_geospatial_data_for_llm({
+            "erosion": {"features": erosion_data or []},
+            "protected_areas": {"features": protected_areas_data or []},
+            "groundwater_zones": {"features": groundwater_data or []},
+            "land_cover": {"data": land_cover_data or {}},
+        })
     }
 
     # --- Run Analysis ---
     try:
-        # The service now only needs the retriever, not the pre-fetched docs
-        service = VulnerabilityService(llm=llm, retriever=retriever, site_context=site_context)
+        service = VulnerabilityService(retriever=retriever, site_context=site_context, embedding_model=embeddings)
+        
+        start_time = time.perf_counter()
         report = service.run_full_analysis()
+        end_time = time.perf_counter()
+        logger.info(f"Total api_generate_vulnerability_analysis_v2 latency: {end_time - start_time:.2f}s")
+
+        # The service now returns a comprehensive report with errors inside it.
+        # We can directly return this to the frontend.
         return JsonResponse(report)
     except Exception as e:
-        logger.error(f"Error in V2 vulnerability analysis for plan {pk}: {e}", exc_info=True)
-        return JsonResponse({'error': 'An unexpected error occurred while generating the analysis.'}, status=500)
+        # This is a last-resort catch-all for unexpected errors during service execution.
+        logger.error(f"An unexpected critical error occurred in V2 vulnerability analysis for plan {pk}: {e}", exc_info=True)
+        error_report = {
+            "technical_summary": "Not available – a critical error occurred.",
+            "catchment_context_summary": "Not available – a critical error occurred.",
+            "errors": [f"An unexpected critical error occurred: {str(e)}"]
+        }
+        return JsonResponse(error_report)
+
+@login_required
+def api_populate_risk_table(request, pk):
+    """
+    API endpoint specifically for the 'Generate AI Risk Analysis' button on the
+    risk management page (Step 5). It runs the vulnerability analysis but returns
+    only the 'biophysical_table' portion, formatted for that page's table.
+    """
+    plan = get_object_or_404(FreshwaterPlan, pk=pk, user=request.user)
+
+    try:
+        embeddings = get_embedding_model()
+        vector_store_path = os.path.join(settings.BASE_DIR, 'vector_store')
+        vector_store = Chroma(persist_directory=vector_store_path, embedding_function=embeddings)
+        retriever = vector_store.as_retriever(search_kwargs={"k": 5})
+
+        # The VulnerabilityService needs the full site context to run the analysis
+        # This is a simplified version; a more robust implementation would gather full context.
+        site_context = {"catchment_name": plan.catchment_name, "council_authority_name": plan.council}
+        service = VulnerabilityService(retriever=retriever, site_context=site_context)
+        report = service.run_full_analysis()
+
+        return JsonResponse(report.get('biophysical_table', []), safe=False)
+    except Exception as e:
+        logger.error(f"Error populating risk table for plan {pk}: {e}", exc_info=True)
+        return JsonResponse({'error': 'Failed to generate risk table data.'}, status=500)
+
+@login_required
+def ask_question_view(request):
+    """
+    A view to ask a question to the RAG model, now with streaming.
+    """
+    if request.method == 'POST':
+        question = request.POST.get('question')
+        if not question:
+            return JsonResponse({'error': 'Question cannot be empty.'}, status=400)
+
+        try:
+            embeddings = get_embedding_model()
+            vector_store_path = os.path.join(settings.BASE_DIR, 'vector_store')
+            vector_store = Chroma(persist_directory=vector_store_path, embedding_function=embeddings)
+            retriever = vector_store.as_retriever(search_kwargs={'k': 5})
+            llm = ChatGroq(model_name="llama-3.1-8b-instant", groq_api_key=settings.GROQ_API_KEY)
+
+            template = '''
+            You are an expert assistant for answering questions about New Zealand Freshwater Farm Plans.
+            Use the following retrieved context to answer the question.
+            If the context is insufficient, state that you cannot answer based on the provided information.
+
+            Context:
+            {context}
+
+            ---
+            Question:
+            {question}
+
+            Answer:
+            '''
+            prompt = PromptTemplate.from_template(template)
+
+            rag_chain = (
+                {"context": retriever, "question": RunnablePassthrough()}
+                | prompt
+                | llm
+                | StrOutputParser()
+            )
+
+            def stream_generator(q):
+                """Generator function to stream content chunk by chunk."""
+                for chunk in rag_chain.stream(q):
+                    yield chunk
+
+            # Return a streaming response
+            return StreamingHttpResponse(stream_generator(question), content_type='text/plain')
+
+        except Exception as e:
+            logger.error(f"Error in ask_question_view: {e}", exc_info=True)
+            return JsonResponse({'error': 'An error occurred while processing your question.'}, status=500)
+
+    return render(request, 'doc_generator/ask_question.html')

@@ -96,7 +96,7 @@ class RetrievalService:
         unique_docs = {}
         for query in queries:
             try:
-                retrieved_docs: List[Document] = self.retriever.get_relevant_documents(query)
+                retrieved_docs: List[Document] = self.retriever.invoke(query)
                 for doc in retrieved_docs:
                     doc_id = (doc.metadata.get("source"), doc.page_content)
                     if doc_id not in unique_docs:

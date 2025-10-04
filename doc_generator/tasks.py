@@ -16,6 +16,7 @@ from doc_generator.geospatial_utils import (
     _query_arcgis_raster,
     _calculate_slope_from_dem,
 )
+from doc_generator.services.soil_drainage_service import SoilDrainageService
 import hashlib
 from langchain_core.documents import Document
 
@@ -39,7 +40,7 @@ except ImportError as e:
     letter = None
 
 # LangChain components for RAG
-from langchain_community.vectorstores import Chroma
+from langchain_chroma import Chroma
 from langchain_groq import ChatGroq
 from langchain_core.prompts import PromptTemplate
 from langchain_core.runnables import RunnablePassthrough
@@ -484,6 +485,10 @@ def populate_admin_details_task(self, freshwater_plan_id):
             else:
                 plan.soil_type = "Not available or error during ArcGIS soil query."
 
+            # Fetch Soil Drainage Class
+            drainage_service = SoilDrainageService(lat=plan.latitude, lon=plan.longitude)
+            plan.soil_drainage_class = drainage_service.get_soil_drainage_class()
+
             # Always calculate slope from the DEM as the primary method.
             logger.info(f"Calculating slope from DEM for plan {plan.pk}.")
             slope_degrees = _calculate_slope_from_dem(plan.longitude, plan.latitude, settings.KOORDINATES_API_KEY)
@@ -509,7 +514,7 @@ def populate_admin_details_task(self, freshwater_plan_id):
         plan.generation_status = FreshwaterPlan.GenerationStatus.READY
         plan.save(update_fields=[
             'council_authority_name', 'farm_address', 'legal_land_titles', 'total_farm_area_ha', 'catchment_name',
-            'soil_type', 'slope_class', 'arcgis_slope_angle',
+            'soil_type', 'soil_drainage_class', 'slope_class', 'arcgis_slope_angle',
             'nutrient_leaching_vulnerability', 'erodibility',
             'generation_status', 'generation_progress', 'updated_at'
         ])

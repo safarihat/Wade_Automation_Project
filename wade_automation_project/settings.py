@@ -271,6 +271,11 @@ CACHES = {
 # --- Custom Application Settings ---
 LLM_CACHE_TTL_SECONDS = int(os.environ.get('LLM_CACHE_TTL_SECONDS', 60 * 60 * 4)) # Default to 4 hours
 
+# Defines the Groq model for the VulnerabilityService. Default to the fastest model for general use.
+# For high-quality analysis, override with 'llama-3.2-90b-text' in your environment.
+# The powerful model is used for the final, complex analysis step. Updated to the latest available model.
+GROQ_MODEL = os.environ.get('GROQ_MODEL', 'llama-3.3-70b-versatile')
+
 # --- Logging Configuration ---
 LOGGING = {
     'version': 1,

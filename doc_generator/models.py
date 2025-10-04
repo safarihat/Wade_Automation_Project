@@ -69,6 +69,7 @@ class FreshwaterPlan(models.Model):
     arcgis_slope_angle = models.FloatField(blank=True, null=True, help_text="Slope angle in degrees from ArcGIS data.")
     nutrient_leaching_vulnerability = models.CharField(max_length=100, blank=True, null=True, help_text="Nutrient leaching vulnerability from ArcGIS data.")
     erodibility = models.CharField(max_length=100, blank=True, null=True, help_text="Erodibility classification from ArcGIS data.")
+    soil_drainage_class = models.CharField(max_length=100, blank=True, null=True, help_text="Soil drainage classification from FSL data.")
 
     # PDF outputs
     pdf_preview = models.FileField(upload_to='previews/', blank=True, null=True, help_text="A PDF preview of the generated plan.")
@@ -82,6 +83,7 @@ class FreshwaterPlan(models.Model):
         help_text="Status of admin details pre-population/generation pipeline."
     )
     generation_progress = models.JSONField(default=list, blank=True, help_text="A log of steps taken during the generation process.")
+    vulnerability_analysis_data = models.JSONField(blank=True, null=True, help_text="The full JSON output from the VulnerabilityService analysis.")
     vulnerability_features = models.JSONField(blank=True, null=True, help_text="User-drawn vulnerability features (GeoJSON).")
     activity_features = models.JSONField(blank=True, null=True, help_text="User-drawn activity features (GeoJSON).")
     physical_works_features = models.JSONField(null=True, blank=True, help_text="GeoJSON features for physical works.")
