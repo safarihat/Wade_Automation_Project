@@ -115,9 +115,7 @@ class VectorStoreBuilder:
         with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
             executor.map(self._process_file, files_to_process)
 
-        # Efficiency Optimization: Persist is called only once after all files are processed.
-        print("All files processed. Persisting vector store to disk...")
-        self.vector_store.persist()
+        
         
         total_time = time.time() - start_time
         print(f"Vector store build completed in {total_time:.2f} seconds.")
@@ -138,6 +136,38 @@ class VectorStoreBuilder:
         print(f"Found {len(files_to_process)} new or modified files to process.")
         return files_to_process
 
+    def _detect_category(self, filename: str, header_text: str) -> str:
+        """Analyzes filename and text to assign a thematic category."""
+        text_to_scan = (filename + " " + header_text).lower()
+        
+        # Keywords mapped to categories
+        category_map = {
+            "hydrology": ["hydrology", "hydro", "water quality", "groundwater"],
+            "soil": ["soil", "geology"],
+            "erosion": ["erosion", "landslip", "sediment"],
+            "biodiversity": ["biodiversity", "ecology", "fauna", "flora", "wetland"],
+            "biophysical": ["biophysical"],
+            "policy": ["policy", "plan", "framework"],
+        }
+
+        for category, keywords in category_map.items():
+            if any(keyword in text_to_scan for keyword in keywords):
+                return category
+        
+        return "general_regulatory"
+
+    def _detect_region_scope(self, filename: str) -> str:
+        """Analyzes filename to assign a geographic scope."""
+        filename_lower = filename.lower()
+        # National-level documents
+        if "npsfm" in filename_lower or "regulation" in filename_lower:
+            return "national"
+        # Catchment-specific documents
+        if "catchment" in filename_lower:
+            return "catchment"
+        # Default to regional for everything else
+        return "regional"
+
     def _process_file(self, file_path: str):
         """The complete processing pipeline for a single file."""
         try:
@@ -146,26 +176,35 @@ class VectorStoreBuilder:
             file_hash = self._get_file_hash(file_path)
 
             # 1. Parse PDF
-            # Resource Optimization: `strategy="fast"` is much lighter than `hi_res`.
             elements = partition_pdf(
                 file_path,
                 strategy="fast",
                 languages=["eng", "mri"] # Support for English and Māori
             )
             
-            # 2. Chunk Elements
+            # 2. Thematic and Scope Tagging
+            header_text = " ".join([el.text for el in elements[:2]]) # Use first 2 elements
+            detected_category = self._detect_category(file_name, header_text)
+            detected_scope = self._detect_region_scope(file_name)
+            print(f"  - Detected category: {detected_category}, scope: {detected_scope}")
+
+            # 3. Chunk Elements
             text_splitter = RecursiveCharacterTextSplitter(chunk_size=CHUNK_SIZE, chunk_overlap=CHUNK_OVERLAP)
             texts = [el.text for el in elements]
             
-            # Extract metadata including region
-            base_metadata = {"source": file_name}
+            # 4. Create Metadata
+            base_metadata = {
+                "source": file_name,
+                "category": detected_category,
+                "region_scope": detected_scope,
+            }
             region = self._extract_region_from_path(file_path)
             if region:
                 base_metadata["region"] = region
             
             chunks = text_splitter.create_documents(texts, metadatas=[base_metadata] * len(texts))
 
-            # 3. Embed and Add to Store in Batches
+            # 5. Embed and Add to Store in Batches
             # Resource Optimization: Processing in small batches prevents memory spikes.
             total_chunks = len(chunks)
             for i in range(0, total_chunks, EMBEDDING_BATCH_SIZE):
@@ -173,7 +212,7 @@ class VectorStoreBuilder:
                 print(f"  - Embedding batch {i//EMBEDDING_BATCH_SIZE + 1}/{(total_chunks + EMBEDDING_BATCH_SIZE - 1)//EMBEDDING_BATCH_SIZE} for {file_name}")
                 self.vector_store.add_documents(documents=batch)
 
-            # 4. Checkpoint
+            # 6. Checkpoint
             # Resiliency: If the process crashes, we won't have to re-process this file.
             self._save_checkpoint(file_path, file_hash)
             print(f"Finished processing and checkpointed file: {file_name}")

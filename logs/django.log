@@ -5098,3 +5098,740 @@ INFO 2025-10-04 12:15:21,238 vulnerability_service 5924 11584 PlanID=UnknownPlan
 WARNING 2025-10-04 12:15:23,507 vulnerability_service 5924 11584 PlanID=UnknownPlanID, Step=risk_identification - Validation failed: Output failed keyword checks and semantic similarity was low (0.55).
 INFO 2025-10-04 12:15:23,507 views 5924 11584 Total api_generate_vulnerability_analysis_v2 latency: 109.09s
 INFO 2025-10-04 12:15:23,507 basehttp 5924 11584 "GET /doc-generator/api/vulnerability-analysis/v2/263/ HTTP/1.1" 200 15397
+INFO 2025-10-04 20:55:27,479 geospatial_utils 7640 2342459304704 Successfully connected to Redis for caching.
+INFO 2025-10-04 20:55:34,179 autoreload 10520 988 Watching for file changes with StatReloader
+INFO 2025-10-04 20:55:34,667 geospatial_utils 10520 988 Successfully connected to Redis for caching.
+INFO 2025-10-04 21:10:48,148 basehttp 10520 11532 "GET / HTTP/1.1" 200 25717
+INFO 2025-10-04 21:10:48,308 basehttp 10520 11532 "GET /static/wade_automation/css/styles.css HTTP/1.1" 304 0
+WARNING 2025-10-04 21:10:49,405 basehttp 10520 8660 "GET /static/wade_automation/images/favicon.ico HTTP/1.1" 404 1962
+INFO 2025-10-04 21:10:50,922 basehttp 10520 7624 "GET /doc-generator/wizard/start/ HTTP/1.1" 200 18503
+INFO 2025-10-04 21:10:50,987 basehttp 10520 11532 - Broken pipe from ('127.0.0.1', 57588)
+INFO 2025-10-04 21:10:57,732 basehttp 10520 7624 "GET /doc-generator/api/get-parcel-geometry/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 1177
+INFO 2025-10-04 21:11:12,400 basehttp 10520 7624 "POST /doc-generator/wizard/start/ HTTP/1.1" 302 0
+INFO 2025-10-04 21:11:12,569 basehttp 10520 7624 "GET /doc-generator/wizard/264/details/ HTTP/1.1" 200 12415
+INFO 2025-10-04 21:11:15,756 basehttp 10520 7624 "GET /doc-generator/wizard/264/status/?t=1759623075686 HTTP/1.1" 200 132
+INFO 2025-10-04 21:11:18,752 basehttp 10520 7624 "GET /doc-generator/wizard/264/status/?t=1759623078676 HTTP/1.1" 200 132
+INFO 2025-10-04 21:11:21,762 basehttp 10520 7624 "GET /doc-generator/wizard/264/status/?t=1759623081686 HTTP/1.1" 200 132
+INFO 2025-10-04 21:11:24,756 basehttp 10520 7624 "GET /doc-generator/wizard/264/status/?t=1759623084680 HTTP/1.1" 200 132
+INFO 2025-10-04 21:11:27,782 basehttp 10520 7624 "GET /doc-generator/wizard/264/status/?t=1759623087674 HTTP/1.1" 200 132
+INFO 2025-10-04 21:11:30,743 basehttp 10520 14024 "GET /doc-generator/wizard/264/status/?t=1759623090682 HTTP/1.1" 200 879
+INFO 2025-10-04 21:11:33,739 basehttp 10520 14024 "GET /doc-generator/wizard/264/status/?t=1759623093679 HTTP/1.1" 200 1013
+WARNING 2025-10-04 21:11:35,576 geospatial_utils 7640 2342894776576 Koordinates vector query for layer 53682 at (168.0201183, -46.28693651) returned an empty 'layers' object, likely outside extent.
+WARNING 2025-10-04 21:11:35,576 tasks 7640 2342894776576 Koordinates layer 53682 returned no data. Falling back to LINZ WFS.
+INFO 2025-10-04 21:11:36,639 tasks 7640 2342894776576 WFS fallback query successful for (-46.28693651, 168.0201183). Found 1 features.
+INFO 2025-10-04 21:11:36,732 basehttp 10520 14024 "GET /doc-generator/wizard/264/status/?t=1759623096672 HTTP/1.1" 200 1013
+WARNING 2025-10-04 21:11:37,834 tasks 7640 2342894776576 Could not parse ArcGIS SlopeAngle 'nil'. Setting to None.
+INFO 2025-10-04 21:11:37,834 geospatial_utils 7640 2342894776576 Cache HIT for ArcGIS vector: https://services3.arcgis.com/v5RzLI7nHYeFImL4/arcgis/rest/services/Freshwater_farm_plan_contextual_data_hosted/FeatureServer/5/query
+WARNING 2025-10-04 21:11:37,834 soil_drainage_service 7640 2342894776576 Soil drainage field 'Darg_Drain' was empty or not found in the response.
+INFO 2025-10-04 21:11:37,850 tasks 7640 2342894776576 Calculating slope from DEM for plan 264.
+INFO 2025-10-04 21:11:37,851 geospatial_utils 7640 2342894776576 Performing fallback slope calculation using DEM layer 51768.
+INFO 2025-10-04 21:11:39,839 basehttp 10520 14024 "GET /doc-generator/wizard/264/status/?t=1759623099685 HTTP/1.1" 200 1013
+INFO 2025-10-04 21:11:42,733 basehttp 10520 6700 "GET /doc-generator/wizard/264/status/?t=1759623102673 HTTP/1.1" 200 1013
+INFO 2025-10-04 21:11:45,734 basehttp 10520 6700 "GET /doc-generator/wizard/264/status/?t=1759623105674 HTTP/1.1" 200 1013
+INFO 2025-10-04 21:11:46,967 tasks 7640 2342894776576 populate_admin_details_task completed for plan ID: 264
+INFO 2025-10-04 21:11:48,750 basehttp 10520 6700 "GET /doc-generator/wizard/264/status/?t=1759623108672 HTTP/1.1" 200 35
+INFO 2025-10-04 21:11:48,974 basehttp 10520 6700 "GET /doc-generator/wizard/264/details/?step=review HTTP/1.1" 200 17704
+INFO 2025-10-04 21:11:58,012 basehttp 10520 13956 "POST /doc-generator/wizard/264/details/?step=review HTTP/1.1" 302 0
+INFO 2025-10-04 21:11:58,126 basehttp 10520 13956 "GET /doc-generator/wizard/264/map-vulnerabilities/ HTTP/1.1" 200 45395
+INFO 2025-10-04 21:12:01,404 basehttp 10520 11068 "GET /doc-generator/api/get-parcel-geometry/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 1177
+INFO 2025-10-04 21:12:02,888 basehttp 10520 11068 "GET /doc-generator/api/get-parcel-geometry/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 1177
+INFO 2025-10-04 21:12:03,988 basehttp 10520 11068 "GET /doc-generator/api/get-parcel-geometry/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 1177
+INFO 2025-10-04 21:12:05,057 basehttp 10520 11068 "GET /doc-generator/api/get-parcel-geometry/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 1177
+INFO 2025-10-04 21:12:05,902 basehttp 10520 13332 "GET /doc-generator/api/nzlri-erosion/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 254253
+INFO 2025-10-04 21:12:08,664 basehttp 10520 5376 "GET /doc-generator/api/protected-areas/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 868243
+INFO 2025-10-04 21:12:09,323 geospatial_utils 10520 13956 Cache HIT for ArcGIS vector: https://services3.arcgis.com/v5RzLI7nHYeFImL4/arcgis/rest/services/Freshwater_farm_plan_contextual_data_hosted/FeatureServer/5/query
+INFO 2025-10-04 21:12:10,400 basehttp 10520 11068 "GET /doc-generator/api/groundwater-zones/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 32804
+INFO 2025-10-04 21:12:11,112 geospatial_utils 10520 13956 Cache HIT for ArcGIS vector: https://maps.es.govt.nz/server/rest/services/Public/WaterAndLand/MapServer/3/query
+INFO 2025-10-04 21:12:12,295 vulnerability_service 10520 13956 PlanID=UnknownPlanID - VulnerabilityService fast model: llama-3.1-8b-instant
+INFO 2025-10-04 21:12:12,296 vulnerability_service 10520 13956 PlanID=UnknownPlanID - VulnerabilityService powerful model: llama-3.3-70b-versatile
+INFO 2025-10-04 21:12:12,297 vulnerability_service 10520 13956 PlanID=UnknownPlanID - Starting full, isolated-step vulnerability analysis pipeline...
+INFO 2025-10-04 21:12:12,298 vulnerability_service 10520 13956 PlanID=UnknownPlanID, Step=retrieval - Step 1: Performing advanced retrieval...
+INFO 2025-10-04 21:12:14,337 retrieval_service 10520 13956 Cache MISS for query variations. Generating new queries. Key: query_variations:5536040667391662127
+INFO 2025-10-04 21:12:15,606 retrieval_service 10520 13956 Generated queries: ['Based on the provided farm data summary', 'I recommend asking the following technical questions to the regulatory database to identify potential environmental risks', 'compliance obligations', "and best practices related to the farm's specific characteristics", 'with a focus on the Southland Water and Land Plan:', "1. Are there any specific regulations or restrictions in place for the Aparima and Pourakino catchment area related to soil type (WkU1+WdU1) and slope angle (2.4 degrees) that may impact the farm's operations?", "2. What are the compliance obligations for the farm's location within the Southland Regional Council's jurisdiction", 'particularly in regards to groundwater zones (Lower Aparima) and proximity to protected areas (e.g.', 'Pourakino Scenic Reserve', 'Conservation Areas)?', '3. Are there any best practices or guidelines for managing soil erosion (slight) and waterlogging (moderate) in the Waimatuku soil type', "considering the farm's soil drainage class (Unknown) and potential flood risk (nil)?", "4. What are the requirements for nutrient management and nutrient leaching vulnerability (moderate) for the farm's location within the Aparima and Pourakino catchment area", "taking into account the farm's soil type and slope angle?", '5. Are there any specific regulations or guidelines for managing protected areas (e.g.', 'Pourakino Scenic Reserve', "Conservation Areas) within the farm's boundaries", "considering the farm's proximity to these areas and potential impact on the surrounding environment?", "These questions should provide valuable information to help assess the farm's environmental risks", 'compliance obligations', 'and potential best practices related to its specific characteristics and location within the Southland Water and Land Plan.']
+INFO 2025-10-04 21:12:15,606 retrieval_service 10520 13956 Cache MISS for multi-query retrieval. Performing retrieval. Key: multi_query_retrieve:2101661606830728197
+INFO 2025-10-04 21:12:20,065 retrieval_service 10520 13956 Retrieved 71 unique document chunks.
+INFO 2025-10-04 21:12:20,081 vulnerability_service 10520 13956 Token budget reached. Trimming remaining 25 documents.
+INFO 2025-10-04 21:12:20,081 vulnerability_service 10520 13956 Trimmed docs to 46 chunks within token budget (1845/2000 tokens).
+INFO 2025-10-04 21:12:20,081 vulnerability_service 10520 13956 LLM Raw Output (truncated for _perform_advanced_retrieval): {"docs": [{"page_content": "Farm score (aggregated)", "metadata": {"region": "southland", "source": "risk-index-tool-implementation-guidance-for-regulators.pdf"}}, {"page_content": "Farm score (per hectare)", "metadata": {"region": "southland", "source": "risk-index-tool-implementation-guidance-for-regulators.pdf"}}, {"page_content": "Dairy-MPDairy SupportDairy Support and Other LivestockArea in crop (Ha)Mean13.2 16.4 27.0 Median8.1 10.7 15.9 Standard Deviation16.1 17.2 33.4 Maximum161.5 98.8 18...
+INFO 2025-10-04 21:12:20,081 vulnerability_service 10520 13956 Executed _perform_advanced_retrieval: Latency=7.79s, Status=OK, Estimated Input Tokens=0, Estimated Output Tokens=5943
+INFO 2025-10-04 21:12:20,081 vulnerability_service 10520 13956 PlanID=UnknownPlanID, Step=summarisation - Step 2: Summarizing retrieved context...
+INFO 2025-10-04 21:12:21,334 vulnerability_service 10520 13956 LLM Raw Output (truncated for _summarize_retrieved_context): **Technical Summary of Freshwater Management and Farm Planning Regulatory Context in New Zealand**
+
+**Introduction**
+
+This technical summary provides an overview of the regulatory context relevant to freshwater management and farm planning in New Zealand, specifically for the Southland Regional Council and Aparima and Pourakino catchments. The provided documents outline key regulations, policies, and guidelines.
+
+**National Environmental Standards**
+
+The National Environmental Standards for Fres...
+INFO 2025-10-04 21:12:21,334 vulnerability_service 10520 13956 Executed _summarize_retrieved_context: Latency=1.25s, Status=OK, Estimated Input Tokens=0, Estimated Output Tokens=593
+INFO 2025-10-04 21:12:21,334 vulnerability_service 10520 13956 PlanID=UnknownPlanID, Step=catchment_summary - Step 3: Summarizing catchment context...
+INFO 2025-10-04 21:12:46,219 vulnerability_service 10520 13956 LLM Raw Output (truncated for summarize_catchment_context): **Catchment Context: Aparima and Pourakino Area**
+
+The Aparima and Pourakino catchments are located in the Southland region of New Zealand's South Island. The catchments are characterized by a mix of rural and pastoral land uses, with a significant proportion of dairy farming and winter forage cropping.
+
+**Biophysical Features:**
+
+- The catchments are situated within the Southland Physiographic Zone, which is characterized by rolling hills and valleys.
+- Soils in the area are predominantly clay-...
+INFO 2025-10-04 21:12:46,219 vulnerability_service 10520 13956 Executed summarize_catchment_context: Latency=24.88s, Status=OK, Estimated Input Tokens=0, Estimated Output Tokens=885
+INFO 2025-10-04 21:12:46,219 vulnerability_service 10520 13956 PlanID=UnknownPlanID, Step=risk_identification - Step 4: Identifying risks from site data...
+INFO 2025-10-04 21:13:14,296 vulnerability_service 10520 13956 LLM Raw Output (truncated for identify_risks_from_data): **Potential Environmental Risks Assessment Report**
+
+Based on the provided site-specific data, the following potential environmental risks have been identified:
+
+**Freshwater Quality Risks:**
+
+1. **Risk of Nutrient Leaching:** The soil type (WkU1+WdU1) and the presence of marginal strips and conservation areas along the Pourakino River suggest a moderate vulnerability to nutrient leaching. This may lead to freshwater quality degradation through increased nitrate and phosphorus levels.
+2. **Risk ...
+INFO 2025-10-04 21:13:14,305 vulnerability_service 10520 13956 Executed identify_risks_from_data: Latency=28.08s, Status=OK, Estimated Input Tokens=0, Estimated Output Tokens=834
+INFO 2025-10-04 21:13:14,308 vulnerability_service 10520 13956 PlanID=UnknownPlanID, Step=structured_analysis - Step 5: Generating final structured analysis via decomposed tasks...
+INFO 2025-10-04 21:13:16,816 vulnerability_service 10520 13956 LLM Raw Output (truncated for _generate_technical_summary): ### Executive Summary
+The Aparima and Pourakino catchments in the Southland region of New Zealand's South Island are characterized by a mix of rural and pastoral land uses, with significant environmental challenges and sensitivities. The catchments are prone to soil erosion, sedimentation, and nutrient losses due to the dominant land use and soil characteristics. Freshwater farm plans and conservation efforts are essential to mitigate these risks and maintain water quality and ecosystem health.
+...
+INFO 2025-10-04 21:13:16,816 vulnerability_service 10520 13956 Executed _generate_technical_summary: Latency=2.50s, Status=OK, Estimated Input Tokens=0, Estimated Output Tokens=652
+INFO 2025-10-04 21:13:18,974 vulnerability_service 10520 13956 LLM Raw Output (truncated for _generate_layer_explanations): {"land_use": "The land use data source shows that the dominant land use in the Aparima and Pourakino catchments is dairy farming and winter forage cropping, with a smaller proportion of other agricultural activities. The average farm size is approximately 13.2 ha, with a mean percentage of property in crop of 5.2%. The land use patterns and soil characteristics suggest potential environmental challenges related to soil erosion, sedimentation, and nutrient losses.", "erosion": "The erosion data s...
+INFO 2025-10-04 21:13:18,981 vulnerability_service 10520 13956 Executed _generate_layer_explanations: Latency=2.16s, Status=OK, Estimated Input Tokens=0, Estimated Output Tokens=451
+INFO 2025-10-04 21:13:37,671 vulnerability_service 10520 13956 LLM Raw Output (truncated for _generate_biophysical_table): 
+INFO 2025-10-04 21:13:37,672 vulnerability_service 10520 13956 Executed _generate_biophysical_table: Latency=18.69s, Status=OK, Estimated Input Tokens=0, Estimated Output Tokens=0
+INFO 2025-10-04 21:13:37,674 vulnerability_service 10520 13956 PlanID=UnknownPlanID, Step=summarisation - Output context verified by keywords.
+INFO 2025-10-04 21:13:37,675 vulnerability_service 10520 13956 PlanID=UnknownPlanID, Step=catchment_summary - Output context verified by keywords.
+INFO 2025-10-04 21:13:37,675 vulnerability_service 10520 13956 PlanID=UnknownPlanID, Step=technical_summary - Output context verified by keywords.
+INFO 2025-10-04 21:13:37,675 vulnerability_service 10520 13956 PlanID=UnknownPlanID, Step=risk_identification - Keyword validation failed. Falling back to semantic similarity check.
+WARNING 2025-10-04 21:13:41,707 vulnerability_service 10520 13956 PlanID=UnknownPlanID, Step=risk_identification - Validation failed: Output failed keyword checks and semantic similarity was low (0.49).
+INFO 2025-10-04 21:13:41,707 views 10520 13956 Total api_generate_vulnerability_analysis_v2 latency: 89.42s
+INFO 2025-10-04 21:13:41,707 basehttp 10520 13956 "GET /doc-generator/api/vulnerability-analysis/v2/264/ HTTP/1.1" 200 15230
+INFO 2025-10-04 21:44:11,507 autoreload 10520 988 C:\Users\safar\wade_automation_project_new\wade_automation_project\settings.py changed, reloading.
+INFO 2025-10-04 21:44:19,926 autoreload 7592 11016 Watching for file changes with StatReloader
+INFO 2025-10-04 21:44:20,380 geospatial_utils 7592 11016 Successfully connected to Redis for caching.
+INFO 2025-10-04 21:46:26,799 autoreload 7592 11016 C:\Users\safar\wade_automation_project_new\wade_automation_project\settings.py changed, reloading.
+INFO 2025-10-04 21:46:29,080 autoreload 2072 10356 Watching for file changes with StatReloader
+INFO 2025-10-04 21:46:29,447 geospatial_utils 2072 10356 Successfully connected to Redis for caching.
+INFO 2025-10-04 21:47:11,025 autoreload 2072 10356 C:\Users\safar\wade_automation_project_new\wade_automation_project\settings.py changed, reloading.
+INFO 2025-10-04 21:47:13,066 autoreload 9984 408 Watching for file changes with StatReloader
+INFO 2025-10-04 21:47:13,425 geospatial_utils 9984 408 Successfully connected to Redis for caching.
+INFO 2025-10-04 21:47:49,717 autoreload 9984 408 C:\Users\safar\wade_automation_project_new\doc_generator\models.py changed, reloading.
+INFO 2025-10-04 21:47:51,727 autoreload 6528 7020 Watching for file changes with StatReloader
+INFO 2025-10-04 21:48:29,709 autoreload 6528 7020 C:\Users\safar\wade_automation_project_new\doc_generator\models.py changed, reloading.
+INFO 2025-10-04 21:48:31,024 autoreload 14908 12488 Watching for file changes with StatReloader
+INFO 2025-10-04 21:48:31,360 geospatial_utils 14908 12488 Successfully connected to Redis for caching.
+INFO 2025-10-04 21:48:51,982 autoreload 14908 12488 C:\Users\safar\wade_automation_project_new\wade_automation_project\settings.py changed, reloading.
+INFO 2025-10-04 21:48:54,229 autoreload 14236 7100 Watching for file changes with StatReloader
+INFO 2025-10-04 21:48:54,594 geospatial_utils 14236 7100 Successfully connected to Redis for caching.
+INFO 2025-10-04 21:49:12,822 autoreload 14236 7100 C:\Users\safar\wade_automation_project_new\wade_automation_project\settings.py changed, reloading.
+INFO 2025-10-04 21:49:15,073 autoreload 7720 13212 Watching for file changes with StatReloader
+INFO 2025-10-04 21:49:15,439 geospatial_utils 7720 13212 Successfully connected to Redis for caching.
+INFO 2025-10-04 21:53:43,847 autoreload 7720 13212 C:\Users\safar\wade_automation_project_new\wade_automation_project\settings.py changed, reloading.
+INFO 2025-10-04 21:53:46,266 autoreload 11320 8876 Watching for file changes with StatReloader
+INFO 2025-10-04 21:53:46,625 geospatial_utils 11320 8876 Successfully connected to Redis for caching.
+INFO 2025-10-04 22:01:58,401 geospatial_utils 160 8496 Successfully connected to Redis for caching.
+ERROR 2025-10-04 22:02:03,135 build_vector_store 160 8496 An unexpected error occurred during the build process:
+Traceback (most recent call last):
+  File "C:\Users\safar\miniconda3\envs\wade_env\Lib\site-packages\huggingface_hub\utils\_http.py", line 409, in hf_raise_for_status
+    response.raise_for_status()
+  File "C:\Users\safar\miniconda3\envs\wade_env\Lib\site-packages\requests\models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 401 Client Error: Unauthorized for url: https://huggingface.co/sentence-transformers/bge-small-en-v1.5/resolve/main/config.json
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\safar\miniconda3\envs\wade_env\Lib\site-packages\transformers\utils\hub.py", line 478, in cached_files
+    hf_hub_download(
+  File "C:\Users\safar\miniconda3\envs\wade_env\Lib\site-packages\huggingface_hub\utils\_validators.py", line 114, in _inner_fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\safar\miniconda3\envs\wade_env\Lib\site-packages\huggingface_hub\file_download.py", line 1010, in hf_hub_download
+    return _hf_hub_download_to_cache_dir(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\safar\miniconda3\envs\wade_env\Lib\site-packages\huggingface_hub\file_download.py", line 1117, in _hf_hub_download_to_cache_dir
+    _raise_on_head_call_error(head_call_error, force_download, local_files_only)
+  File "C:\Users\safar\miniconda3\envs\wade_env\Lib\site-packages\huggingface_hub\file_download.py", line 1658, in _raise_on_head_call_error
+    raise head_call_error
+  File "C:\Users\safar\miniconda3\envs\wade_env\Lib\site-packages\huggingface_hub\file_download.py", line 1546, in _get_metadata_or_catch_error
+    metadata = get_hf_file_metadata(
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\safar\miniconda3\envs\wade_env\Lib\site-packages\huggingface_hub\utils\_validators.py", line 114, in _inner_fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\safar\miniconda3\envs\wade_env\Lib\site-packages\huggingface_hub\file_download.py", line 1463, in get_hf_file_metadata
+    r = _request_wrapper(
+        ^^^^^^^^^^^^^^^^^
+  File "C:\Users\safar\miniconda3\envs\wade_env\Lib\site-packages\huggingface_hub\file_download.py", line 286, in _request_wrapper
+    response = _request_wrapper(
+               ^^^^^^^^^^^^^^^^^
+  File "C:\Users\safar\miniconda3\envs\wade_env\Lib\site-packages\huggingface_hub\file_download.py", line 310, in _request_wrapper
+    hf_raise_for_status(response)
+  File "C:\Users\safar\miniconda3\envs\wade_env\Lib\site-packages\huggingface_hub\utils\_http.py", line 459, in hf_raise_for_status
+    raise _format(RepositoryNotFoundError, message, response) from e
+huggingface_hub.errors.RepositoryNotFoundError: 401 Client Error. (Request ID: Root=1-68e1c38a-117225e85af7e42e09d22792;99ea53fd-40d3-43af-951d-77b90b7425a6)
+
+Repository Not Found for url: https://huggingface.co/sentence-transformers/bge-small-en-v1.5/resolve/main/config.json.
+Please make sure you specified the correct `repo_id` and `repo_type`.
+If you are trying to access a private or gated repo, make sure you are authenticated. For more details, see https://huggingface.co/docs/huggingface_hub/authentication
+Invalid username or password.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\safar\wade_automation_project_new\doc_generator\management\commands\build_vector_store.py", line 41, in handle
+    builder = VectorStoreBuilder(rebuild=rebuild)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\safar\wade_automation_project_new\doc_generator\services\vector_store_builder.py", line 43, in __init__
+    self.embedding_model = self._init_embedding_model()
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\safar\wade_automation_project_new\doc_generator\services\vector_store_builder.py", line 61, in _init_embedding_model
+    return HuggingFaceEmbeddings(
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\safar\miniconda3\envs\wade_env\Lib\site-packages\langchain_huggingface\embeddings\huggingface.py", line 98, in __init__
+    self._client = model_cls(
+                   ^^^^^^^^^^
+  File "C:\Users\safar\miniconda3\envs\wade_env\Lib\site-packages\sentence_transformers\SentenceTransformer.py", line 205, in __init__
+    modules = self._load_auto_model(
+              ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\safar\miniconda3\envs\wade_env\Lib\site-packages\sentence_transformers\SentenceTransformer.py", line 1197, in _load_auto_model
+    transformer_model = Transformer(
+                        ^^^^^^^^^^^^
+  File "C:\Users\safar\miniconda3\envs\wade_env\Lib\site-packages\sentence_transformers\models\Transformer.py", line 35, in __init__
+    config = AutoConfig.from_pretrained(model_name_or_path, **model_args, cache_dir=cache_dir)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\safar\miniconda3\envs\wade_env\Lib\site-packages\transformers\models\auto\configuration_auto.py", line 1288, in from_pretrained
+    config_dict, unused_kwargs = PretrainedConfig.get_config_dict(pretrained_model_name_or_path, **kwargs)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\safar\miniconda3\envs\wade_env\Lib\site-packages\transformers\configuration_utils.py", line 662, in get_config_dict
+    config_dict, kwargs = cls._get_config_dict(pretrained_model_name_or_path, **kwargs)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\safar\miniconda3\envs\wade_env\Lib\site-packages\transformers\configuration_utils.py", line 721, in _get_config_dict
+    resolved_config_file = cached_file(
+                           ^^^^^^^^^^^^
+  File "C:\Users\safar\miniconda3\envs\wade_env\Lib\site-packages\transformers\utils\hub.py", line 321, in cached_file
+    file = cached_files(path_or_repo_id=path_or_repo_id, filenames=[filename], **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\safar\miniconda3\envs\wade_env\Lib\site-packages\transformers\utils\hub.py", line 510, in cached_files
+    raise OSError(
+OSError: sentence-transformers/bge-small-en-v1.5 is not a local folder and is not a valid model identifier listed on 'https://huggingface.co/models'
+If this is a private repository, make sure to pass a token having permission to this repo either by logging in with `hf auth login` or by passing `token=<your_token>`
+INFO 2025-10-04 22:04:10,752 geospatial_utils 7912 14036 Successfully connected to Redis for caching.
+ERROR 2025-10-04 22:56:52,894 build_vector_store 7912 14036 An unexpected error occurred during the build process:
+Traceback (most recent call last):
+  File "C:\Users\safar\wade_automation_project_new\doc_generator\management\commands\build_vector_store.py", line 42, in handle
+    builder.run()
+  File "C:\Users\safar\wade_automation_project_new\doc_generator\services\vector_store_builder.py", line 120, in run
+    self.vector_store.persist()
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Chroma' object has no attribute 'persist'
+INFO 2025-10-04 23:07:36,532 geospatial_utils 8496 14716 Successfully connected to Redis for caching.
+INFO 2025-10-05 12:08:58,460 geospatial_utils 4904 2670819103872 Successfully connected to Redis for caching.
+INFO 2025-10-05 12:09:31,160 autoreload 2324 8876 Watching for file changes with StatReloader
+INFO 2025-10-05 12:09:31,486 geospatial_utils 2324 8876 Successfully connected to Redis for caching.
+INFO 2025-10-05 12:09:48,845 basehttp 2324 7056 "GET / HTTP/1.1" 200 25717
+INFO 2025-10-05 12:09:58,980 basehttp 2324 14804 "GET /doc-generator/wizard/start/ HTTP/1.1" 200 18503
+INFO 2025-10-05 12:09:59,050 basehttp 2324 7056 - Broken pipe from ('127.0.0.1', 49492)
+INFO 2025-10-05 12:10:05,133 basehttp 2324 14804 "GET /doc-generator/api/get-parcel-geometry/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 1177
+INFO 2025-10-05 12:10:18,214 basehttp 2324 14804 "POST /doc-generator/wizard/start/ HTTP/1.1" 302 0
+INFO 2025-10-05 12:10:18,324 basehttp 2324 14804 "GET /doc-generator/wizard/265/details/ HTTP/1.1" 200 12415
+INFO 2025-10-05 12:10:21,510 basehttp 2324 14804 "GET /doc-generator/wizard/265/status/?t=1759677021416 HTTP/1.1" 200 132
+INFO 2025-10-05 12:10:24,686 basehttp 2324 14804 "GET /doc-generator/wizard/265/status/?t=1759677024601 HTTP/1.1" 200 132
+INFO 2025-10-05 12:10:27,497 basehttp 2324 14804 "GET /doc-generator/wizard/265/status/?t=1759677027410 HTTP/1.1" 200 132
+INFO 2025-10-05 12:10:30,473 basehttp 2324 14804 "GET /doc-generator/wizard/265/status/?t=1759677030411 HTTP/1.1" 200 132
+INFO 2025-10-05 12:10:33,807 basehttp 2324 10232 "GET /doc-generator/wizard/265/status/?t=1759677033625 HTTP/1.1" 200 132
+INFO 2025-10-05 12:10:36,653 basehttp 2324 10232 "GET /doc-generator/wizard/265/status/?t=1759677036591 HTTP/1.1" 200 990
+INFO 2025-10-05 12:10:39,665 basehttp 2324 10232 "GET /doc-generator/wizard/265/status/?t=1759677039603 HTTP/1.1" 200 990
+WARNING 2025-10-05 12:10:40,912 geospatial_utils 4904 2671258805696 Koordinates vector query for layer 53682 at (168.0201183, -46.28693651) returned an empty 'layers' object, likely outside extent.
+WARNING 2025-10-05 12:10:40,912 tasks 4904 2671258805696 Koordinates layer 53682 returned no data. Falling back to LINZ WFS.
+INFO 2025-10-05 12:10:41,877 tasks 4904 2671258805696 WFS fallback query successful for (-46.28693651, 168.0201183). Found 1 features.
+INFO 2025-10-05 12:10:42,663 basehttp 2324 10232 "GET /doc-generator/wizard/265/status/?t=1759677042602 HTTP/1.1" 200 990
+WARNING 2025-10-05 12:10:43,001 tasks 4904 2671258805696 Could not parse ArcGIS SlopeAngle 'nil'. Setting to None.
+INFO 2025-10-05 12:10:43,016 geospatial_utils 4904 2671258805696 Cache HIT for ArcGIS vector: https://services3.arcgis.com/v5RzLI7nHYeFImL4/arcgis/rest/services/Freshwater_farm_plan_contextual_data_hosted/FeatureServer/5/query
+WARNING 2025-10-05 12:10:43,016 soil_drainage_service 4904 2671258805696 Soil drainage field 'Darg_Drain' was empty or not found in the response.
+INFO 2025-10-05 12:10:43,016 tasks 4904 2671258805696 Calculating slope from DEM for plan 265.
+INFO 2025-10-05 12:10:43,016 geospatial_utils 4904 2671258805696 Performing fallback slope calculation using DEM layer 51768.
+INFO 2025-10-05 12:10:45,764 basehttp 2324 10232 "GET /doc-generator/wizard/265/status/?t=1759677045592 HTTP/1.1" 200 990
+INFO 2025-10-05 12:10:48,658 basehttp 2324 10232 "GET /doc-generator/wizard/265/status/?t=1759677048596 HTTP/1.1" 200 990
+INFO 2025-10-05 12:10:51,686 basehttp 2324 10232 "GET /doc-generator/wizard/265/status/?t=1759677051602 HTTP/1.1" 200 990
+INFO 2025-10-05 12:10:52,992 tasks 4904 2671258805696 populate_admin_details_task completed for plan ID: 265
+INFO 2025-10-05 12:10:54,475 basehttp 2324 10232 "GET /doc-generator/wizard/265/status/?t=1759677054413 HTTP/1.1" 200 35
+INFO 2025-10-05 12:10:54,639 basehttp 2324 10232 "GET /doc-generator/wizard/265/details/?step=review HTTP/1.1" 200 17859
+INFO 2025-10-05 12:11:01,160 basehttp 2324 10232 "POST /doc-generator/wizard/265/details/?step=review HTTP/1.1" 302 0
+INFO 2025-10-05 12:11:01,269 basehttp 2324 10232 "GET /doc-generator/wizard/265/map-vulnerabilities/ HTTP/1.1" 200 45395
+INFO 2025-10-05 12:11:03,613 basehttp 2324 4500 "GET /doc-generator/api/get-parcel-geometry/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 1177
+INFO 2025-10-05 12:11:06,580 basehttp 2324 4500 "GET /doc-generator/api/get-parcel-geometry/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 1177
+INFO 2025-10-05 12:11:07,642 basehttp 2324 4500 "GET /doc-generator/api/get-parcel-geometry/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 1177
+INFO 2025-10-05 12:11:08,748 basehttp 2324 4500 "GET /doc-generator/api/get-parcel-geometry/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 1177
+INFO 2025-10-05 12:11:09,065 basehttp 2324 6772 "GET /doc-generator/api/nzlri-erosion/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 254253
+INFO 2025-10-05 12:11:12,178 geospatial_utils 2324 10232 Cache HIT for ArcGIS vector: https://services3.arcgis.com/v5RzLI7nHYeFImL4/arcgis/rest/services/Freshwater_farm_plan_contextual_data_hosted/FeatureServer/5/query
+INFO 2025-10-05 12:11:12,765 basehttp 2324 11624 "GET /doc-generator/api/protected-areas/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 868243
+INFO 2025-10-05 12:11:13,945 basehttp 2324 4500 "GET /doc-generator/api/groundwater-zones/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 32804
+INFO 2025-10-05 12:11:14,189 geospatial_utils 2324 10232 Cache HIT for ArcGIS vector: https://maps.es.govt.nz/server/rest/services/Public/WaterAndLand/MapServer/3/query
+INFO 2025-10-05 12:11:15,463 vulnerability_service 2324 10232 PlanID=UnknownPlanID - VulnerabilityService fast model: llama-3.1-8b-instant
+INFO 2025-10-05 12:11:15,463 vulnerability_service 2324 10232 PlanID=UnknownPlanID - VulnerabilityService powerful model: llama-3.3-70b-versatile
+INFO 2025-10-05 12:11:15,463 vulnerability_service 2324 10232 PlanID=UnknownPlanID - Starting full, isolated-step vulnerability analysis pipeline...
+INFO 2025-10-05 12:11:15,463 vulnerability_service 2324 10232 PlanID=UnknownPlanID, Step=retrieval - Step 1: Performing advanced retrieval...
+INFO 2025-10-05 12:11:17,513 retrieval_service 2324 10232 Cache MISS for query variations. Generating new queries. Key: query_variations:-4310992365974033501
+INFO 2025-10-05 12:11:18,659 retrieval_service 2324 10232 Generated queries: ["Based on the farm's geospatial data", 'here are 5 technical questions to ask a regulatory database:', '1. Are there any specific Southland Water and Land Plan rules or regulations applicable to the land use of "Pasture" (P2lw) in the Aparima And Pourakino catchment', "considering the farm's location in a scenic reserve (Pourakino Scenic Reserve) and the presence of marginal strips (Marginal Strip - Pourakino River)?", '2. What are the soil conservation and management requirements for the WkU1+WdU1 soil type in the Southland region', 'particularly in relation to erosion risk and soil erosion mitigation measures?', '3. Are there any specific groundwater management zone requirements for the Lower Aparima groundwater zone', "considering the farm's location and the impact on nearby water sources (e.g.", 'Pourakino River)?', '4. What are the nutrient management and water quality monitoring requirements for the farm', 'given the presence of marginal strips and conservation areas', 'and the potential for nutrient leaching and water pollution in the Aparima And Pourakino catchment?', '5. Are there any specific riparian management requirements for the Pourakino River', "considering the farm's location and the presence of marginal strips", 'conservation areas', 'and scenic reserves in the area?']
+INFO 2025-10-05 12:11:18,662 retrieval_service 2324 10232 Cache MISS for multi-query retrieval. Performing retrieval. Key: multi_query_retrieve:-3889996648800614766
+INFO 2025-10-05 12:11:21,086 retrieval_service 2324 10232 Retrieved 54 unique document chunks.
+INFO 2025-10-05 12:11:21,181 vulnerability_service 2324 10232 Trimmed docs to 54 chunks within token budget (954/2000 tokens).
+INFO 2025-10-05 12:11:21,181 vulnerability_service 2324 10232 LLM Raw Output (truncated for _perform_advanced_retrieval): {"docs": [{"page_content": "a map of the spatial extent of the farm at the time of certification.", "metadata": {"source": "Resource Management Freshwater Farm Plans Regulations 2023.pdf"}}, {"page_content": "Geospatial identification of a block of land.", "metadata": {"region": "southland", "source": "risk-index-tool-implementation-guidance-for-regulators.pdf"}}, {"page_content": "Regulatory context", "metadata": {"region": "southland", "source": "risk-index-tool-implementation-guidance-for-reg...
+INFO 2025-10-05 12:11:21,181 vulnerability_service 2324 10232 Executed _perform_advanced_retrieval: Latency=5.71s, Status=OK, Estimated Input Tokens=0, Estimated Output Tokens=4733
+INFO 2025-10-05 12:11:21,181 vulnerability_service 2324 10232 PlanID=UnknownPlanID, Step=summarisation - Step 2: Summarizing retrieved context...
+INFO 2025-10-05 12:11:22,416 vulnerability_service 2324 10232 Executed _summarize_retrieved_context: Latency=1.18s, Status=OK, Estimated Input Tokens=0, Estimated Output Tokens=617
+INFO 2025-10-05 12:11:22,418 vulnerability_service 2324 10232 PlanID=UnknownPlanID, Step=catchment_summary - Step 3: Summarizing catchment context...
+INFO 2025-10-05 12:11:38,268 vulnerability_service 2324 10232 LLM Raw Output (truncated for summarize_catchment_context): **Technical Summary of Aparima and Pourakino Catchment Context**
+
+The Aparima and Pourakino catchments are located in Southland, New Zealand, within the Tukipo catchment. The catchment context is characterized by:
+
+1. **Geology and Hydrology**: The catchment's geology consists of diverse soil types, including those susceptible to erosion and/or sedimentation (NZSC Soil Orders). The area is also prone to artificial subsurface drainage, with the majority of wetlands in the region being subject to ...
+INFO 2025-10-05 12:11:38,268 vulnerability_service 2324 10232 Executed summarize_catchment_context: Latency=15.86s, Status=OK, Estimated Input Tokens=0, Estimated Output Tokens=717
+INFO 2025-10-05 12:11:38,268 vulnerability_service 2324 10232 PlanID=UnknownPlanID, Step=risk_identification - Step 4: Identifying risks from site data...
+INFO 2025-10-05 12:12:06,992 vulnerability_service 2324 10232 LLM Raw Output (truncated for identify_risks_from_data): **Environmental Risk Assessment Report**
+
+Based on the provided site-specific data, the following potential environmental risks have been identified:
+
+**Freshwater Quality Risks:**
+
+1. **Nutrient Leaching Vulnerability:** Moderate (Source: Erosion data, Nutrient Leaching Vulnerability rating of "moderate")
+   This may lead to water pollution and impairment of aquatic ecosystems.
+
+2. **Short-Term Waterlogging:** Moderate (Source: Erosion data, Short-Term Waterlogging rating of "moderate")
+   This...
+INFO 2025-10-05 12:12:06,992 vulnerability_service 2324 10232 Executed identify_risks_from_data: Latency=28.72s, Status=OK, Estimated Input Tokens=0, Estimated Output Tokens=757
+INFO 2025-10-05 12:12:06,992 vulnerability_service 2324 10232 PlanID=UnknownPlanID, Step=structured_analysis - Step 5: Generating final structured analysis via decomposed tasks...
+INFO 2025-10-05 12:12:09,246 vulnerability_service 2324 10232 LLM Raw Output (truncated for _generate_technical_summary): ### Executive Summary
+The Aparima and Pourakino catchments in the Southland region of New Zealand face significant environmental challenges, including water quality degradation, soil erosion, and habitat loss. The catchment's geology consists of diverse soil types, including those susceptible to erosion and sedimentation. The area is predominantly used for agricultural purposes, with winter forage cropping and intensive winter grazing being common practices. The catchment's water quality has bee...
+INFO 2025-10-05 12:12:09,246 vulnerability_service 2324 10232 Executed _generate_technical_summary: Latency=2.25s, Status=OK, Estimated Input Tokens=0, Estimated Output Tokens=605
+INFO 2025-10-05 12:12:11,880 vulnerability_service 2324 10232 LLM Raw Output (truncated for _generate_layer_explanations): {"land_use": "The land use data source is not explicitly provided, but based on the context, it can be inferred that the property is located in a region with a mixed land use, including pastoral farming. The catchment has undergone significant land use changes, with European settlement and intensive farming practices leading to forest clearance and habitat loss. The region is predominantly used for agricultural purposes, with winter forage cropping and intensive winter grazing being common pract...
+INFO 2025-10-05 12:12:11,881 vulnerability_service 2324 10232 Executed _generate_layer_explanations: Latency=2.63s, Status=OK, Estimated Input Tokens=0, Estimated Output Tokens=580
+INFO 2025-10-05 12:12:29,375 vulnerability_service 2324 10232 LLM Raw Output (truncated for _generate_biophysical_table): 
+INFO 2025-10-05 12:12:29,375 vulnerability_service 2324 10232 Executed _generate_biophysical_table: Latency=17.50s, Status=OK, Estimated Input Tokens=0, Estimated Output Tokens=0
+INFO 2025-10-05 12:12:29,375 vulnerability_service 2324 10232 PlanID=UnknownPlanID, Step=summarisation - Output context verified by keywords.
+INFO 2025-10-05 12:12:29,375 vulnerability_service 2324 10232 PlanID=UnknownPlanID, Step=catchment_summary - Output context verified by keywords.
+INFO 2025-10-05 12:12:29,375 vulnerability_service 2324 10232 PlanID=UnknownPlanID, Step=technical_summary - Output context verified by keywords.
+INFO 2025-10-05 12:12:29,375 vulnerability_service 2324 10232 PlanID=UnknownPlanID, Step=risk_identification - Keyword validation failed. Falling back to semantic similarity check.
+INFO 2025-10-05 12:12:30,654 vulnerability_service 2324 10232 PlanID=UnknownPlanID, Step=risk_identification - Semantic check passed (score: 0.758164970109048). Upgrading status to Valid.
+INFO 2025-10-05 12:12:30,654 views 2324 10232 Total api_generate_vulnerability_analysis_v2 latency: 75.19s
+INFO 2025-10-05 12:12:30,654 basehttp 2324 10232 "GET /doc-generator/api/vulnerability-analysis/v2/265/ HTTP/1.1" 200 14696
+INFO 2025-10-05 12:31:35,126 geospatial_utils 13512 7316 Successfully connected to Redis for caching.
+INFO 2025-10-05 12:53:11,372 geospatial_utils 1828 2020759811456 Successfully connected to Redis for caching.
+INFO 2025-10-05 12:53:36,222 autoreload 11344 13016 Watching for file changes with StatReloader
+INFO 2025-10-05 12:53:36,660 geospatial_utils 11344 13016 Successfully connected to Redis for caching.
+INFO 2025-10-05 12:53:53,474 basehttp 11344 1120 "GET / HTTP/1.1" 200 25717
+INFO 2025-10-05 12:53:57,803 basehttp 11344 6064 "GET /doc-generator/wizard/start/ HTTP/1.1" 200 18503
+INFO 2025-10-05 12:53:57,865 basehttp 11344 1120 - Broken pipe from ('127.0.0.1', 58454)
+INFO 2025-10-05 12:54:03,510 basehttp 11344 6064 "GET /doc-generator/api/get-parcel-geometry/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 1177
+INFO 2025-10-05 12:54:17,127 basehttp 11344 5420 "POST /doc-generator/wizard/start/ HTTP/1.1" 302 0
+INFO 2025-10-05 12:54:17,281 basehttp 11344 5420 "GET /doc-generator/wizard/266/details/ HTTP/1.1" 200 12415
+INFO 2025-10-05 12:54:20,549 basehttp 11344 14960 "GET /doc-generator/wizard/266/status/?t=1759679660440 HTTP/1.1" 200 132
+INFO 2025-10-05 12:54:23,540 basehttp 11344 14960 "GET /doc-generator/wizard/266/status/?t=1759679663446 HTTP/1.1" 200 132
+INFO 2025-10-05 12:54:26,542 basehttp 11344 14960 "GET /doc-generator/wizard/266/status/?t=1759679666449 HTTP/1.1" 200 132
+INFO 2025-10-05 12:54:29,542 basehttp 11344 2040 "GET /doc-generator/wizard/266/status/?t=1759679669448 HTTP/1.1" 200 132
+INFO 2025-10-05 12:54:32,625 basehttp 11344 2040 "GET /doc-generator/wizard/266/status/?t=1759679672453 HTTP/1.1" 200 829
+INFO 2025-10-05 12:54:34,718 geospatial_utils 1828 2019054432192 Cache HIT for ArcGIS vector: https://services3.arcgis.com/v5RzLI7nHYeFImL4/arcgis/rest/services/Freshwater_farm_plan_contextual_data_hosted/FeatureServer/1/query
+INFO 2025-10-05 12:54:34,734 geospatial_utils 1828 2019054432192 Cache HIT for Koordinates vector layer 53682
+WARNING 2025-10-05 12:54:34,734 tasks 1828 2019054432192 Koordinates layer 53682 returned no data. Falling back to LINZ WFS.
+INFO 2025-10-05 12:54:35,516 basehttp 11344 2040 "GET /doc-generator/wizard/266/status/?t=1759679675438 HTTP/1.1" 200 963
+INFO 2025-10-05 12:54:35,719 tasks 1828 2019054432192 WFS fallback query successful for (-46.28693651, 168.0201183). Found 1 features.
+INFO 2025-10-05 12:54:35,725 geospatial_utils 1828 2019054432192 Cache HIT for ArcGIS vector: https://services3.arcgis.com/v5RzLI7nHYeFImL4/arcgis/rest/services/Freshwater_farm_plan_contextual_data_hosted/FeatureServer/5/query
+WARNING 2025-10-05 12:54:35,726 tasks 1828 2019054432192 Could not parse ArcGIS SlopeAngle 'nil'. Setting to None.
+INFO 2025-10-05 12:54:35,726 geospatial_utils 1828 2019054432192 Cache HIT for ArcGIS vector: https://services3.arcgis.com/v5RzLI7nHYeFImL4/arcgis/rest/services/Freshwater_farm_plan_contextual_data_hosted/FeatureServer/5/query
+WARNING 2025-10-05 12:54:35,726 soil_drainage_service 1828 2019054432192 Soil drainage field 'Darg_Drain' was empty or not found in the response.
+INFO 2025-10-05 12:54:35,726 tasks 1828 2019054432192 Calculating slope from DEM for plan 266.
+INFO 2025-10-05 12:54:35,726 geospatial_utils 1828 2019054432192 Performing fallback slope calculation using DEM layer 51768.
+INFO 2025-10-05 12:54:35,726 geospatial_utils 1828 2019054432192 Cache HIT for Koordinates raster layers 51768
+INFO 2025-10-05 12:54:35,742 geospatial_utils 1828 2019054432192 Cache HIT for Koordinates raster layers 51768
+INFO 2025-10-05 12:54:35,742 geospatial_utils 1828 2019054432192 Cache HIT for Koordinates raster layers 51768
+INFO 2025-10-05 12:54:35,742 geospatial_utils 1828 2019054432192 Cache HIT for Koordinates raster layers 51768
+INFO 2025-10-05 12:54:35,742 geospatial_utils 1828 2019054432192 Cache HIT for Koordinates raster layers 51768
+INFO 2025-10-05 12:54:35,742 geospatial_utils 1828 2019054432192 Cache HIT for Koordinates raster layers 51768
+INFO 2025-10-05 12:54:35,742 geospatial_utils 1828 2019054432192 Cache HIT for Koordinates raster layers 51768
+INFO 2025-10-05 12:54:35,742 geospatial_utils 1828 2019054432192 Cache HIT for Koordinates raster layers 51768
+INFO 2025-10-05 12:54:35,742 geospatial_utils 1828 2019054432192 Cache HIT for Koordinates raster layers 51768
+INFO 2025-10-05 12:54:35,757 tasks 1828 2019054432192 populate_admin_details_task completed for plan ID: 266
+INFO 2025-10-05 12:54:38,504 basehttp 11344 13532 "GET /doc-generator/wizard/266/status/?t=1759679678441 HTTP/1.1" 200 35
+INFO 2025-10-05 12:54:38,737 basehttp 11344 13532 "GET /doc-generator/wizard/266/details/?step=review HTTP/1.1" 200 17704
+INFO 2025-10-05 12:54:45,527 basehttp 11344 13532 "POST /doc-generator/wizard/266/details/?step=review HTTP/1.1" 302 0
+INFO 2025-10-05 12:54:45,698 basehttp 11344 13532 "GET /doc-generator/wizard/266/map-vulnerabilities/ HTTP/1.1" 200 45395
+INFO 2025-10-05 12:54:48,426 basehttp 11344 13520 "GET /doc-generator/api/get-parcel-geometry/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 1177
+INFO 2025-10-05 12:54:49,737 basehttp 11344 13520 "GET /doc-generator/api/get-parcel-geometry/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 1177
+INFO 2025-10-05 12:54:51,032 basehttp 11344 13520 "GET /doc-generator/api/get-parcel-geometry/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 1177
+INFO 2025-10-05 12:54:52,275 basehttp 11344 13520 "GET /doc-generator/api/get-parcel-geometry/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 1177
+INFO 2025-10-05 12:54:52,556 basehttp 11344 3132 "GET /doc-generator/api/nzlri-erosion/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 254253
+INFO 2025-10-05 12:54:53,339 geospatial_utils 11344 5020 Cache HIT for Koordinates vector layer 754
+INFO 2025-10-05 12:54:53,464 basehttp 11344 5020 "GET /doc-generator/api/protected-areas/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 868243
+INFO 2025-10-05 12:54:54,448 geospatial_utils 11344 12256 Cache HIT for ArcGIS vector: https://maps.es.govt.nz/server/rest/services/Public/WaterAndLand/MapServer/3/query
+INFO 2025-10-05 12:54:54,448 basehttp 11344 12256 "GET /doc-generator/api/groundwater-zones/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 32804
+INFO 2025-10-05 12:55:00,213 geospatial_utils 11344 13532 Cache HIT for ArcGIS vector: https://services3.arcgis.com/v5RzLI7nHYeFImL4/arcgis/rest/services/Freshwater_farm_plan_contextual_data_hosted/FeatureServer/5/query
+INFO 2025-10-05 12:55:00,234 geospatial_utils 11344 13532 Cache HIT for Koordinates vector layer 754
+INFO 2025-10-05 12:55:00,242 geospatial_utils 11344 13532 Cache HIT for ArcGIS vector: https://maps.es.govt.nz/server/rest/services/Public/WaterAndLand/MapServer/3/query
+INFO 2025-10-05 12:55:00,245 geospatial_utils 11344 13532 Cache HIT for Koordinates raster layers 117733
+INFO 2025-10-05 12:55:00,524 vulnerability_service 11344 13532 PlanID=UnknownPlanID - VulnerabilityService fast model: llama-3.1-8b-instant
+INFO 2025-10-05 12:55:00,525 vulnerability_service 11344 13532 PlanID=UnknownPlanID - VulnerabilityService powerful model: llama-3.3-70b-versatile
+INFO 2025-10-05 12:55:00,526 vulnerability_service 11344 13532 PlanID=UnknownPlanID - Starting full, isolated-step vulnerability analysis pipeline...
+INFO 2025-10-05 12:55:00,527 vulnerability_service 11344 13532 PlanID=UnknownPlanID, Step=retrieval - Step 1: Performing advanced retrieval...
+INFO 2025-10-05 12:55:02,564 retrieval_service 11344 13532 Cache MISS for query variations. Generating new queries. Key: query_variations:950686151181065606
+INFO 2025-10-05 12:55:03,681 retrieval_service 11344 13532 Generated queries: ['Based on the provided farm data summary', 'here are 5 concise technical questions to ask a regulatory database to identify potential environmental risks', 'compliance obligations', "and best practices related to the farm's specific characteristics", 'with a focus on the Southland Water and Land Plan:', '1. Are there any specific regulations or guidelines under the Southland Water and Land Plan that apply to farming activities within the Aparima and Pourakino catchment', "considering the farm's location and soil type (WkU1+WdU1)?", '2. What are the permitted levels of nutrient leaching and water table drawdown under the Southland Water and Land Plan for a farm with a soil type of WkU1+WdU1 and located in the Lower Aparima groundwater zone?', '3. Are there any protected areas (e.g.', 'reserves', "conservation areas) within the farm's boundaries or adjacent to it", 'and if so', 'what are the regulations and restrictions governing farming activities in these areas?', '4. What are the recommended best management practices for erosion control and soil conservation on farms with a slope angle of 2.4 degrees and a soil erodibility of slight', 'as per the Southland Water and Land Plan?', '5. Are there any specific requirements or guidelines under the Southland Water and Land Plan for farms with a high level of waterlogging vulnerability (slight) and a soil type of WkU1+WdU1', "considering the farm's location and groundwater zone?"]
+INFO 2025-10-05 12:55:03,691 retrieval_service 11344 13532 Cache MISS for multi-query retrieval. Performing retrieval. Key: multi_query_retrieve:-317046658894672162
+INFO 2025-10-05 12:57:33,966 retrieval_service 11344 13532 Retrieved 58 unique document chunks.
+INFO 2025-10-05 12:57:33,981 vulnerability_service 11344 13532 Trimmed docs to 58 chunks within token budget (1504/2000 tokens).
+INFO 2025-10-05 12:57:38,537 vulnerability_service 11344 13532 LLM Raw Output (truncated for _perform_advanced_retrieval): {"docs": [{"page_content": "analytical evidence from the analysis of farm data or records", "metadata": {"source": "audit-guidance.pdf"}}, {"page_content": "Farm score (aggregated)", "metadata": {"source": "risk-index-tool-implementation-guidance-for-regulators.pdf", "region": "southland"}}, {"page_content": "an on-farm assessment (where applicable).", "metadata": {"source": "audit-guidance.pdf"}}, {"page_content": "Contaminant Loss Risk Index Tool: Technical Document", "metadata": {"source": "r...
+INFO 2025-10-05 12:57:38,537 vulnerability_service 11344 13532 Executed _perform_advanced_retrieval: Latency=158.02s, Status=OK, Estimated Input Tokens=0, Estimated Output Tokens=5917
+INFO 2025-10-05 12:57:38,553 vulnerability_service 11344 13532 PlanID=UnknownPlanID, Step=summarisation - Step 2: Summarizing retrieved context...
+INFO 2025-10-05 12:57:39,797 vulnerability_service 11344 13532 LLM Raw Output (truncated for _summarize_retrieved_context): **Technical Summary of Regulatory Context for Freshwater Management and Farm Planning in New Zealand's Southland District Council and Aparima and Pourakino Catchment**
+
+**Regulatory Framework**
+
+The regulatory context for freshwater management and farm planning in New Zealand's Southland District Council and Aparima and Pourakino catchment is primarily governed by the Resource Management Act 1991 and its associated regulations, including the Resource Management Freshwater Farm Plans Regulations ...
+INFO 2025-10-05 12:57:39,797 vulnerability_service 11344 13532 Executed _summarize_retrieved_context: Latency=1.25s, Status=OK, Estimated Input Tokens=0, Estimated Output Tokens=612
+INFO 2025-10-05 12:57:39,797 vulnerability_service 11344 13532 PlanID=UnknownPlanID, Step=catchment_summary - Step 3: Summarizing catchment context...
+INFO 2025-10-05 12:57:44,391 vulnerability_service 11344 13532 LLM Raw Output (truncated for summarize_catchment_context): **Aparima And Pourakino Area Catchment Context Summary**
+
+The Aparima And Pourakino area catchment context is characterized by the following key biophysical features:
+
+* The catchment is situated in the Southland region of New Zealand.
+* The area encompasses the Aparima And Pourakino river catchments.
+* The catchment context is influenced by the surrounding landscape, including the Southland Water and Land Plan.
+* The Southland Water and Land Plan aims to manage and conserve the region's water r...
+INFO 2025-10-05 12:57:44,391 vulnerability_service 11344 13532 Executed summarize_catchment_context: Latency=4.59s, Status=OK, Estimated Input Tokens=0, Estimated Output Tokens=796
+INFO 2025-10-05 12:57:44,391 vulnerability_service 11344 13532 PlanID=UnknownPlanID, Step=risk_identification - Step 4: Identifying risks from site data...
+INFO 2025-10-05 12:58:13,523 vulnerability_service 11344 13532 LLM Raw Output (truncated for identify_risks_from_data): **Environmental Risk Assessment Report**
+
+**Introduction:**
+This report identifies potential environmental risks associated with the site located in the Aparima and Pourakino catchment, Southland District Council. The analysis is based on site-specific data provided.
+
+**Freshwater Quality Risks:**
+
+1. **Risk:** Potential for water pollution from agricultural activities, given the presence of pasture and arable land uses (P2lw, A2w) and the moderate nutrient leaching vulnerability of the soil.
+2....
+INFO 2025-10-05 12:58:13,523 vulnerability_service 11344 13532 Executed identify_risks_from_data: Latency=29.12s, Status=OK, Estimated Input Tokens=0, Estimated Output Tokens=734
+INFO 2025-10-05 12:58:13,523 vulnerability_service 11344 13532 PlanID=UnknownPlanID, Step=structured_analysis - Step 5: Generating final structured analysis via decomposed tasks...
+INFO 2025-10-05 12:58:15,860 vulnerability_service 11344 13532 LLM Raw Output (truncated for _generate_technical_summary): ### Executive Summary
+The Aparima and Pourakino catchment in the Southland District Council of New Zealand is subject to various environmental regulations and guidelines aimed at managing freshwater quality and promoting sustainable land use practices. The Resource Management Act 1991, the National Policy Statement for Freshwater Management, and the Southland Water and Land Plan are key regulatory frameworks governing freshwater management and farm planning in the region.
+
+### Environmental Cont...
+INFO 2025-10-05 12:58:15,860 vulnerability_service 11344 13532 Executed _generate_technical_summary: Latency=2.33s, Status=OK, Estimated Input Tokens=0, Estimated Output Tokens=570
+INFO 2025-10-05 12:58:18,053 vulnerability_service 11344 13532 LLM Raw Output (truncated for _generate_layer_explanations): {"land_use": "The land use data source reveals that the site is dominated by agricultural activities, including farming and forage cropping. The Southland Water and Land Plan sets requirements for farm planning, including the management of water quality and the protection of groundwater resources. The plan aims to promote sustainable land use practices, including the use of best management practices for erosion control and soil conservation. The site's land use may impact water quality and the e...
+INFO 2025-10-05 12:58:18,053 vulnerability_service 11344 13532 Executed _generate_layer_explanations: Latency=2.20s, Status=OK, Estimated Input Tokens=0, Estimated Output Tokens=547
+ERROR 2025-10-05 12:58:18,068 views 11344 13532 An unexpected critical error occurred in V2 vulnerability analysis for plan 266: unhashable type: 'dict'
+Traceback (most recent call last):
+  File "C:\Users\safar\wade_automation_project_new\doc_generator\views.py", line 852, in api_generate_vulnerability_analysis_v2
+    report = service.run_full_analysis()
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\safar\wade_automation_project_new\doc_generator\services\vulnerability_service.py", line 622, in run_full_analysis
+    structured_report, structured_errors_dict = self.generate_structured_analysis(
+                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\safar\wade_automation_project_new\doc_generator\services\vulnerability_service.py", line 568, in generate_structured_analysis
+    biophysical_table, biophysical_table_error = self._generate_biophysical_table(full_generation_context)
+                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\safar\wade_automation_project_new\doc_generator\services\vulnerability_service.py", line 49, in wrapper
+    result, error = func(*args, **kwargs)
+                    ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\safar\wade_automation_project_new\doc_generator\services\vulnerability_service.py", line 510, in _generate_biophysical_table
+    inputs = {{"context": combined_context, "site_data": json.dumps(self.site_context, indent=2)}}
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: unhashable type: 'dict'
+INFO 2025-10-05 12:58:18,090 basehttp 11344 13532 "GET /doc-generator/api/vulnerability-analysis/v2/266/ HTTP/1.1" 200 230
+INFO 2025-10-05 13:03:21,163 geospatial_utils 11452 2286830585728 Successfully connected to Redis for caching.
+INFO 2025-10-05 13:03:50,144 autoreload 2304 12304 Watching for file changes with StatReloader
+INFO 2025-10-05 13:03:50,504 geospatial_utils 2304 12304 Successfully connected to Redis for caching.
+INFO 2025-10-05 13:04:14,163 basehttp 2304 6632 "GET / HTTP/1.1" 200 25717
+INFO 2025-10-05 13:04:17,216 basehttp 2304 6720 "GET /doc-generator/wizard/start/ HTTP/1.1" 200 18503
+INFO 2025-10-05 13:04:17,274 basehttp 2304 6632 - Broken pipe from ('127.0.0.1', 60816)
+INFO 2025-10-05 13:04:22,550 basehttp 2304 6720 "GET /doc-generator/api/get-parcel-geometry/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 1177
+INFO 2025-10-05 13:04:35,044 basehttp 2304 6720 "POST /doc-generator/wizard/start/ HTTP/1.1" 302 0
+INFO 2025-10-05 13:04:35,142 basehttp 2304 6720 "GET /doc-generator/wizard/267/details/ HTTP/1.1" 200 12415
+INFO 2025-10-05 13:04:38,332 basehttp 2304 6720 "GET /doc-generator/wizard/267/status/?t=1759680278243 HTTP/1.1" 200 132
+INFO 2025-10-05 13:04:41,312 basehttp 2304 4516 "GET /doc-generator/wizard/267/status/?t=1759680281234 HTTP/1.1" 200 132
+INFO 2025-10-05 13:04:44,307 basehttp 2304 4516 "GET /doc-generator/wizard/267/status/?t=1759680284244 HTTP/1.1" 200 132
+INFO 2025-10-05 13:04:47,300 basehttp 2304 4516 "GET /doc-generator/wizard/267/status/?t=1759680287238 HTTP/1.1" 200 132
+INFO 2025-10-05 13:04:50,420 basehttp 2304 12276 "GET /doc-generator/wizard/267/status/?t=1759680290248 HTTP/1.1" 200 1005
+INFO 2025-10-05 13:04:52,108 geospatial_utils 11452 2285126841056 Cache HIT for ArcGIS vector: https://services3.arcgis.com/v5RzLI7nHYeFImL4/arcgis/rest/services/Freshwater_farm_plan_contextual_data_hosted/FeatureServer/1/query
+INFO 2025-10-05 13:04:52,126 geospatial_utils 11452 2285126841056 Cache HIT for Koordinates vector layer 53682
+WARNING 2025-10-05 13:04:52,127 tasks 11452 2285126841056 Koordinates layer 53682 returned no data. Falling back to LINZ WFS.
+INFO 2025-10-05 13:04:53,074 tasks 11452 2285126841056 WFS fallback query successful for (-46.28693651, 168.0201183). Found 1 features.
+INFO 2025-10-05 13:04:53,074 geospatial_utils 11452 2285126841056 Cache HIT for ArcGIS vector: https://services3.arcgis.com/v5RzLI7nHYeFImL4/arcgis/rest/services/Freshwater_farm_plan_contextual_data_hosted/FeatureServer/5/query
+WARNING 2025-10-05 13:04:53,074 tasks 11452 2285126841056 Could not parse ArcGIS SlopeAngle 'nil'. Setting to None.
+INFO 2025-10-05 13:04:53,074 geospatial_utils 11452 2285126841056 Cache HIT for ArcGIS vector: https://services3.arcgis.com/v5RzLI7nHYeFImL4/arcgis/rest/services/Freshwater_farm_plan_contextual_data_hosted/FeatureServer/5/query
+WARNING 2025-10-05 13:04:53,074 soil_drainage_service 11452 2285126841056 Soil drainage field 'Darg_Drain' was empty or not found in the response.
+INFO 2025-10-05 13:04:53,089 tasks 11452 2285126841056 Calculating slope from DEM for plan 267.
+INFO 2025-10-05 13:04:53,089 geospatial_utils 11452 2285126841056 Performing fallback slope calculation using DEM layer 51768.
+INFO 2025-10-05 13:04:53,089 geospatial_utils 11452 2285126841056 Cache HIT for Koordinates raster layers 51768
+INFO 2025-10-05 13:04:53,089 geospatial_utils 11452 2285126841056 Cache HIT for Koordinates raster layers 51768
+INFO 2025-10-05 13:04:53,089 geospatial_utils 11452 2285126841056 Cache HIT for Koordinates raster layers 51768
+INFO 2025-10-05 13:04:53,089 geospatial_utils 11452 2285126841056 Cache HIT for Koordinates raster layers 51768
+INFO 2025-10-05 13:04:53,089 geospatial_utils 11452 2285126841056 Cache HIT for Koordinates raster layers 51768
+INFO 2025-10-05 13:04:53,089 geospatial_utils 11452 2285126841056 Cache HIT for Koordinates raster layers 51768
+INFO 2025-10-05 13:04:53,089 geospatial_utils 11452 2285126841056 Cache HIT for Koordinates raster layers 51768
+INFO 2025-10-05 13:04:53,089 geospatial_utils 11452 2285126841056 Cache HIT for Koordinates raster layers 51768
+INFO 2025-10-05 13:04:53,089 geospatial_utils 11452 2285126841056 Cache HIT for Koordinates raster layers 51768
+INFO 2025-10-05 13:04:53,105 tasks 11452 2285126841056 populate_admin_details_task completed for plan ID: 267
+INFO 2025-10-05 13:04:53,308 basehttp 2304 12276 "GET /doc-generator/wizard/267/status/?t=1759680293246 HTTP/1.1" 200 35
+INFO 2025-10-05 13:04:53,499 basehttp 2304 12276 "GET /doc-generator/wizard/267/details/?step=review HTTP/1.1" 200 17699
+INFO 2025-10-05 13:04:56,852 basehttp 2304 12276 "POST /doc-generator/wizard/267/details/?step=review HTTP/1.1" 302 0
+INFO 2025-10-05 13:04:56,986 basehttp 2304 12276 "GET /doc-generator/wizard/267/map-vulnerabilities/ HTTP/1.1" 200 45395
+INFO 2025-10-05 13:04:59,622 basehttp 2304 9900 "GET /doc-generator/api/get-parcel-geometry/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 1177
+INFO 2025-10-05 13:05:00,897 basehttp 2304 9900 "GET /doc-generator/api/get-parcel-geometry/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 1177
+INFO 2025-10-05 13:05:02,154 basehttp 2304 9900 "GET /doc-generator/api/get-parcel-geometry/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 1177
+INFO 2025-10-05 13:05:03,205 basehttp 2304 13492 "GET /doc-generator/api/nzlri-erosion/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 254253
+INFO 2025-10-05 13:05:03,205 basehttp 2304 9900 "GET /doc-generator/api/get-parcel-geometry/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 1177
+INFO 2025-10-05 13:05:04,229 geospatial_utils 2304 11160 Cache HIT for Koordinates vector layer 754
+INFO 2025-10-05 13:05:04,323 basehttp 2304 11160 "GET /doc-generator/api/protected-areas/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 868243
+INFO 2025-10-05 13:05:05,267 geospatial_utils 2304 9900 Cache HIT for ArcGIS vector: https://maps.es.govt.nz/server/rest/services/Public/WaterAndLand/MapServer/3/query
+INFO 2025-10-05 13:05:05,286 basehttp 2304 9900 "GET /doc-generator/api/groundwater-zones/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 32804
+INFO 2025-10-05 13:05:08,412 geospatial_utils 2304 12276 Cache HIT for ArcGIS vector: https://services3.arcgis.com/v5RzLI7nHYeFImL4/arcgis/rest/services/Freshwater_farm_plan_contextual_data_hosted/FeatureServer/5/query
+INFO 2025-10-05 13:05:08,412 geospatial_utils 2304 12276 Cache HIT for Koordinates vector layer 754
+INFO 2025-10-05 13:05:08,435 geospatial_utils 2304 12276 Cache HIT for ArcGIS vector: https://maps.es.govt.nz/server/rest/services/Public/WaterAndLand/MapServer/3/query
+INFO 2025-10-05 13:05:08,438 geospatial_utils 2304 12276 Cache HIT for Koordinates raster layers 117733
+INFO 2025-10-05 13:05:08,629 vulnerability_service 2304 12276 PlanID=UnknownPlanID - VulnerabilityService fast model: llama-3.1-8b-instant
+INFO 2025-10-05 13:05:08,629 vulnerability_service 2304 12276 PlanID=UnknownPlanID - VulnerabilityService powerful model: llama-3.3-70b-versatile
+INFO 2025-10-05 13:05:08,629 vulnerability_service 2304 12276 PlanID=UnknownPlanID - Starting full, isolated-step vulnerability analysis pipeline...
+INFO 2025-10-05 13:05:08,629 vulnerability_service 2304 12276 PlanID=UnknownPlanID, Step=retrieval - Step 1: Performing advanced retrieval...
+INFO 2025-10-05 13:05:10,677 retrieval_service 2304 12276 Cache MISS for query variations. Generating new queries. Key: query_variations:-165114161117938207
+INFO 2025-10-05 13:05:11,815 retrieval_service 2304 12276 Generated queries: ['Here are the technical questions to ask a regulatory database:', '1. Is the farm located in a groundwater zone of high sensitivity', 'as per the Groundwater Management Zones (GMZs) defined by Environment Southland', 'and if so', 'what are the specific requirements for managing groundwater in the Lower Aparima zone?', "2. Are there any protected areas within the farm's boundaries", 'such as scenic reserves or marginal strips', 'that may impact land use or water management practices', 'and if so', 'what are the specific regulations and requirements for these areas?', '3. What are the soil type-specific erosion control measures required for the WkU1+WdU1 soil type', 'as per the Southland Water and Land Plan', 'and are there any additional requirements for managing soil erosion on undulating land with deep soil depth?', '4. Are there any specific nutrient management requirements for the farm', 'given the moderately high total available water and moderate readily available water rates', 'as per the soil data?', '5. Are there any flood risk management requirements for the farm', 'given the nil potential flood risk and undulating land with deep soil depth', 'as per the soil data?']
+INFO 2025-10-05 13:05:11,815 retrieval_service 2304 12276 Cache MISS for multi-query retrieval. Performing retrieval. Key: multi_query_retrieve:9020195374149451463
+INFO 2025-10-05 13:08:06,159 retrieval_service 2304 12276 Retrieved 74 unique document chunks.
+INFO 2025-10-05 13:08:06,159 vulnerability_service 2304 12276 Trimmed docs to 74 chunks within token budget (1406/2000 tokens).
+INFO 2025-10-05 13:08:10,428 vulnerability_service 2304 12276 LLM Raw Output (truncated for _perform_advanced_retrieval): {"docs": [{"page_content": "Regulatory context", "metadata": {"source": "risk-index-tool-implementation-guidance-for-regulators.pdf", "region": "southland"}}, {"page_content": "Use as a decision-support tool in a regulatory context", "metadata": {"source": "risk-index-tool-implementation-guidance-for-regulators.pdf", "region": "southland"}}, {"page_content": "regulatory decision makers", "metadata": {"region": "southland", "source": "Developing-adapting-and-applying-environmental-models-in-a-reg...
+INFO 2025-10-05 13:08:10,430 vulnerability_service 2304 12276 Executed _perform_advanced_retrieval: Latency=181.79s, Status=OK, Estimated Input Tokens=0, Estimated Output Tokens=6511
+INFO 2025-10-05 13:08:10,431 vulnerability_service 2304 12276 PlanID=UnknownPlanID, Step=summarisation - Step 2: Summarizing retrieved context...
+INFO 2025-10-05 13:08:11,691 vulnerability_service 2304 12276 LLM Raw Output (truncated for _summarize_retrieved_context): **Regulatory Context for Freshwater Management and Farm Planning in New Zealand**
+
+The regulatory context for freshwater management and farm planning in New Zealand is governed by various national and regional policies, guidelines, and regulations. The key documents that outline these regulations include the Resource Management Act 1991, the National Policy Statement for Freshwater Management (NPS-FM), and the Southland Water and Land Plan.
+
+**National Regulations**
+
+The National Environmental S...
+INFO 2025-10-05 13:08:11,691 vulnerability_service 2304 12276 Executed _summarize_retrieved_context: Latency=1.27s, Status=OK, Estimated Input Tokens=0, Estimated Output Tokens=607
+INFO 2025-10-05 13:08:11,691 vulnerability_service 2304 12276 PlanID=UnknownPlanID, Step=catchment_summary - Step 3: Summarizing catchment context...
+INFO 2025-10-05 13:08:14,247 vulnerability_service 2304 12276 LLM Raw Output (truncated for summarize_catchment_context): **Catchment Context: Aparima and Pourakino Area**
+
+The Aparima and Pourakino catchment is located in the Southland region of New Zealand. The catchment context is characterized by the following biophysical features:
+
+* **Groundwater**: The catchment is managed within the Upper Aparima and Lower Aparima groundwater zones. The Lower Aparima zone is not well-documented.
+* **Soil**: Soil data is limited in the provided documents. However, available information suggests that available water capacity ...
+INFO 2025-10-05 13:08:14,247 vulnerability_service 2304 12276 Executed summarize_catchment_context: Latency=2.55s, Status=OK, Estimated Input Tokens=0, Estimated Output Tokens=716
+INFO 2025-10-05 13:08:14,247 vulnerability_service 2304 12276 PlanID=UnknownPlanID, Step=risk_identification - Step 4: Identifying risks from site data...
+INFO 2025-10-05 13:08:44,126 vulnerability_service 2304 12276 LLM Raw Output (truncated for identify_risks_from_data): **Potential Environmental Risks Identification Report**
+
+**Introduction**
+
+This report identifies potential environmental risks associated with the provided site-specific data. The site is located in the Aparima and Pourakino catchment area, managed by Environment Southland.
+
+**Freshwater Quality Risks**
+
+1. **Short-term waterlogging risk**: The site's soil type (WkU1+WdU1) and drainage class (Unknown) may lead to short-term waterlogging, posing a risk to freshwater quality. (Risk severity: Mode...
+INFO 2025-10-05 13:08:44,127 vulnerability_service 2304 12276 Executed identify_risks_from_data: Latency=29.87s, Status=OK, Estimated Input Tokens=0, Estimated Output Tokens=783
+INFO 2025-10-05 13:08:44,128 vulnerability_service 2304 12276 PlanID=UnknownPlanID, Step=structured_analysis - Step 5: Generating final structured analysis via decomposed tasks...
+INFO 2025-10-05 13:08:46,346 vulnerability_service 2304 12276 LLM Raw Output (truncated for _generate_technical_summary): ### Executive Summary
+The Aparima and Pourakino catchment in Southland, New Zealand, is characterized by a mix of agricultural land use, marginal strips, and scenic reserves. The catchment's environmental context is governed by various national and regional policies, including the Resource Management Act 1991 and the Southland Water and Land Plan. The site-specific data indicates potential environmental risks, including freshwater quality, soil health, biodiversity, and regulatory compliance ris...
+INFO 2025-10-05 13:08:46,346 vulnerability_service 2304 12276 Executed _generate_technical_summary: Latency=2.23s, Status=OK, Estimated Input Tokens=0, Estimated Output Tokens=567
+INFO 2025-10-05 13:08:48,371 vulnerability_service 2304 12276 LLM Raw Output (truncated for _generate_layer_explanations): {"land_use": "The land use data source shows that the catchment is primarily used for agricultural purposes, with a focus on arable and vegetable production. The site's soil type and drainage class may require specific land use management practices to prevent soil degradation and protect water quality. The presence of nearby protected areas, such as the Pourakino Scenic Reserve, may also influence land use decisions and require careful consideration of environmental impacts.", "erosion": "The er...
+INFO 2025-10-05 13:08:48,371 vulnerability_service 2304 12276 Executed _generate_layer_explanations: Latency=2.02s, Status=OK, Estimated Input Tokens=0, Estimated Output Tokens=490
+INFO 2025-10-05 13:09:04,927 vulnerability_service 2304 12276 PlanID=UnknownPlanID - Generated biophysical table with 3 rows.
+INFO 2025-10-05 13:09:04,927 vulnerability_service 2304 12276 LLM Raw Output (truncated for _generate_biophysical_table): 
+INFO 2025-10-05 13:09:04,927 vulnerability_service 2304 12276 Executed _generate_biophysical_table: Latency=16.55s, Status=OK, Estimated Input Tokens=0, Estimated Output Tokens=0
+INFO 2025-10-05 13:09:04,927 vulnerability_service 2304 12276 PlanID=UnknownPlanID, Step=summarisation - Keyword validation failed. Falling back to semantic similarity check.
+INFO 2025-10-05 13:09:05,907 vulnerability_service 2304 12276 PlanID=UnknownPlanID, Step=summarisation - Semantic check passed (score: 0.9023925445035051). Upgrading status to Valid.
+INFO 2025-10-05 13:09:05,907 vulnerability_service 2304 12276 PlanID=UnknownPlanID, Step=catchment_summary - Output context verified by keywords.
+INFO 2025-10-05 13:09:05,907 vulnerability_service 2304 12276 PlanID=UnknownPlanID, Step=technical_summary - Keyword validation failed. Falling back to semantic similarity check.
+INFO 2025-10-05 13:09:06,888 vulnerability_service 2304 12276 PlanID=UnknownPlanID, Step=technical_summary - Semantic check passed (score: 0.8783961577284215). Upgrading status to Valid.
+INFO 2025-10-05 13:09:06,891 vulnerability_service 2304 12276 PlanID=UnknownPlanID, Step=risk_identification - Keyword validation failed. Falling back to semantic similarity check.
+INFO 2025-10-05 13:09:07,711 vulnerability_service 2304 12276 PlanID=UnknownPlanID, Step=risk_identification - Semantic check passed (score: 0.8625363732173338). Upgrading status to Valid.
+INFO 2025-10-05 13:09:07,712 views 2304 12276 Total api_generate_vulnerability_analysis_v2 latency: 239.08s
+INFO 2025-10-05 13:09:07,715 basehttp 2304 12276 "GET /doc-generator/api/vulnerability-analysis/v2/267/ HTTP/1.1" 200 14493
+INFO 2025-10-05 13:22:06,545 geospatial_utils 2600 2151808637120 Successfully connected to Redis for caching.
+INFO 2025-10-05 13:22:13,871 autoreload 13324 9800 Watching for file changes with StatReloader
+INFO 2025-10-05 13:22:14,249 geospatial_utils 13324 9800 Successfully connected to Redis for caching.
+INFO 2025-10-05 13:22:26,794 basehttp 13324 10744 "GET / HTTP/1.1" 200 25717
+INFO 2025-10-05 13:22:31,227 basehttp 13324 14304 "GET /doc-generator/wizard/start/ HTTP/1.1" 200 18503
+INFO 2025-10-05 13:22:31,291 basehttp 13324 10744 - Broken pipe from ('127.0.0.1', 49567)
+INFO 2025-10-05 13:22:38,627 basehttp 13324 14304 "GET /doc-generator/api/get-parcel-geometry/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 1177
+INFO 2025-10-05 13:22:51,050 basehttp 13324 1828 "POST /doc-generator/wizard/start/ HTTP/1.1" 302 0
+INFO 2025-10-05 13:22:51,167 basehttp 13324 1828 "GET /doc-generator/wizard/268/details/ HTTP/1.1" 200 12415
+INFO 2025-10-05 13:22:54,356 basehttp 13324 1828 "GET /doc-generator/wizard/268/status/?t=1759681374266 HTTP/1.1" 200 132
+INFO 2025-10-05 13:22:57,337 basehttp 13324 1828 "GET /doc-generator/wizard/268/status/?t=1759681377275 HTTP/1.1" 200 132
+INFO 2025-10-05 13:23:00,329 basehttp 13324 1828 "GET /doc-generator/wizard/268/status/?t=1759681380267 HTTP/1.1" 200 132
+INFO 2025-10-05 13:23:03,355 basehttp 13324 1828 "GET /doc-generator/wizard/268/status/?t=1759681383277 HTTP/1.1" 200 465
+INFO 2025-10-05 13:23:06,444 basehttp 13324 1828 "GET /doc-generator/wizard/268/status/?t=1759681386273 HTTP/1.1" 200 947
+INFO 2025-10-05 13:23:09,332 basehttp 13324 1828 "GET /doc-generator/wizard/268/status/?t=1759681389270 HTTP/1.1" 200 947
+WARNING 2025-10-05 13:23:09,399 geospatial_utils 2600 2152254681664 Koordinates vector query for layer 53682 at (168.0201183, -46.28693651) returned an empty 'layers' object, likely outside extent.
+WARNING 2025-10-05 13:23:09,399 tasks 2600 2152254681664 Koordinates layer 53682 returned no data. Falling back to LINZ WFS.
+INFO 2025-10-05 13:23:10,346 tasks 2600 2152254681664 WFS fallback query successful for (-46.28693651, 168.0201183). Found 1 features.
+WARNING 2025-10-05 13:23:11,245 tasks 2600 2152254681664 Could not parse ArcGIS SlopeAngle 'nil'. Setting to None.
+INFO 2025-10-05 13:23:11,245 geospatial_utils 2600 2152254681664 Cache HIT for ArcGIS vector: https://services3.arcgis.com/v5RzLI7nHYeFImL4/arcgis/rest/services/Freshwater_farm_plan_contextual_data_hosted/FeatureServer/5/query
+WARNING 2025-10-05 13:23:11,261 soil_drainage_service 2600 2152254681664 Soil drainage field 'Darg_Drain' was empty or not found in the response.
+INFO 2025-10-05 13:23:11,261 tasks 2600 2152254681664 Calculating slope from DEM for plan 268.
+INFO 2025-10-05 13:23:11,261 geospatial_utils 2600 2152254681664 Performing fallback slope calculation using DEM layer 51768.
+INFO 2025-10-05 13:23:12,340 basehttp 13324 1828 "GET /doc-generator/wizard/268/status/?t=1759681392277 HTTP/1.1" 200 947
+INFO 2025-10-05 13:23:15,445 basehttp 13324 1828 "GET /doc-generator/wizard/268/status/?t=1759681395273 HTTP/1.1" 200 947
+INFO 2025-10-05 13:23:18,335 basehttp 13324 1828 "GET /doc-generator/wizard/268/status/?t=1759681398273 HTTP/1.1" 200 947
+INFO 2025-10-05 13:23:20,417 tasks 2600 2152254681664 populate_admin_details_task completed for plan ID: 268
+INFO 2025-10-05 13:23:21,340 basehttp 13324 1828 "GET /doc-generator/wizard/268/status/?t=1759681401277 HTTP/1.1" 200 35
+INFO 2025-10-05 13:23:21,536 basehttp 13324 1828 "GET /doc-generator/wizard/268/details/?step=review HTTP/1.1" 200 17699
+INFO 2025-10-05 13:23:28,562 basehttp 13324 14364 "POST /doc-generator/wizard/268/details/?step=review HTTP/1.1" 302 0
+INFO 2025-10-05 13:23:28,698 basehttp 13324 14364 "GET /doc-generator/wizard/268/map-vulnerabilities/ HTTP/1.1" 200 45395
+INFO 2025-10-05 13:23:31,208 basehttp 13324 9444 "GET /doc-generator/api/get-parcel-geometry/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 1177
+INFO 2025-10-05 13:23:32,539 basehttp 13324 9444 "GET /doc-generator/api/get-parcel-geometry/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 1177
+INFO 2025-10-05 13:23:33,808 basehttp 13324 9444 "GET /doc-generator/api/get-parcel-geometry/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 1177
+INFO 2025-10-05 13:23:34,944 basehttp 13324 9444 "GET /doc-generator/api/get-parcel-geometry/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 1177
+INFO 2025-10-05 13:23:35,291 basehttp 13324 13332 "GET /doc-generator/api/nzlri-erosion/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 254253
+INFO 2025-10-05 13:23:38,703 basehttp 13324 11704 "GET /doc-generator/api/protected-areas/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 868243
+INFO 2025-10-05 13:23:40,155 basehttp 13324 9444 "GET /doc-generator/api/groundwater-zones/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 32804
+INFO 2025-10-05 13:23:41,511 geospatial_utils 13324 14364 Cache HIT for ArcGIS vector: https://services3.arcgis.com/v5RzLI7nHYeFImL4/arcgis/rest/services/Freshwater_farm_plan_contextual_data_hosted/FeatureServer/5/query
+INFO 2025-10-05 13:23:43,543 geospatial_utils 13324 14364 Cache HIT for ArcGIS vector: https://maps.es.govt.nz/server/rest/services/Public/WaterAndLand/MapServer/3/query
+INFO 2025-10-05 13:23:44,756 vulnerability_service 13324 14364 PlanID=UnknownPlanID - VulnerabilityService fast model: llama-3.1-8b-instant
+INFO 2025-10-05 13:23:44,771 vulnerability_service 13324 14364 PlanID=UnknownPlanID - VulnerabilityService powerful model: llama-3.3-70b-versatile
+INFO 2025-10-05 13:23:44,771 vulnerability_service 13324 14364 PlanID=UnknownPlanID - Starting full, isolated-step vulnerability analysis pipeline...
+INFO 2025-10-05 13:23:44,771 vulnerability_service 13324 14364 PlanID=UnknownPlanID, Step=retrieval - Step 1: Performing advanced retrieval...
+INFO 2025-10-05 13:23:46,823 retrieval_service 13324 14364 Cache MISS for query variations. Generating new queries. Key: query_variations_v2:6255352898075227509
+INFO 2025-10-05 13:23:48,036 retrieval_service 13324 14364 Generated LLM queries: ['Based on the provided farm data summary', 'here are 5 concise', 'technical questions to ask a regulatory database', 'focusing on identifying potential environmental risks', 'compliance obligations', "and best practices related to the farm's specific characteristics", 'with a focus on the Southland Water and Land Plan:', '1. What are the current water quality standards and guidelines for the Aparima And Pourakino catchment', 'specifically for soil type WkU1+WdU1', "and how do they relate to the farm's soil properties?", '2. Are there any protected areas (e.g. reserves', 'conservation areas', "marginal strips) within a 1 km radius of the farm that may impact or be impacted by the farm's activities", 'and if so', 'what are the specific regulations and guidelines applicable to these areas?', "3. Are the groundwater zones (e.g. Lower Aparima) within the farm's boundaries subject to any groundwater management plans or regulations", 'and if so', 'what are the specific requirements and guidelines for monitoring and managing groundwater quality and quantity?', '4. What are the erosion risk management requirements and guidelines for the WkU1+WdU1 soil type in the Aparima And Pourakino catchment', "and how do they relate to the farm's slope angle and erodibility?", "5. Are there any specific nutrient management and water quality monitoring requirements applicable to the farm's location and soil type", 'and if so', 'what are the specific guidelines and regulations for managing nutrient leaching vulnerability and water quality in the Aparima And Pourakino catchment?']
+INFO 2025-10-05 13:23:48,036 retrieval_service 13324 14364 Appended domain queries. Total queries: 30
+INFO 2025-10-05 13:23:48,052 retrieval_service 13324 14364 Cache MISS for multi-query retrieval. Performing retrieval. Key: multi_query_retrieve:2538086609154172922
+INFO 2025-10-05 13:28:59,012 retrieval_service 13324 14364 Retrieved 95 unique document chunks.
+INFO 2025-10-05 13:28:59,020 vulnerability_service 13324 14364 Trimmed docs to 95 chunks within token budget (1536/2000 tokens).
+INFO 2025-10-05 13:29:02,536 vulnerability_service 13324 14364 LLM Raw Output (truncated for _perform_advanced_retrieval): {"docs": [{"page_content": "analytical evidence from the analysis of farm data or records", "metadata": {"source": "audit-guidance.pdf"}}, {"page_content": "Farm score (aggregated)", "metadata": {"source": "risk-index-tool-implementation-guidance-for-regulators.pdf", "region": "southland"}}, {"page_content": "an on-farm assessment (where applicable).", "metadata": {"source": "audit-guidance.pdf"}}, {"page_content": "(5)", "metadata": {"source": "NPSFM-amended-october-2024.pdf"}}, {"page_content"...
+INFO 2025-10-05 13:29:02,536 vulnerability_service 13324 14364 Executed _perform_advanced_retrieval: Latency=317.76s, Status=OK, Estimated Input Tokens=0, Estimated Output Tokens=7950
+INFO 2025-10-05 13:29:02,536 vulnerability_service 13324 14364 PlanID=UnknownPlanID, Step=summarisation - Step 2: Summarizing retrieved context...
+INFO 2025-10-05 13:29:03,838 vulnerability_service 13324 14364 LLM Raw Output (truncated for _summarize_retrieved_context): **Regulatory Context for Freshwater Management and Farm Planning in New Zealand**
+
+The regulatory context for freshwater management and farm planning in New Zealand is governed by various policies, guidelines, and regulations. Key documents include the **Resource Management Freshwater Farm Plans Regulations 2023**, **Resource Management National Environmental Standards for Freshwater Regulations 2020**, and **Southland Water and Land Plan - Part A**.
+
+**Freshwater Farm Plans**
+
+Freshwater farm p...
+INFO 2025-10-05 13:29:03,838 vulnerability_service 13324 14364 Executed _summarize_retrieved_context: Latency=1.31s, Status=OK, Estimated Input Tokens=0, Estimated Output Tokens=671
+INFO 2025-10-05 13:29:03,838 vulnerability_service 13324 14364 PlanID=UnknownPlanID, Step=catchment_summary - Step 3: Summarizing catchment context...
+INFO 2025-10-05 13:29:18,736 vulnerability_service 13324 14364 LLM Raw Output (truncated for summarize_catchment_context): **Catchment Context for Aparima and Pourakino**
+
+The Aparima and Pourakino catchment is located in Southland, New Zealand. However, the provided documents do not contain specific details about the catchment's characteristics, including its size, shape, and hydrological features.
+
+**Biophysical Features**
+
+Although the provided documents do not explicitly mention the catchment's biophysical features, they do mention the presence of WkU1+WdU1 soil type, which is a fertile soil type suitable for ag...
+INFO 2025-10-05 13:29:18,736 vulnerability_service 13324 14364 Executed summarize_catchment_context: Latency=14.90s, Status=OK, Estimated Input Tokens=0, Estimated Output Tokens=586
+INFO 2025-10-05 13:29:18,736 vulnerability_service 13324 14364 PlanID=UnknownPlanID, Step=risk_identification - Step 4: Identifying risks from site data...
+INFO 2025-10-05 13:29:47,809 vulnerability_service 13324 14364 LLM Raw Output (truncated for identify_risks_from_data): **Environmental Risk Assessment Report**
+
+**Introduction**
+
+This report presents an assessment of potential environmental risks associated with the site located within the Aparima And Pourakino catchment, managed by Environment Southland. The assessment is based on site-specific data provided in the JSON format.
+
+**Freshwater Quality Risks**
+
+1. **Nutrient Leaching Vulnerability**: The soil type, WkU1+WdU1, exhibits moderate nutrient leaching vulnerability, indicating a potential risk of nutrien...
+INFO 2025-10-05 13:29:47,809 vulnerability_service 13324 14364 Executed identify_risks_from_data: Latency=29.06s, Status=OK, Estimated Input Tokens=0, Estimated Output Tokens=730
+INFO 2025-10-05 13:29:47,809 vulnerability_service 13324 14364 PlanID=UnknownPlanID, Step=structured_analysis - Step 5: Generating final structured analysis via decomposed tasks...
+INFO 2025-10-05 13:29:49,789 vulnerability_service 13324 14364 LLM Raw Output (truncated for _generate_technical_summary): ### Executive Summary
+The Aparima and Pourakino catchment in Southland, New Zealand, is subject to various environmental risks and regulatory requirements. The catchment is characterized by the presence of WkU1+WdU1 soil type, which exhibits moderate nutrient leaching vulnerability and slight waterlogging vulnerability. The site is located within the Lower Aparima groundwater zone, which may be susceptible to groundwater pollution.
+
+### Environmental Risks
+The site is associated with several env...
+INFO 2025-10-05 13:29:49,789 vulnerability_service 13324 14364 Executed _generate_technical_summary: Latency=1.99s, Status=OK, Estimated Input Tokens=0, Estimated Output Tokens=501
+INFO 2025-10-05 13:29:51,528 vulnerability_service 13324 14364 LLM Raw Output (truncated for _generate_layer_explanations): {"land_use": "The land use data source reveals that the catchment is used for agricultural purposes, with the WkU1+WdU1 soil type being suitable for farming. However, the specific land use practices and activities in the catchment are not detailed in the provided documents.", "erosion": "The erosion data source reveals that the soil type, WkU1+WdU1, exhibits slight erodibility, indicating a potential risk of soil erosion and soil degradation. The site's slope angle is reported as nil, indicating...
+INFO 2025-10-05 13:29:51,528 vulnerability_service 13324 14364 Executed _generate_layer_explanations: Latency=1.74s, Status=OK, Estimated Input Tokens=0, Estimated Output Tokens=317
+INFO 2025-10-05 13:30:05,849 vulnerability_service 13324 14364 PlanID=UnknownPlanID - Generated biophysical table with 6 rows.
+INFO 2025-10-05 13:30:05,849 vulnerability_service 13324 14364 LLM Raw Output (truncated for _generate_biophysical_table): 
+INFO 2025-10-05 13:30:05,849 vulnerability_service 13324 14364 Executed _generate_biophysical_table: Latency=14.31s, Status=OK, Estimated Input Tokens=0, Estimated Output Tokens=0
+INFO 2025-10-05 13:30:05,849 vulnerability_service 13324 14364 PlanID=UnknownPlanID, Step=summarisation - Keyword validation failed. Falling back to semantic similarity check.
+INFO 2025-10-05 13:30:06,781 vulnerability_service 13324 14364 PlanID=UnknownPlanID, Step=summarisation - Semantic check passed (score: 0.8457087102446816). Upgrading status to Valid.
+WARNING 2025-10-05 13:30:06,781 vulnerability_service 13324 14364 PlanID=UnknownPlanID, Step=catchment_summary - Validation failed: Output for catchment_summary is empty, conversational, or a refusal.
+INFO 2025-10-05 13:30:06,781 vulnerability_service 13324 14364 PlanID=UnknownPlanID, Step=technical_summary - Keyword validation failed. Falling back to semantic similarity check.
+INFO 2025-10-05 13:30:07,587 vulnerability_service 13324 14364 PlanID=UnknownPlanID, Step=technical_summary - Semantic check passed (score: 0.8047649655238105). Upgrading status to Valid.
+INFO 2025-10-05 13:30:07,603 vulnerability_service 13324 14364 PlanID=UnknownPlanID, Step=risk_identification - Keyword validation failed. Falling back to semantic similarity check.
+INFO 2025-10-05 13:30:08,449 vulnerability_service 13324 14364 PlanID=UnknownPlanID, Step=risk_identification - Semantic check passed (score: 0.844559754141889). Upgrading status to Valid.
+INFO 2025-10-05 13:30:08,449 views 13324 14364 Total api_generate_vulnerability_analysis_v2 latency: 383.69s
+INFO 2025-10-05 13:30:08,464 basehttp 13324 14364 "GET /doc-generator/api/vulnerability-analysis/v2/268/ HTTP/1.1" 200 12850
+INFO 2025-10-05 16:48:59,739 geospatial_utils 1076 13368 Successfully connected to Redis for caching.
+INFO 2025-10-05 20:02:41,677 geospatial_utils 3528 2905605686272 Successfully connected to Redis for caching.
+INFO 2025-10-05 20:02:57,541 autoreload 10144 10268 Watching for file changes with StatReloader
+INFO 2025-10-05 20:02:57,880 geospatial_utils 10144 10268 Successfully connected to Redis for caching.
+INFO 2025-10-05 20:03:17,274 basehttp 10144 7012 "GET / HTTP/1.1" 200 25717
+INFO 2025-10-05 20:03:24,867 basehttp 10144 448 "GET /doc-generator/wizard/start/ HTTP/1.1" 200 18503
+INFO 2025-10-05 20:03:24,924 basehttp 10144 7012 - Broken pipe from ('127.0.0.1', 54761)
+INFO 2025-10-05 20:03:29,885 basehttp 10144 448 "GET /doc-generator/api/get-parcel-geometry/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 1177
+INFO 2025-10-05 20:03:43,480 basehttp 10144 448 "POST /doc-generator/wizard/start/ HTTP/1.1" 302 0
+INFO 2025-10-05 20:03:43,643 basehttp 10144 448 "GET /doc-generator/wizard/269/details/ HTTP/1.1" 200 12415
+INFO 2025-10-05 20:03:46,820 basehttp 10144 5676 "GET /doc-generator/wizard/269/status/?t=1759705426736 HTTP/1.1" 200 132
+INFO 2025-10-05 20:03:49,813 basehttp 10144 5676 "GET /doc-generator/wizard/269/status/?t=1759705429735 HTTP/1.1" 200 132
+INFO 2025-10-05 20:03:52,807 basehttp 10144 5676 "GET /doc-generator/wizard/269/status/?t=1759705432745 HTTP/1.1" 200 132
+INFO 2025-10-05 20:03:55,849 basehttp 10144 5676 "GET /doc-generator/wizard/269/status/?t=1759705435740 HTTP/1.1" 200 132
+INFO 2025-10-05 20:03:58,822 basehttp 10144 11484 "GET /doc-generator/wizard/269/status/?t=1759705438732 HTTP/1.1" 200 923
+INFO 2025-10-05 20:04:01,807 basehttp 10144 11484 "GET /doc-generator/wizard/269/status/?t=1759705441745 HTTP/1.1" 200 923
+WARNING 2025-10-05 20:04:02,449 geospatial_utils 3528 2906051664672 Koordinates vector query for layer 53682 at (168.0201183, -46.28693651) returned an empty 'layers' object, likely outside extent.
+WARNING 2025-10-05 20:04:02,449 tasks 3528 2906051664672 Koordinates layer 53682 returned no data. Falling back to LINZ WFS.
+INFO 2025-10-05 20:04:03,413 tasks 3528 2906051664672 WFS fallback query successful for (-46.28693651, 168.0201183). Found 1 features.
+WARNING 2025-10-05 20:04:04,225 tasks 3528 2906051664672 Could not parse ArcGIS SlopeAngle 'nil'. Setting to None.
+INFO 2025-10-05 20:04:04,225 geospatial_utils 3528 2906051664672 Cache HIT for ArcGIS vector: https://services3.arcgis.com/v5RzLI7nHYeFImL4/arcgis/rest/services/Freshwater_farm_plan_contextual_data_hosted/FeatureServer/5/query
+WARNING 2025-10-05 20:04:04,225 soil_drainage_service 3528 2906051664672 Soil drainage field 'Darg_Drain' was empty or not found in the response.
+INFO 2025-10-05 20:04:04,225 tasks 3528 2906051664672 Calculating slope from DEM for plan 269.
+INFO 2025-10-05 20:04:04,225 geospatial_utils 3528 2906051664672 Performing fallback slope calculation using DEM layer 51768.
+INFO 2025-10-05 20:04:04,797 basehttp 10144 11484 "GET /doc-generator/wizard/269/status/?t=1759705444735 HTTP/1.1" 200 923
+INFO 2025-10-05 20:04:08,396 basehttp 10144 1156 "GET /doc-generator/wizard/269/status/?t=1759705448319 HTTP/1.1" 200 923
+INFO 2025-10-05 20:04:11,412 basehttp 10144 1156 "GET /doc-generator/wizard/269/status/?t=1759705451328 HTTP/1.1" 200 923
+INFO 2025-10-05 20:04:14,163 tasks 3528 2906051664672 populate_admin_details_task completed for plan ID: 269
+INFO 2025-10-05 20:04:14,380 basehttp 10144 1156 "GET /doc-generator/wizard/269/status/?t=1759705454318 HTTP/1.1" 200 35
+INFO 2025-10-05 20:04:14,538 basehttp 10144 1156 "GET /doc-generator/wizard/269/details/?step=review HTTP/1.1" 200 17704
+INFO 2025-10-05 20:05:07,379 basehttp 10144 5552 "POST /doc-generator/wizard/269/details/?step=review HTTP/1.1" 302 0
+INFO 2025-10-05 20:05:07,509 basehttp 10144 5552 "GET /doc-generator/wizard/269/map-vulnerabilities/ HTTP/1.1" 200 45395
+INFO 2025-10-05 20:05:10,816 basehttp 10144 4076 "GET /doc-generator/api/get-parcel-geometry/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 1177
+INFO 2025-10-05 20:05:12,161 basehttp 10144 4076 "GET /doc-generator/api/get-parcel-geometry/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 1177
+INFO 2025-10-05 20:05:13,228 basehttp 10144 4076 "GET /doc-generator/api/get-parcel-geometry/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 1177
+INFO 2025-10-05 20:05:14,423 basehttp 10144 4076 "GET /doc-generator/api/get-parcel-geometry/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 1177
+INFO 2025-10-05 20:05:14,917 basehttp 10144 12684 "GET /doc-generator/api/nzlri-erosion/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 254253
+INFO 2025-10-05 20:05:17,937 basehttp 10144 4516 "GET /doc-generator/api/protected-areas/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 868243
+INFO 2025-10-05 20:05:19,320 basehttp 10144 4076 "GET /doc-generator/api/groundwater-zones/?lat=-46.28693651&lon=168.0201183 HTTP/1.1" 200 32804
+INFO 2025-10-05 20:05:20,012 geospatial_utils 10144 5552 Cache HIT for ArcGIS vector: https://services3.arcgis.com/v5RzLI7nHYeFImL4/arcgis/rest/services/Freshwater_farm_plan_contextual_data_hosted/FeatureServer/5/query
+INFO 2025-10-05 20:05:21,805 geospatial_utils 10144 5552 Cache HIT for ArcGIS vector: https://maps.es.govt.nz/server/rest/services/Public/WaterAndLand/MapServer/3/query
+INFO 2025-10-05 20:05:23,023 vulnerability_service 10144 5552 PlanID=UnknownPlanID - VulnerabilityService fast model: llama-3.1-8b-instant
+INFO 2025-10-05 20:05:23,023 vulnerability_service 10144 5552 PlanID=UnknownPlanID - VulnerabilityService powerful model: llama-3.3-70b-versatile
+INFO 2025-10-05 20:05:23,023 vulnerability_service 10144 5552 PlanID=UnknownPlanID - Starting full, isolated-step vulnerability analysis pipeline...
+INFO 2025-10-05 20:05:23,023 vulnerability_service 10144 5552 PlanID=UnknownPlanID, Step=retrieval - Step 1: Performing advanced retrieval...
+INFO 2025-10-05 20:05:25,067 retrieval_service 10144 5552 Cache MISS for query variations. Generating new queries.
+INFO 2025-10-05 20:05:26,362 retrieval_service 10144 5552 Generated 28 total queries.
+INFO 2025-10-05 20:05:26,362 retrieval_service 10144 5552 Cache MISS for ensemble retrieval. Performing retrieval...
+INFO 2025-10-05 20:05:58,055 retrieval_service 10144 5552 Retrieved 118 unique document chunks from ensemble.
+INFO 2025-10-05 20:05:58,071 retrieval_service 10144 5552 Retrieved document balance: 62 catchment, 56 regional.
+INFO 2025-10-05 20:05:58,086 vulnerability_service 10144 5552 Token budget reached. Trimming remaining 61 documents.
+INFO 2025-10-05 20:05:58,088 vulnerability_service 10144 5552 Trimmed docs to 57 chunks within token budget (1938/2000 tokens).
+INFO 2025-10-05 20:06:02,843 vulnerability_service 10144 5552 LLM Raw Output (truncated for _perform_advanced_retrieval): {"docs": [{"page_content": "3", "metadata": {"region": "southland", "source": "Catchment  - Overland Flow Risk in Southland.pdf", "region_scope": "catchment", "category": "general_regulatory"}}, {"page_content": "3.5", "metadata": {"category": "hydrology", "source": "Water Quality in Southland - Current State and Trends - April 2017 (1).pdf", "region": "southland", "region_scope": "regional"}}, {"page_content": "3. Results and Discussion", "metadata": {"region_scope": "catchment", "category": "g...
+INFO 2025-10-05 20:06:02,843 vulnerability_service 10144 5552 Executed _perform_advanced_retrieval: Latency=39.80s, Status=OK, Estimated Input Tokens=0, Estimated Output Tokens=7540
+INFO 2025-10-05 20:06:02,843 vulnerability_service 10144 5552 PlanID=UnknownPlanID, Step=summarisation - Step 2: Summarizing retrieved context...
+INFO 2025-10-05 20:06:04,329 vulnerability_service 10144 5552 LLM Raw Output (truncated for _summarize_retrieved_context): **Regulatory Context Summary for Freshwater Management and Farm Planning in New Zealand**
+
+The regulatory context for freshwater management and farm planning in New Zealand is governed by various acts, policies, and guidelines. The Resource Management Act (RMA) 1991 and the Conservation Amendment Act (No. 2) 1993 provide the legal setting for resource managers. Requirements under these acts for the purpose of protecting New Zealand's freshwaters have consequences for the management of riparian z...
+INFO 2025-10-05 20:06:04,329 vulnerability_service 10144 5552 Executed _summarize_retrieved_context: Latency=1.48s, Status=OK, Estimated Input Tokens=0, Estimated Output Tokens=548
+INFO 2025-10-05 20:06:04,329 vulnerability_service 10144 5552 PlanID=UnknownPlanID, Step=catchment_summary - Step 3: Summarizing catchment context...
+INFO 2025-10-05 20:06:10,090 vulnerability_service 10144 5552 LLM Raw Output (truncated for summarize_catchment_context): **Aparima and Pourakino Catchment Context**
+
+The Aparima and Pourakino catchments are located in the Southland Region of New Zealand. The catchments span the coastal, intermediate, and inland climate zones, with annual rainfall ranging from 1,000 mm to 3,000 mm.
+
+**Biophysical Features**
+
+The catchments are characterized by a mix of flat to undulating terrain, with the Pourakino catchment being a short and steep catchment that discharges into the western arm of the Jacobs River Estuary. The soil...
+INFO 2025-10-05 20:06:10,090 vulnerability_service 10144 5552 Executed summarize_catchment_context: Latency=5.76s, Status=OK, Estimated Input Tokens=0, Estimated Output Tokens=741
+INFO 2025-10-05 20:06:10,090 vulnerability_service 10144 5552 PlanID=UnknownPlanID, Step=risk_identification - Step 4: Identifying risks from site data...
+INFO 2025-10-05 20:06:40,055 vulnerability_service 10144 5552 LLM Raw Output (truncated for identify_risks_from_data): **Environmental Risk Assessment Report**
+
+**Introduction**
+
+This report provides an assessment of potential environmental risks associated with the site located in the Southland District Council, New Zealand. The site-specific data has been analyzed to identify potential risks related to freshwater quality, soil health, biodiversity, and regulatory compliance.
+
+**Freshwater Quality Risks**
+
+1. **Potential for Pollution**: The site is located in the Aparima and Pourakino catchments, which are pro...
+INFO 2025-10-05 20:06:40,098 vulnerability_service 10144 5552 Executed identify_risks_from_data: Latency=29.97s, Status=OK, Estimated Input Tokens=0, Estimated Output Tokens=1029
+INFO 2025-10-05 20:06:40,322 vulnerability_service 10144 5552 PlanID=UnknownPlanID, Step=structured_analysis - Step 5: Generating final structured analysis via decomposed tasks...
+INFO 2025-10-05 20:06:42,535 vulnerability_service 10144 5552 LLM Raw Output (truncated for _generate_technical_summary): ### Executive Summary
+The property in question is located in the Southland District Council, New Zealand, within the Aparima and Pourakino catchments. The regulatory context for freshwater management and farm planning in New Zealand is governed by various acts, policies, and guidelines, including the Resource Management Act (RMA) 1991 and the Conservation Amendment Act (No. 2) 1993. The Southland Water and Land Plan, proposed in May 2024, provides policy direction for managing freshwater resourc...
+INFO 2025-10-05 20:06:42,536 vulnerability_service 10144 5552 Executed _generate_technical_summary: Latency=2.21s, Status=OK, Estimated Input Tokens=0, Estimated Output Tokens=583
+INFO 2025-10-05 20:06:44,688 vulnerability_service 10144 5552 LLM Raw Output (truncated for _generate_layer_explanations): {"land_use": "The land use data source reveals that the site is primarily used for agriculture, with farming activities posing a risk to water quality. The site is located in the Aparima and Pourakino catchments, which are sensitive to pollution, and the presence of pollutants can diminish cultural uses, particularly mahinga kai, and cultural identity. The site's soil type and terrain also increase the risk of soil erosion and degradation.", "erosion": "The erosion data source reveals that the s...
+INFO 2025-10-05 20:06:44,733 vulnerability_service 10144 5552 Executed _generate_layer_explanations: Latency=2.15s, Status=OK, Estimated Input Tokens=0, Estimated Output Tokens=474
+INFO 2025-10-05 20:07:04,188 vulnerability_service 10144 5552 PlanID=UnknownPlanID - Generated biophysical table with 5 rows.
+INFO 2025-10-05 20:07:04,188 vulnerability_service 10144 5552 LLM Raw Output (truncated for _generate_biophysical_table): 
+INFO 2025-10-05 20:07:04,188 vulnerability_service 10144 5552 Executed _generate_biophysical_table: Latency=19.46s, Status=OK, Estimated Input Tokens=0, Estimated Output Tokens=0
+INFO 2025-10-05 20:07:04,188 vulnerability_service 10144 5552 PlanID=UnknownPlanID, Step=summarisation - Output context verified by keywords.
+INFO 2025-10-05 20:07:04,188 vulnerability_service 10144 5552 PlanID=UnknownPlanID, Step=catchment_summary - Output context verified by keywords.
+INFO 2025-10-05 20:07:04,188 vulnerability_service 10144 5552 PlanID=UnknownPlanID, Step=technical_summary - Output context verified by keywords.
+INFO 2025-10-05 20:07:04,204 vulnerability_service 10144 5552 PlanID=UnknownPlanID, Step=risk_identification - Keyword validation failed. Falling back to semantic similarity check.
+INFO 2025-10-05 20:07:05,344 vulnerability_service 10144 5552 PlanID=UnknownPlanID, Step=risk_identification - Semantic check passed (score: 0.8260812183509907). Upgrading status to Valid.
+INFO 2025-10-05 20:07:05,344 views 10144 5552 Total api_generate_vulnerability_analysis_v2 latency: 102.31s
+INFO 2025-10-05 20:07:05,375 basehttp 10144 5552 "GET /doc-generator/api/vulnerability-analysis/v2/269/ HTTP/1.1" 200 15015

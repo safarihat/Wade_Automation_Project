@@ -1,0 +1,4 @@
+{"timestamp": "2025-10-05T15:57:38.537400", "plan_id": "UnknownPlanID", "avg_top5_cosine_similarity": "0.8105", "tokens_for_summarization": 2556, "num_queries": 17, "num_docs_retrieved": 58}
+{"timestamp": "2025-10-05T16:08:10.426479", "plan_id": "UnknownPlanID", "avg_top5_cosine_similarity": "0.8014", "tokens_for_summarization": 2735, "num_queries": 19, "num_docs_retrieved": 74}
+{"timestamp": "2025-10-05T16:29:02.521382", "plan_id": "UnknownPlanID", "avg_top5_cosine_similarity": "0.8310", "tokens_for_summarization": 3304, "num_queries": 30, "num_docs_retrieved": 95}
+{"timestamp": "2025-10-05T23:06:02.828241", "plan_id": "UnknownPlanID", "avg_top5_cosine_similarity": "0.7436", "tokens_for_summarization": 2914, "num_queries": 28, "num_docs_retrieved": 57}

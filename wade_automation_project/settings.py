@@ -245,7 +245,7 @@ VECTOR_STORE_MODE = os.environ.get('VECTOR_STORE_MODE', 'local')
 # These settings control the behavior of the document chunking and embedding process.
 DOCS_PATH = os.path.join(BASE_DIR, 'doc_generator', 'data', 'context')
 VECTOR_STORE_PATH = os.path.join(BASE_DIR, 'vector_store')
-VECTOR_STORE_EMBEDDING_MODEL_NAME = "sentence-transformers/all-mpnet-base-v2"
+VECTOR_STORE_EMBEDDING_MODEL_NAME = "BAAI/bge-small-en-v1.5"
 VECTOR_STORE_CHUNK_SIZE = 1000
 VECTOR_STORE_CHUNK_OVERLAP = 200
 # Adjust this value based on your system's memory and GPU capabilities
@@ -302,6 +302,7 @@ LOGGING = {
             'maxBytes': 1024 * 1024 * 5,  # 5 MB
             'backupCount': 2,
             'formatter': 'verbose',
+            'encoding': 'utf-8',
         },
     },
     'loggers': {

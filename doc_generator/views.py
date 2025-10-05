@@ -895,7 +895,8 @@ def api_populate_risk_table(request, pk):
 @login_required
 def ask_question_view(request):
     """
-    A view to ask a question to the RAG model, now with streaming.
+    A view to ask a question to the RAG model, using the advanced
+    EnsembleRetriever service and a sophisticated prompt for answer synthesis.
     """
     if request.method == 'POST':
         question = request.POST.get('question')
@@ -903,38 +904,52 @@ def ask_question_view(request):
             return JsonResponse({'error': 'Question cannot be empty.'}, status=400)
 
         try:
+            # 1. Initialize services
             embeddings = get_embedding_model()
             vector_store_path = os.path.join(settings.BASE_DIR, 'vector_store')
             vector_store = Chroma(persist_directory=vector_store_path, embedding_function=embeddings)
-            retriever = vector_store.as_retriever(search_kwargs={'k': 5})
+            base_retriever = vector_store.as_retriever()
             llm = ChatGroq(model_name="llama-3.1-8b-instant", groq_api_key=settings.GROQ_API_KEY)
 
-            template = '''
-            You are an expert assistant for answering questions about New Zealand Freshwater Farm Plans.
-            Use the following retrieved context to answer the question.
-            If the context is insufficient, state that you cannot answer based on the provided information.
+            # 2. Use the advanced RetrievalService to get balanced context
+            retrieval_service = RetrievalService(retriever=base_retriever, llm=llm)
+            
+            # For ad-hoc questions, we use a generic context for query generation
+            generic_farm_data = {"catchment_name": "Southland", "council_authority_name": "Environment Southland"}
+            queries = retrieval_service.generate_query_variations(generic_farm_data)
+            retrieved_docs = retrieval_service.multi_query_retrieve(queries)
+            context_str = "\n\n---\n\n".join([f"[Source: {doc.metadata.get('source', 'unknown')}, Scope: {doc.metadata.get('region_scope', 'undefined')}]\n{doc.page_content}" for doc in retrieved_docs])
+
+            # 3. Implement the new, user-provided prompt template
+            prompt_template = """
+            You are an expert analyst answering queries using provided context from documents with different regional scopes: catchment, regional, national, or undefined.
+
+            Query: {query}
 
             Context:
             {context}
 
-            ---
-            Question:
-            {question}
+            Guidelines:
+            - Weigh the context as follows: 40% emphasis on 'catchment' scoped information, 40% on 'regional', and 20% on 'undefined'. Ignore or deprioritize 'national' unless directly relevant.
+            - Blend insights proportionally: Prioritize catchment and regional for core answers, using undefined sparingly to fill gaps or provide supplementary details.
+            - If conflicts arise between scopes, resolve by favoring higher-weighted scopes (catchment/regional over undefined).
+            - Be concise, accurate, and directly address the query.
 
             Answer:
-            '''
-            prompt = PromptTemplate.from_template(template)
+            """
+            prompt = PromptTemplate.from_template(prompt_template)
 
+            # 4. Construct and run the final generation chain
             rag_chain = (
-                {"context": retriever, "question": RunnablePassthrough()}
-                | prompt
+                prompt
                 | llm
                 | StrOutputParser()
             )
 
             def stream_generator(q):
                 """Generator function to stream content chunk by chunk."""
-                for chunk in rag_chain.stream(q):
+                # The chain is no longer a simple retriever chain; we pass the context explicitly.
+                for chunk in rag_chain.stream({"query": q, "context": context_str}):
                     yield chunk
 
             # Return a streaming response

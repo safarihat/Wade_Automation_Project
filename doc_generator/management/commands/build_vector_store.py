@@ -1,47 +1,60 @@
 from django.core.management.base import BaseCommand, CommandError
-from django.conf import settings
-import shutil
-import os
-import logging
-
 from doc_generator.services.vector_store_builder import VectorStoreBuilder
-
-logger = logging.getLogger(__name__)
-
-VECTOR_STORE_PATH = getattr(settings, "VECTOR_STORE_PATH", "./vector_store")
+from django.conf import settings
+import chromadb
+from collections import Counter
+import os
 
 class Command(BaseCommand):
-    help = "Builds or updates the vector store using the default local pipeline."
+    """
+    A Django management command to build or update the vector store.
+    """
+    help = 'Builds or updates the document vector store and validates metadata.'
 
     def add_arguments(self, parser):
         parser.add_argument(
             '--rebuild',
             action='store_true',
-            help='Deletes the existing vector store and checkpoints before building.',
+            help='Force a full rebuild of the vector store, ignoring checkpoints.',
         )
 
     def handle(self, *args, **options):
         rebuild = options['rebuild']
-
-        self.stdout.write(self.style.SUCCESS("Starting vector store build..."))
-
         if rebuild:
-            self.stdout.write(self.style.WARNING(f"Rebuild requested: Deleting vector store at {VECTOR_STORE_PATH}..."))
-            if os.path.exists(VECTOR_STORE_PATH):
-                try:
-                    shutil.rmtree(VECTOR_STORE_PATH)
-                    self.stdout.write(self.style.SUCCESS("Successfully deleted old vector store."))
-                except Exception as e:
-                    raise CommandError(f"Error deleting vector store directory: {e}")
-            else:
-                self.stdout.write(self.style.NOTICE("Vector store directory not found, skipping deletion."))
-
+            self.stdout.write(self.style.WARNING("--- Starting a full rebuild of the vector store. ---"))
+        else:
+            self.stdout.write(self.style.SUCCESS("--- Starting incremental update of the vector store... ---"))
+        
+        # Run the main build process
+        VectorStoreBuilder(rebuild=rebuild).run()
+        
+        self.stdout.write(self.style.SUCCESS("--- Vector store operation complete. ---"))
+        
+        # --- Post-Build Validation Step ---
+        self.stdout.write(self.style.HTTP_INFO("\n--- Post-Build Coverage Summary ---"))
         try:
-            self.stdout.write("Executing local, resource-optimal pipeline.")
-            builder = VectorStoreBuilder(rebuild=rebuild)
-            builder.run()
-            self.stdout.write(self.style.SUCCESS("Vector store build process finished."))
+            vector_store_path = str(settings.VECTOR_STORE_PATH)
+            if not os.path.exists(vector_store_path):
+                self.stdout.write(self.style.ERROR(f"Vector store path not found at '{vector_store_path}' for validation."))
+                return
+
+            client = chromadb.PersistentClient(path=vector_store_path)
+            # Assumes the default collection name used by LangChain, which is typically "langchain"
+            collection = client.get_collection(name="langchain") 
+            
+            metadata = collection.get(include=["metadatas"])
+            
+            if not metadata or not metadata['metadatas']:
+                self.stdout.write(self.style.WARNING("Could not retrieve any metadata for validation."))
+                return
+
+            scope_counts = Counter(m.get('region_scope', 'undefined') for m in metadata['metadatas'])
+            
+            self.stdout.write(self.style.SUCCESS(f"Total vectors in store: {collection.count()}"))
+            self.stdout.write("Document count by 'region_scope':")
+            for scope, count in scope_counts.items():
+                self.stdout.write(f"  - {scope}: {count} vectors")
 
         except Exception as e:
-            logger.exception("An unexpected error occurred during the build process:")
-            raise CommandError(f"Build process failed: {e}")
+            self.stdout.write(self.style.ERROR(f"An error occurred during post-build validation: {e}"))
+            self.stdout.write(self.style.WARNING("Validation skipped. The store may be functional, but metadata could not be read."))
