@@ -1,9 +1,11 @@
 
 import os
+import re
 import json
 import time
 import hashlib
 import torch
+from langchain_core.documents import Document
 from concurrent.futures import ThreadPoolExecutor
 from typing import List, Dict, Any, Optional
 
@@ -136,37 +138,39 @@ class VectorStoreBuilder:
         print(f"Found {len(files_to_process)} new or modified files to process.")
         return files_to_process
 
-    def _detect_category(self, filename: str, header_text: str) -> str:
-        """Analyzes filename and text to assign a thematic category."""
-        text_to_scan = (filename + " " + header_text).lower()
+    def _detect_category(self, pdf_text: str) -> str:
+        """Analyzes text to assign a thematic category based on keywords."""
+        text_lower = pdf_text.lower()
+        if "plan" in text_lower and "policy" in text_lower:
+            return "policy"
         
-        # Keywords mapped to categories
-        category_map = {
-            "hydrology": ["hydrology", "hydro", "water quality", "groundwater"],
-            "soil": ["soil", "geology"],
-            "erosion": ["erosion", "landslip", "sediment"],
-            "biodiversity": ["biodiversity", "ecology", "fauna", "flora", "wetland"],
-            "biophysical": ["biophysical"],
-            "policy": ["policy", "plan", "framework"],
-        }
+        technical_keywords = ["soil", "erosion", "hydrology", "groundwater"]
+        if any(keyword in text_lower for keyword in technical_keywords):
+            return "technical_data"
 
-        for category, keywords in category_map.items():
-            if any(keyword in text_to_scan for keyword in keywords):
-                return category
-        
-        return "general_regulatory"
+        # Fallback categories based on less specific terms
+        if "guideline" in text_lower:
+            return "guideline"
+        if "regulation" in text_lower:
+            return "regulatory"
+            
+        return "general" # Default fallback
 
     def _detect_region_scope(self, filename: str) -> str:
         """Analyzes filename to assign a geographic scope."""
         filename_lower = filename.lower()
-        # National-level documents
-        if "npsfm" in filename_lower or "regulation" in filename_lower:
+        if "nz" in filename_lower or "mpi" in filename_lower:
             return "national"
-        # Catchment-specific documents
         if "catchment" in filename_lower:
             return "catchment"
-        # Default to regional for everything else
-        return "regional"
+        if "southland" in filename_lower:
+            return "regional"
+        
+        # Default based on previous logic if specific keywords aren't found
+        if "npsfm" in filename_lower or "regulation" in filename_lower:
+            return "national"
+        
+        return "regional" # Default to regional
 
     def _process_file(self, file_path: str):
         """The complete processing pipeline for a single file."""
@@ -183,32 +187,51 @@ class VectorStoreBuilder:
             )
             
             # 2. Thematic and Scope Tagging
-            header_text = " ".join([el.text for el in elements[:2]]) # Use first 2 elements
-            detected_category = self._detect_category(file_name, header_text)
+            texts = [el.text for el in elements]
+            full_text = " ".join(texts)
+            
+            detected_category = self._detect_category(full_text)
             detected_scope = self._detect_region_scope(file_name)
             print(f"  - Detected category: {detected_category}, scope: {detected_scope}")
 
             # 3. Chunk Elements
             text_splitter = RecursiveCharacterTextSplitter(chunk_size=CHUNK_SIZE, chunk_overlap=CHUNK_OVERLAP)
-            texts = [el.text for el in elements]
             
-            # 4. Create Metadata
-            base_metadata = {
-                "source": file_name,
-                "category": detected_category,
-                "region_scope": detected_scope,
-            }
-            region = self._extract_region_from_path(file_path)
-            if region:
-                base_metadata["region"] = region
+            # 4. Create Metadata & Calculate Semantic Density
+            texts_as_string = "\n\n".join(texts)
+            chunks_text = text_splitter.split_text(texts_as_string)
             
-            chunks = text_splitter.create_documents(texts, metadatas=[base_metadata] * len(texts))
+            final_chunks = []
+            for chunk_text in chunks_text:
+                # Create metadata for each chunk
+                metadata = {
+                    "source": file_name,
+                    "category": detected_category,
+                    "region_scope": detected_scope,
+                }
+                region = self._extract_region_from_path(file_path)
+                if region:
+                    metadata["region"] = region
+
+                # Calculate semantic density
+                tokens = re.findall(r'\w+', chunk_text.lower())
+                token_count = len(tokens)
+                if token_count > 0:
+                    unique_tokens = len(set(tokens))
+                    semantic_density = unique_tokens / token_count
+                else:
+                    semantic_density = 0.0
+                
+                metadata["semantic_density"] = round(semantic_density, 4)
+
+                # Create a Document object with the text and rich metadata
+                final_chunks.append(Document(page_content=chunk_text, metadata=metadata))
 
             # 5. Embed and Add to Store in Batches
             # Resource Optimization: Processing in small batches prevents memory spikes.
-            total_chunks = len(chunks)
+            total_chunks = len(final_chunks)
             for i in range(0, total_chunks, EMBEDDING_BATCH_SIZE):
-                batch = chunks[i:i + EMBEDDING_BATCH_SIZE]
+                batch = final_chunks[i:i + EMBEDDING_BATCH_SIZE]
                 print(f"  - Embedding batch {i//EMBEDDING_BATCH_SIZE + 1}/{(total_chunks + EMBEDDING_BATCH_SIZE - 1)//EMBEDDING_BATCH_SIZE} for {file_name}")
                 self.vector_store.add_documents(documents=batch)
 

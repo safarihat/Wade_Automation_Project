@@ -102,3 +102,14 @@ class FreshwaterPlan(models.Model):
 
     def __str__(self):
         return f"Freshwater Plan for {self.council} by {self.user.username}"
+
+class MonitoringSite(models.Model):
+    """
+    Represents a water quality monitoring site from Environment Southland's Hilltop API.
+    """
+    site_name = models.CharField(max_length=255, help_text="The name of the monitoring site.")
+    hilltop_site_id = models.CharField(max_length=255, unique=True, help_text="The unique identifier for the site in the Hilltop API.")
+    location = models.PointField(srid=4326, help_text="Geographic coordinates (Point) of the monitoring site.")
+
+    def __str__(self):
+        return self.site_name

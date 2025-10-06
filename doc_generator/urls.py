@@ -33,6 +33,9 @@ urlpatterns = [
     # V2 endpoint for the improved vulnerability analysis pipeline
     path('api/vulnerability-analysis/v2/<int:pk>/', views.api_generate_vulnerability_analysis_v2, name='api_generate_vulnerability_analysis_v2'),
 
+    # API for fetching water quality data
+    path('api/get-water-quality-data/', views.api_get_water_quality_data, name='api_get_water_quality_data'),
+
     # Add more steps here in the future
     # path('wizard/<int:pk>/summary/', views.plan_wizard_summary, name='plan_wizard_summary'),
 ]

@@ -1,0 +1,10 @@
+{
+    "test_query": "Provide a comprehensive biophysical and management overview for the Aparima and Pourakino catchment, including soil classification, groundwater hydrology, land-use management, and restoration efforts.",
+    "site_context": {
+        "catchment_name": "Aparima and Pourakino",
+        "council_authority_name": "Environment Southland",
+        "pk": "qa_test_001"
+    },
+    "status": "Completed. Manual check of logs required for full report.",
+    "retrieved_docs_count": 64
+}

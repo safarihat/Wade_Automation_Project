@@ -19,7 +19,7 @@ from doc_generator.geospatial_utils import (
     _query_arcgis_raster,
     _calculate_slope_from_dem,
 )
-from doc_generator.models import FreshwaterPlan, RegionalCouncil
+from doc_generator.models import FreshwaterPlan, RegionalCouncil, MonitoringSite
 from doc_generator.services.llm_service import LLMService
 from doc_generator.services.vulnerability_service import VulnerabilityService
 from doc_generator.tasks import generate_plan_task, populate_admin_details_task
@@ -42,6 +42,9 @@ logger = logging.getLogger(__name__)
 
 # The user requested this to be added.
 logger = logging.getLogger(__name__)
+
+from doc_generator.services.data_service import DataService
+from django.contrib.gis.db.models.functions import Distance
 
 @login_required
 def freshwater_plan_preview(request, pk):
@@ -960,3 +963,55 @@ def ask_question_view(request):
             return JsonResponse({'error': 'An error occurred while processing your question.'}, status=500)
 
     return render(request, 'doc_generator/ask_question.html')
+
+def api_get_water_quality_data(request):
+    """
+    API endpoint to fetch water quality data from the nearest monitoring site.
+    """
+    logger.info(f"api_get_water_quality_data called with params: {request.GET}")
+    lat = request.GET.get('lat')
+    lon = request.GET.get('lon')
+
+    if not lat or not lon:
+        logger.warning("api_get_water_quality_data: Missing 'lat' or 'lon' parameters.")
+        return HttpResponseBadRequest("Missing 'lat' or 'lon' parameters.")
+
+    try:
+        user_location = Point(float(lon), float(lat), srid=4326)
+    except (ValueError, TypeError):
+        logger.warning(f"api_get_water_quality_data: Invalid 'lat' or 'lon' parameters: {request.GET}")
+        return HttpResponseBadRequest("Invalid 'lat' or 'lon' parameters.")
+
+    # Find the nearest monitoring site
+    nearest_site = MonitoringSite.objects.annotate(
+        distance=Distance('location', user_location)
+    ).order_by('distance').first()
+
+    if not nearest_site:
+        logger.error("api_get_water_quality_data: No monitoring sites found in the database.")
+        return JsonResponse({'error': 'No monitoring sites found in the database.'}, status=404)
+
+    logger.info(f"api_get_water_quality_data: Found nearest site: {nearest_site.site_name} at {nearest_site.distance.km:.2f} km")
+
+    # Fetch data from Hilltop API using the service
+    data_service = DataService()
+    measurements_to_fetch = [
+        "E-Coli <CFU>",
+        "Nitrogen (Nitrate Nitrite)",
+        "Phosphorus (Dissolved Reactive)",
+        "Turbidity (FNU)",
+    ]
+
+    results = {
+        'site_name': nearest_site.site_name,
+        'distance_km': round(nearest_site.distance.km, 2),
+        'data': {}
+    }
+
+    for measurement in measurements_to_fetch:
+        logger.info(f"api_get_water_quality_data: Calling HilltopService for site='{nearest_site.site_name}', measurement='{measurement}'")
+        data = data_service.get_water_quality_data(nearest_site.site_name, measurement, float(lat), float(lon))
+        results['data'][measurement] = data
+
+    logger.info(f"api_get_water_quality_data: Returning data: {results}")
+    return JsonResponse(results)

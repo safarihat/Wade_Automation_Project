@@ -111,6 +111,9 @@
             <button type="submit" class="btn btn-confirm">Yes, Continue to Next Step</button>
             <a href="{% url 'doc_generator:plan_wizard_start' %}" class="btn btn-secondary">No, Re-enter Coordinates</a>
         </div>
+
+        
+
     </form>
 </div>
 
@@ -205,6 +208,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    
+
     const coordInput = document.getElementById('id_geolocation_paste');
     coordInput.addEventListener('input', function () {
         const coords = this.value.split(',').map(s => parseFloat(s.trim()));
@@ -221,6 +226,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById('confirmation-section').scrollIntoView({ behavior: 'smooth', block: 'center' });
 
                 fetchAndDrawParcel(lat, lon);
+                fetchWaterQualityData(lat, lon);
             } else {
                 document.getElementById('confirmation-section').style.display = 'none';
             }
