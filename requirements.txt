@@ -12,5 +12,6 @@ Pillow
 geojson
 django-crispy-forms
 crispy-bootstrap5
-django-celery-results
+rq>=1.16.2
+django-rq>=2.10.2
 unstructured[pdf]
