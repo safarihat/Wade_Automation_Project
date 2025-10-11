@@ -21,6 +21,5 @@ redis_connection = Redis(host='localhost', port=6379, db=0)
 queues = [Queue('default', connection=redis_connection)]
 
 print("--- Starting RQ Worker ---")
-with Connection(redis_connection):
-    worker = Worker(queues, connection=redis_connection)
-    worker.work()
+worker = Worker(queues, connection=redis_connection)
+worker.work()
