@@ -1,7 +1,8 @@
 import os
 import sys
 import django
-from rq import Worker, Queue, Connection
+from rq import Worker, Queue
+from redis import Connection
 from redis import Redis
 
 # Add the project root to the Python path
