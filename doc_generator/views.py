@@ -23,11 +23,13 @@ from doc_generator.models import FreshwaterPlan, RegionalCouncil, MonitoringSite
 from doc_generator.services.llm_service import LLMService
 from doc_generator.services.vulnerability_service import VulnerabilityService
 from doc_generator.tasks import generate_plan_task, populate_admin_details_task
+from django_rq import get_queue
 
 import base64
 from django.core.files.base import ContentFile
 
 from doc_generator.services.embedding_service import get_embedding_model
+from doc_generator.services.retrieval_service import RetrievalService  # <-- Add this import
 # LangChain components for RAG - needed for the new analysis view
 from langchain_chroma import Chroma
 from langchain_groq import ChatGroq
@@ -122,7 +124,8 @@ def plan_wizard_start(request):
                     logger.error(f"Error saving map snapshot for plan {plan.pk}: {e}")
 
             # Trigger the FAST background task to populate admin details
-            populate_admin_details_task.delay(plan.pk)
+            queue = get_queue('default')
+            job = queue.enqueue(populate_admin_details_task, plan.pk)
             return redirect(reverse('doc_generator:plan_wizard_details', kwargs={'pk': plan.pk}))
 
         else:
@@ -156,7 +159,8 @@ def plan_wizard_details(request, pk):
         if form.is_valid():
             form.save()
             # Now trigger the SLOW task to generate the full plan in the background
-            # generate_plan_task.delay(plan.pk) # This can be enabled when ready
+            # queue = get_queue('default')
+            # job = queue.enqueue(generate_plan_task, plan.pk) # This can be enabled when ready
             messages.success(request, "Your details have been saved.")
             return redirect(reverse('doc_generator:plan_wizard_map_vulnerabilities', kwargs={'pk': plan.pk}))
         else:
