@@ -1,5 +1,7 @@
 import os
 import io
+import json
+import math
 import logging
 import time
 import requests
@@ -18,7 +20,6 @@ from doc_generator.geospatial_utils import (
     _calculate_slope_from_dem,
 )
 from doc_generator.services.soil_drainage_service import SoilDrainageService
-from doc_generator.services.data_service import DataService
 from doc_generator.services.vulnerability_service import VulnerabilityService
 import hashlib
 from langchain_core.documents import Document
@@ -26,6 +27,8 @@ import redis
 from django_rq import job
 from rq import get_current_job
 from rq.job import Job, Retry
+
+
 
 # PDF and Watermarking libraries
 PDF_DEPS_AVAILABLE = True
@@ -57,6 +60,47 @@ from .models import MonitoringSite
 
 # Setup logger
 logger = logging.getLogger(__name__)
+
+def _get_vulnerability_service(plan_pk: int, site_context_dict: dict = None) -> VulnerabilityService:
+    """
+    Centralized factory function to instantiate the VulnerabilityService.
+    Ensures the service is created consistently with all dependencies in each task.
+    """
+    from .models import FreshwaterPlan
+    from langchain_chroma import Chroma
+    from .services.embedding_service import get_embedding_model
+    import os
+    from django.conf import settings
+
+    # Initialize retriever
+    embeddings = get_embedding_model()
+    vector_store_path = os.path.join(settings.BASE_DIR, 'vector_store')
+    vector_store = Chroma(persist_directory=vector_store_path, embedding_function=embeddings)
+    retriever = vector_store.as_retriever(search_kwargs={"k": 10})
+
+    # Get site context
+    if site_context_dict:
+        site_context = site_context_dict
+    else:
+        plan = FreshwaterPlan.objects.get(pk=plan_pk)
+        site_context = {"pk": plan.pk, "plan_pk": plan.pk, "council_authority_name": plan.council_authority_name, "catchment_name": plan.catchment_name}
+
+    return VulnerabilityService(retriever=retriever, site_context=site_context)
+
+def _get_retriever():
+    """
+    Centralized function to initialize and return the vector store retriever.
+    This avoids code duplication in each task.
+    """
+    from langchain_chroma import Chroma
+    from .services.embedding_service import get_embedding_model
+    import os
+    from django.conf import settings
+
+    embeddings = get_embedding_model()
+    vector_store_path = os.path.join(settings.BASE_DIR, 'vector_store')
+    vector_store = Chroma(persist_directory=vector_store_path, embedding_function=embeddings)
+    return vector_store.as_retriever(search_kwargs={"k": 10})
 
 
 def _create_watermark_pdf() -> io.BytesIO:
@@ -278,22 +322,31 @@ def _update_progress(plan_id: int, message: str, status: str = "pending"):
 # --- Sub-tasks for Parallel Execution ---
 @job('high')
 def get_council_authority_name_task(council_name):
-    try:
-        embeddings = get_embedding_model()
-        vector_store_path = os.path.join(settings.BASE_DIR, 'vector_store')
-        vector_store = Chroma(persist_directory=vector_store_path, embedding_function=embeddings)
-        retriever = vector_store.as_retriever(search_kwargs={'k': 1})
-        llm = OllamaLLM(model="phi3:mini", base_url="http://localhost:11434", options={"num_ctx": 2048})
+    """
+    Verifies and retrieves the official council authority name using a RAG query.
+    Falls back to the input name if the RAG service is unavailable.
+    """
+    job = get_current_job()
+    job_id = job.id if job else 'ad-hoc'
+    logger.info(f"Task get_council_authority_name_task started for council: {council_name}", extra={'job_id': job_id})
 
-        template = """Based on the context for the '{council}' area, what is the official name of the regional council or unitary authority? Provide only the name.
-        Context: {context}
-        Answer:"""
-        prompt = PromptTemplate.from_template(template)
-        rag_chain = ({"context": retriever, "council": lambda x: council_name} | prompt | llm | StrOutputParser())
-        return rag_chain.invoke(f"Official name for {council_name}")
+    if not council_name:
+        logger.warning("get_council_authority_name_task received an empty council name.", extra={'job_id': job_id})
+        return "Unknown Council"
+
+    try:
+        # The RAGService abstracts away the details of Chroma, embeddings, and the LLM.
+        from .services.rag_service import RAGService
+        rag_service = RAGService()
+        verified_name = rag_service.query_council_authority(council_name)
+        logger.info(f"Successfully verified council '{council_name}' as '{verified_name}'.", extra={'job_id': job_id})
+        return verified_name or council_name
+    except ConnectionRefusedError as e:
+        logger.error(f"Could not connect to RAG service (ChromaDB) to verify council '{council_name}'. Is the service running? Error: {e}", extra={'job_id': job_id})
+        return council_name # Graceful fallback
     except Exception as e:
-        logger.warning(f"RAG query for council authority name failed for council {council_name}: {e}")
-        return f"Could not verify '{council_name}'"
+        logger.error(f"An unexpected error occurred during council name verification for '{council_name}': {e}", exc_info=True, extra={'job_id': job_id})
+        return council_name # Graceful fallback
 
 
 @job('high')
@@ -325,14 +378,18 @@ def _get_parcel_features_from_wfs(lat, lon):
         params = {
             "service": "WFS",
             "version": "2.0.0",
-            "request": "GetFeature",
-            "typeNames": "layer-53682",
+            "request": "GetFeature", # NZ Primary Parcels layer ID
+            "typeNames": "layer-50772", # Koordinates WFS uses "layer-<id>" for typeNames
             "outputFormat": "application/json",
             "srsName": "EPSG:4326",
             "cql_filter": f"INTERSECTS(geometry,POINT({lon} {lat}))"
         }
         response = requests.get(wfs_url, params=params, timeout=15)
-        response.raise_for_status()
+        try:
+            response.raise_for_status()
+        except requests.exceptions.HTTPError as http_err:
+            logger.warning(f"Failed to fetch parcel features from WFS: {http_err}. Response content: {response.text}")
+            return None
         data = response.json()
         return data.get("features", [])
     except Exception as e:
@@ -526,6 +583,7 @@ def get_es_water_quality_for_site(site_pk, measurement, user_lat, user_lon, dist
     try:
         # Import locally to prevent circular dependency: views -> tasks -> models
         from .models import WaterQualityLog
+        from .services.data_service import DataService
         site = MonitoringSite.objects.get(pk=site_pk)
         data_service = DataService()
 
@@ -564,98 +622,435 @@ def get_es_water_quality_for_site(site_pk, measurement, user_lat, user_lon, dist
         return None
 
 
+# --- LAWA Water Quality Data Fetching Task ---
+
+def _haversine_distance(lat1, lon1, lat2, lon2):
+    """Calculate the distance between two points in kilometers."""
+    R = 6371  # Earth radius in kilometers
+    
+    # Ensure coordinates are valid floats
+    try:
+        lat1, lon1, lat2, lon2 = map(math.radians, [float(lat1), float(lon1), float(lat2), float(lon2)])
+    except (ValueError, TypeError):
+        return float('inf') # Return infinity if coordinates are invalid
+
+    dlon = lon2 - lon1
+    dlat = lat2 - lat1
+
+    a = math.sin(dlat / 2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2)**2
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+
+    return R * c
+
+@job('default', result_ttl=3600)
+def fetch_lawa_water_quality_task(user_lat, user_lon, measurements):
+    """
+    Finds the nearest LAWA site with valid data and fetches water quality measurements.
+    It will iterate through sites by proximity until data is found.
+    """
+    # 1. Load cached LAWA sites
+    try:
+        sites_path = os.path.join(settings.BASE_DIR, 'doc_generator', 'data', 'lawa_sites.json')
+        with open(sites_path, 'r') as f:
+            lawa_sites = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError) as e:
+        logger.error(f"Could not load lawa_sites.json: {e}. Cannot perform LAWA lookup.")
+        return {"error": "LAWA site cache is missing or corrupt."}
+
+    # 2. Calculate distance to all sites and sort them
+    sites_with_distance = []
+    for site in lawa_sites:
+        distance = _haversine_distance(user_lat, user_lon, site['lat'], site['lon'])
+        sites_with_distance.append((site, distance))
+    
+    sites_with_distance.sort(key=lambda x: x[1])
+
+    # 3. Iterate through sites and query LAWA API
+    DISTANCE_THRESHOLD_KM = 50
+    SITES_TO_CHECK_LIMIT = 5 # Limit the number of sites to check to avoid long-running tasks
+
+    for site_info, distance in sites_with_distance[:SITES_TO_CHECK_LIMIT]:
+        if distance > DISTANCE_THRESHOLD_KM:
+            logger.info(f"Next closest site is beyond the {DISTANCE_THRESHOLD_KM}km threshold. Stopping search.")
+            break
+
+        logger.info(f"Attempting to fetch data from site '{site_info['site_name']}' at {distance:.2f} km.")
+        
+        measurement_map = {
+            'Turbidity (FNU)': 'TURB',
+            'E-Coli <CFU>': 'ECOLI',
+            'Nitrogen (Nitrate Nitrite)': 'NO3N',
+            'Phosphorus (Dissolved Reactive)': 'DRP',
+        }
+        
+        lawa_results = {}
+        current_year = time.strftime("%Y")
+
+        for measurement_name in measurements:
+            indicator = measurement_map.get(measurement_name)
+            if not indicator:
+                continue
+
+            try:
+                lawa_url = f"https://www.lawa.org.nz/umbraco/api/riverservice/GetRecGraphData" # Correct endpoint as confirmed
+                params = {
+                    'location': site_info['lawa_id'],
+                    'indicator': indicator,
+                    'startYear': '2015',
+                    'endYear': current_year
+                }
+                full_url = requests.Request('GET', lawa_url, params=params).prepare().url
+                logger.info(f"Querying LAWA URL: {full_url}")
+                response = requests.get(lawa_url, params=params, timeout=20)
+                response.raise_for_status()
+                # The LAWA API returns a JSON object where the 'data' key contains a JSON *string*.
+                # We need to parse this nested string to get the actual data array.
+                nested_data_str = response.json().get('data')
+                if not nested_data_str:
+                    data = []
+                elif isinstance(nested_data_str, str):
+                    try:
+                        data = json.loads(nested_data_str)
+                    except json.JSONDecodeError as e:
+                        logger.warning(f"LAWA API returned non-JSON 'data' field for site {site_info['lawa_id']} and indicator {indicator}: {e}. Raw snippet: {str(nested_data_str)[:120]}")
+                        data = []
+                elif isinstance(nested_data_str, list):
+                    # Some deployments may already return a parsed array
+                    data = nested_data_str
+                else:
+                    data = []
+                
+                values = [d[1] for d in data if d and len(d) > 1 and d[1] is not None]
+                if values:
+                    average_value = sum(values) / len(values)
+                    lawa_results[measurement_name] = {
+                        'average_value': round(average_value, 2),
+                        'data_points': len(values),
+                        'source': 'LAWA'
+                    }
+            except requests.RequestException as e:
+                logger.warning(f"LAWA API query failed for site {site_info['lawa_id']} and indicator {indicator}: {e}.")
+        
+        if lawa_results:
+            logger.info(f"Successfully fetched data from site '{site_info['site_name']}'.")
+            return {
+                'site_name': site_info['site_name'],
+                'distance_km': round(distance, 2),
+                'data': lawa_results
+            }
+        else:
+            logger.info(f"No data found for site '{site_info['site_name']}'. Trying next closest site.")
+
+    logger.warning(f"No suitable LAWA site with *valid data* found within {DISTANCE_THRESHOLD_KM}km after checking {SITES_TO_CHECK_LIMIT} sites.")
+    return {
+        "status": "no_data",
+        "message": f"No water quality data could be found from the {SITES_TO_CHECK_LIMIT} nearest monitoring sites within {DISTANCE_THRESHOLD_KM}km.",
+        "data": {}
+    }
+
+@job('default', result_ttl=3600)
+def fetch_lawa_data_for_closest_sites_task(user_lat, user_lon):
+    """
+    Finds the 5 nearest LAWA sites and retrieves all their measurement data.
+    """
+    logger.info(f"Starting LAWA data fetch for closest 5 sites to ({user_lat}, {user_lon})")
+    
+    # 1. Load the pre-processed site index and measurements files
+    try:
+        site_index_path = os.path.join(settings.BASE_DIR, 'doc_generator', 'data', 'lawa_site_index.json')
+        with open(site_index_path, 'r') as f:
+            all_sites = json.load(f)
+
+        measurements_path = os.path.join(settings.BASE_DIR, 'doc_generator', 'data', 'lawa_measurements.json')
+        with open(measurements_path, 'r') as f:
+            all_measurements = json.load(f)
+            
+    except (FileNotFoundError, json.JSONDecodeError) as e:
+        error_msg = f"Could not load pre-processed LAWA data files: {e}"
+        logger.error(error_msg)
+        return {"error": error_msg}
+
+    # 2. Calculate distance to all sites and sort them
+    sites_with_distance = []
+    for site in all_sites:
+        # Ensure site has valid coordinates before calculating distance
+        if site.get('Lat') is not None and site.get('Long') is not None:
+            distance = _haversine_distance(user_lat, user_lon, site['Lat'], site['Long'])
+            sites_with_distance.append({'site_info': site, 'distance': distance})
+    
+    sites_with_distance.sort(key=lambda x: x['distance'])
+
+    # 3. Get the top 5 closest sites and retrieve their measurements
+    closest_sites_data = []
+    for item in sites_with_distance[:5]:
+        site_id = item['site_info']['LawaId']
+        measurements = all_measurements.get(site_id, [])
+        closest_sites_data.append({
+            'site_name': item['site_info']['SiteName'],
+            'distance': item['distance'],
+            'measurements': measurements
+        })
+
+    logger.info(f"Successfully retrieved data for {len(closest_sites_data)} closest sites.")
+    return closest_sites_data
+
+def _analyze_water_quality_with_rag(water_quality_results: dict, council_name: str) -> str:
+    """
+    Uses a RAG pipeline to generate an expert analysis of water quality data.
+
+    Args:
+        water_quality_results: The dictionary containing the fetched water quality data.
+        council_name: The name of the regional council for context retrieval.
+
+    Returns:
+        A string containing the AI-generated analysis, or an empty string on failure.
+    """
+    logger.info("Starting RAG analysis of water quality data.")
+    try:
+        # 1. Initialize RAG components
+        embeddings = get_embedding_model()
+        vector_store_path = os.path.join(settings.BASE_DIR, 'vector_store')
+        vector_store = Chroma(persist_directory=vector_store_path, embedding_function=embeddings)
+        retriever = vector_store.as_retriever(search_kwargs={'k': 5})
+        llm = OllamaLLM(model="phi3:mini", base_url="http://localhost:11434")
+
+        # 2. Define the expert prompt
+        template = """
+        You are a senior environmental consultant in New Zealand. Your task is to provide a holistic analysis of the following water quality data.
+        The monitoring site is located within the '{council}' regional council area.
+
+        **Retrieved Regulatory Context:**
+        {context}
+
+        **Water Quality Data:**
+        {water_data}
+
+        ---
+        **Analysis Task:**
+        Based on the provided data and regulatory context, write a concise paragraph that explains what these results mean for freshwater quality.
+        Adopt a holistic perspective, considering the implications of these values in the context of New Zealand's freshwater legislation and regional policies.
+        Explain potential risks or concerns indicated by the data (e.g., high turbidity suggesting sediment runoff, high E. coli indicating contamination).
+        Your analysis should be clear, authoritative, and easy for a landowner to understand.
+        """
+        prompt = PromptTemplate.from_template(template)
+
+        # 3. Construct and invoke the RAG chain
+        rag_chain = ({"context": retriever, "council": lambda x: council_name, "water_data": lambda x: json.dumps(water_quality_results, indent=2)} | prompt | llm | StrOutputParser())
+        return rag_chain.invoke(f"Analyze water quality data for {council_name}")
+    except Exception as e:
+        logger.error(f"Failed to generate RAG analysis for water quality data: {e}", exc_info=True)
+        return "AI analysis could not be generated at this time due to a system error."
+
 # --- New Chained Vulnerability Analysis Tasks ---
 
 @job('default')
-def run_retrieval_step(plan_pk):
-    logger.info(f"PlanID={plan_pk} - VULN_ANALYSIS [1/4]: Running Retrieval Step")
-    plan = FreshwaterPlan.objects.get(pk=plan_pk)
-    service = VulnerabilityService(plan=plan)
-    service._fetch_and_build_site_context()
-    retrieval_result, error = service._perform_advanced_retrieval()
-    if error:
-        raise Exception(f"Retrieval step failed: {error}")
-    return {"combined_context": retrieval_result.get("combined_context", ""),
-            "site_context": service.site_context}
+def run_retrieval_step(*, plan_pk, final_job_id=None):
+    logger.info(f"run_retrieval_step started for plan_pk={plan_pk}, final_job_id={final_job_id}")
+    current_job = get_current_job() # Get the current job instance
+    try:
+        # Imports are placed inside the task to avoid potential top-level circular dependencies.
+        from .models import FreshwaterPlan
+        from langchain_chroma import Chroma
+        from .services.embedding_service import get_embedding_model
+        import os
+        from django.conf import settings
+        from .services.vulnerability_service import VulnerabilityService
 
+        plan = FreshwaterPlan.objects.get(pk=plan_pk)
 
-@job('default')
-def run_summarization_step(previous_result, plan_pk):
-    logger.info(f"PlanID={plan_pk} - VULN_ANALYSIS [2/4]: Running Summarization Step")
-    plan = FreshwaterPlan.objects.get(pk=plan_pk)
-    service = VulnerabilityService(plan=plan)
-    combined_context = previous_result.get("combined_context", "")
-    service.site_context = previous_result.get("site_context", {})
+        # Initialize the components required by the VulnerabilityService
+        embeddings = get_embedding_model()
+        vector_store_path = os.path.join(settings.BASE_DIR, 'vector_store')
+        vector_store = Chroma(persist_directory=vector_store_path, embedding_function=embeddings)
+        retriever = vector_store.as_retriever(search_kwargs={"k": 10})
 
-    summarized_regulatory_context, reg_error = service._summarize_retrieved_context(combined_context=combined_context)
-    catchment_summary, catchment_error = service.summarize_catchment_context(combined_context)
-
-    if reg_error or catchment_error:
-        logger.warning(f"PlanID={plan_pk} - Errors in summarization: REG_ERR: {reg_error}, CATCH_ERR: {catchment_error}")
-
-    plan.vulnerability_analysis_data = {
-        "status": "processing",
-        "progress": "Summarization complete",
-        "data": {
-            "summarized_regulatory_context": summarized_regulatory_context,
-            "catchment_context_summary": catchment_summary,
+        # The service now expects a dictionary of site context, not the plan object.
+        site_context = {
+            "pk": plan.pk,
+            "council_authority_name": plan.council_authority_name,
+            "catchment_name": plan.catchment_name,
+            "soil_type": plan.soil_type,
+            "arcgis_slope_angle": plan.arcgis_slope_angle,
+            "erodibility": plan.erodibility,
+            "soil_drainage_class": plan.soil_drainage_class,
         }
-    }
-    plan.save(update_fields=['vulnerability_analysis_data'])
 
-    return {
-        "combined_context": combined_context,
-        "summarized_regulatory_context": summarized_regulatory_context,
-        "catchment_summary": catchment_summary,
-        "site_context": service.site_context
-    }
+        # Instantiate the service with the correct arguments
+        service = VulnerabilityService(retriever=retriever, site_context=site_context)
+        
+        # The _fetch_and_build_site_context method is no longer needed as context is passed on init.
+        # Directly call the retrieval method.
+        retrieval_result, error = service._perform_advanced_retrieval()
+        logger.info(f"PlanID={plan_pk} - _perform_advanced_retrieval completed. Error: {error}")
 
+        if error:
+            logger.error(f"PlanID={plan_pk} - Retrieval step failed with error: {error}")
+            raise Exception(f"Retrieval step failed: {error}")
+            
+        final_result = {
+            "combined_context": retrieval_result.get("combined_context", ""),
+            "docs": retrieval_result.get("docs", []),
+            "site_context": service.site_context
+        }
+        logger.info(f"PlanID={plan_pk} - run_retrieval_step completed. Enqueuing summarization step.")
 
-@job('default')
-def run_risk_identification_step(previous_result, plan_pk):
-    logger.info(f"PlanID={plan_pk} - VULN_ANALYSIS [3/4]: Running Risk Identification Step")
-    plan = FreshwaterPlan.objects.get(pk=plan_pk)
-    service = VulnerabilityService(plan=plan)
-    service.site_context = previous_result.get("site_context", {})
+        # Enqueue the next job in the chain
+        queue = django_rq.get_queue('default')
+        final_job_id = current_job.meta.get('final_job_id') # Retrieve final_job_id from meta
+        summarization_job = queue.enqueue(
+            run_summarization_step,
+            final_result, # Pass the result of this job
+            plan_pk=plan_pk,
+            final_job_id=final_job_id, # Pass final_job_id
+            depends_on=current_job, # Ensure order
+            result_ttl=3600
+        )
+        summarization_job.meta['plan_pk'] = plan_pk
+        summarization_job.meta['final_job_id'] = final_job_id
+        summarization_job.save_meta()
+        logger.info(f"Enqueued summarization_job (ID: {summarization_job.id}) for plan_pk={plan_pk}")
 
-    identified_risks, risk_error = service.identify_risks_from_data()
-    if risk_error:
-        logger.warning(f"PlanID={plan_pk} - Error in risk identification: {risk_error}")
+        return final_result # Still return the result for potential inspection, though not used by on_success anymore
 
-    current_data = plan.vulnerability_analysis_data or {"data": {}}
-    current_data["progress"] = "Risk identification complete"
-    current_data["data"]["identified_risks"] = identified_risks
-    plan.vulnerability_analysis_data = current_data
-    plan.save(update_fields=['vulnerability_analysis_data'])
-
-    previous_result["identified_risks"] = identified_risks
-    return previous_result
-
-
-@job('default')
-def run_final_analysis_step(previous_result, plan_pk):
-    logger.info(f"PlanID={plan_pk} - VULN_ANALYSIS [4/4]: Running Final Analysis Step")
-    plan = FreshwaterPlan.objects.get(pk=plan_pk)
-    service = VulnerabilityService(plan=plan)
-    service.site_context = previous_result.get("site_context", {})
-
-    structured_report, errors = service.generate_structured_analysis(
-        catchment_summary=previous_result.get("catchment_summary"),
-        identified_risks=previous_result.get("identified_risks"),
-        regulatory_context=previous_result.get("summarized_regulatory_context")
-    )
-
-    final_data = plan.vulnerability_analysis_data or {"data": {}}
-    final_data["data"].update(structured_report)
-    final_data["progress"] = "Analysis complete"
-    plan.vulnerability_analysis_data = final_data
-    plan.vulnerability_analysis_status = FreshwaterPlan.GenerationStatus.READY
-    plan.save(update_fields=['vulnerability_analysis_data', 'vulnerability_analysis_status'])
-    logger.info(f"Successfully completed vulnerability analysis for plan_pk={plan_pk}")
+    except Exception as e:
+        logger.error(f"PlanID={plan_pk} - An unexpected error occurred in run_retrieval_step: {e}", exc_info=True)
+        raise
 
 
 @job('default')
-def run_vulnerability_analysis_task(plan_pk):
+def run_summarization_step(previous_result=None, *, plan_pk, final_job_id=None):
+    logger.info(f"run_summarization_step started for plan_pk={plan_pk}, final_job_id={final_job_id}")
+    current_job = get_current_job() # Get the current job instance
+    try:
+        if previous_result is None:
+            logger.warning(f"PlanID={plan_pk} - No previous_result provided for summarization step. Proceeding with empty context.")
+            previous_result = {}
+
+        site_context = previous_result.get("site_context", {})
+        combined_context = previous_result.get("combined_context", "")
+
+        service = _get_vulnerability_service(plan_pk, site_context)
+        summarized_regulatory_context, reg_error = service._summarize_retrieved_context(docs=previous_result.get("docs", []), combined_context=combined_context, site_context=site_context)
+        catchment_summary, catchment_error = service.summarize_catchment_context(combined_context=combined_context, site_context=site_context)
+
+        if reg_error or catchment_error:
+            logger.warning(f"PlanID={plan_pk} - Errors in summarization: REG_ERR: {reg_error}, CATCH_ERR: {catchment_error}")
+
+        step_result = {
+            "combined_context": combined_context,
+            "summarized_regulatory_context": summarized_regulatory_context,
+            "catchment_summary": catchment_summary, # This is now generated statically
+            "site_context": site_context # Pass the context through
+        }
+        logger.info(f"PlanID={plan_pk} - run_summarization_step completed. Enqueuing risk identification step.")
+
+        # Enqueue the next job in the chain
+        queue = django_rq.get_queue('default')
+        risk_job = queue.enqueue(
+            run_risk_identification_step,
+            step_result, # Pass the result of this job
+            plan_pk=plan_pk,
+            final_job_id=final_job_id, # Pass final_job_id
+            depends_on=current_job, # Ensure order
+            result_ttl=3600
+        )
+        risk_job.meta['plan_pk'] = plan_pk
+        risk_job.meta['final_job_id'] = final_job_id
+        risk_job.save_meta()
+        logger.info(f"Enqueued risk_job (ID: {risk_job.id}) for plan_pk={plan_pk}")
+
+        return step_result
+
+    except Exception as e:
+        logger.error(f"PlanID={plan_pk} - An unexpected error occurred in run_summarization_step: {e}", exc_info=True)
+        raise
+
+
+@job('default')
+def run_risk_identification_step(previous_result=None, *, plan_pk, final_job_id=None):
+    logger.info(f"run_risk_identification_step started for plan_pk={plan_pk}, final_job_id={final_job_id}")
+    current_job = get_current_job() # Get the current job instance
+    try:
+        if previous_result is None:
+            logger.warning(f"PlanID={plan_pk} - No previous_result provided for risk identification step. Proceeding with empty context.")
+            previous_result = {}
+
+        site_context = previous_result.get("site_context", {})
+        
+        service = _get_vulnerability_service(plan_pk, site_context)
+        identified_risks, risk_error = service.identify_risks_from_data(site_context=site_context)
+        if risk_error:
+            logger.warning(f"PlanID={plan_pk} - Error in risk identification: {risk_error}")
+
+        step_result = previous_result # Start with previous result
+        step_result["identified_risks"] = identified_risks # Add identified risks
+        logger.info(f"PlanID={plan_pk} - run_risk_identification_step completed. Enqueuing final analysis step.")
+
+        # Enqueue the next job in the chain
+        queue = django_rq.get_queue('default')
+        final_analysis_job = queue.enqueue(
+            run_final_analysis_step,
+            step_result, # Pass the result of this job
+            plan_pk=plan_pk,
+            final_job_id=final_job_id, # Pass final_job_id
+            job_id=final_job_id, # Use the predictable ID for the final job
+            depends_on=current_job,
+            result_ttl=3600
+        )
+        final_analysis_job.meta['plan_pk'] = plan_pk
+        final_analysis_job.meta['final_job_id'] = final_job_id
+        final_analysis_job.save_meta()
+        logger.info(f"Enqueued final_analysis_job (ID: {final_analysis_job.id}) for plan_pk={plan_pk}")
+
+        return step_result
+
+    except Exception as e:
+        logger.error(f"PlanID={plan_pk} - An unexpected error occurred in run_risk_identification_step: {e}", exc_info=True)
+        raise
+
+
+@job('default')
+def run_final_analysis_step(previous_result=None, *, plan_pk, final_job_id=None):
+    logger.info(f"run_final_analysis_step started for plan_pk={plan_pk}, final_job_id={final_job_id}")
+    current_job = get_current_job() # Get the current job instance
+    try:
+        if previous_result is None:
+            logger.warning(f"PlanID={plan_pk} - No previous_result provided for final analysis step. Proceeding with empty context.")
+            previous_result = {}
+
+        site_context = previous_result.get("site_context", {})
+
+        structured_report, errors = VulnerabilityService.generate_structured_analysis(
+            catchment_summary=previous_result.get("catchment_summary"),
+            identified_risks=previous_result.get("identified_risks"),
+            regulatory_context=previous_result.get("summarized_regulatory_context"),
+            site_context=site_context
+        )
+        if errors:
+            logger.warning(f"PlanID={plan_pk} - Errors encountered during final analysis: {errors}")
+
+        plan = FreshwaterPlan.objects.get(pk=plan_pk)
+        final_data = {
+            'status': 'finished', # Use 'finished' to match frontend expectation
+            'progress': 'Analysis complete',
+            'data': structured_report
+        }
+        plan.vulnerability_analysis_data = final_data
+        plan.save(update_fields=['vulnerability_analysis_data', 'updated_at'])
+
+        logger.info(f"Successfully generated and saved final analysis report for plan_pk={plan_pk}")
+        return structured_report # Return the report directly, not the entire saved object
+
+    except Exception as e:
+        logger.error(f"PlanID={plan_pk} - An unexpected error occurred in run_final_analysis_step: {e}", exc_info=True)
+        raise
+
+
+
+
+
+@job('default')
+def run_vulnerability_analysis_v2_task(plan_pk, final_job_id=None):
     """
     Orchestrates the vulnerability analysis by chaining the individual steps.
     """
@@ -665,18 +1060,23 @@ def run_vulnerability_analysis_task(plan_pk):
         plan = FreshwaterPlan.objects.get(pk=plan_pk)
         queue = django_rq.get_queue('default')
 
-        # Enqueue jobs with dependencies
-        retrieval_job = queue.enqueue(run_retrieval_step, plan_pk)
-        summarization_job = queue.enqueue(run_summarization_step, plan_pk, depends_on=retrieval_job, result_ttl=3600)
-        risk_job = queue.enqueue(run_risk_identification_step, plan_pk, depends_on=summarization_job, result_ttl=3600)
-        final_job = queue.enqueue(run_final_analysis_step, plan_pk, depends_on=risk_job, result_ttl=3600)
+        # Enqueue the first job in the chain
+        retrieval_job = queue.enqueue(
+            run_retrieval_step,
+            plan_pk=plan_pk,
+            final_job_id=final_job_id, # Pass final_job_id
+            result_ttl=3600
+        )
+        retrieval_job.meta['plan_pk'] = plan_pk
+        retrieval_job.meta['final_job_id'] = final_job_id
+        retrieval_job.save_meta()
+        logger.info(f"Enqueued retrieval_job (ID: {retrieval_job.id}) for plan_pk={plan_pk}")
 
     except FreshwaterPlan.DoesNotExist:
-        logger.error(f"run_vulnerability_analysis_task failed: Plan with pk={plan_pk} not found.")
+        logger.error(f"run_vulnerability_analysis_v2_task failed: Plan with pk={plan_pk} not found.")
     except Exception as e:
-        logger.error(f"A critical error occurred in run_vulnerability_analysis_task for plan_pk={plan_pk}: {e}", exc_info=True)
+        logger.error(f"A critical error occurred in run_vulnerability_analysis_v2_task for plan_pk={plan_pk}: {e}", exc_info=True)
         if plan:
-            plan.vulnerability_analysis_status = FreshwaterPlan.GenerationStatus.FAILED
             plan.vulnerability_analysis_data = {"errors": [f"A critical background task error occurred: {str(e)}"]}
-            plan.save(update_fields=['vulnerability_analysis_status', 'vulnerability_analysis_data'])
+            plan.save(update_fields=['vulnerability_analysis_data'])
         raise
