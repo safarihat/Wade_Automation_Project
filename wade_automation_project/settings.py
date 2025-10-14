@@ -8,24 +8,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # It's good practice to do this at the top of the file.
 from dotenv import load_dotenv
 load_dotenv()
-
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-# Load from environment variable, with a fallback for development.
-# For production, ALWAYS set a unique, secret key in your environment.
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-your-secret-key')
-
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
-
 ALLOWED_HOSTS = ['*'] # Added for development
-
-
-# Application definition
-
 INSTALLED_APPS = [
     # Django built-in apps
     'django.contrib.admin',
@@ -38,7 +23,8 @@ INSTALLED_APPS = [
     # Third-party apps
     'crispy_forms',
     'crispy_bootstrap5',
-    
+    'django_rq',
+
     # Local apps
     'wade_automation',
     'doc_generator',
@@ -242,12 +228,21 @@ LLM_CACHE_TTL_SECONDS = int(os.environ.get('LLM_CACHE_TTL_SECONDS', 60 * 60 * 4)
 # --- RQ Configuration ---
 RQ_QUEUES = {
     'default': {
-        'HOST': 'localhost',
-        'PORT': 6379,
-        'DB': 0,
-        'DEFAULT_TIMEOUT': 360,  # Adjust as needed
+        'URL': os.environ.get('REDIS_URL', 'redis://localhost:6379/0'),
+        'DEFAULT_TIMEOUT': 360,
+        'DEFAULT_RESULT_TTL': 500,
+    },
+    'high': {
+        'URL': os.environ.get('REDIS_URL', 'redis://localhost:6379/0'),
+        'DEFAULT_TIMEOUT': 500,
+        'DEFAULT_RESULT_TTL': 500,
     },
 }
+
+# This setting is being used by other parts of the application (like geospatial_utils)
+# to connect to Redis. We define it here to prevent the AttributeError.
+# It should point to the same Redis instance as the RQ queues and Cache.
+REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
 
 # Defines the Groq model for the VulnerabilityService. Default to the fastest model for general use.
 # For high-quality analysis, override with 'llama-3.2-90b-text' in your environment.
@@ -298,6 +293,10 @@ LOGGING = {
             'handlers': ['console', 'file'],
             'level': 'INFO',
             'propagate': False,
+        },
+        'root': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
         },
     },
 }

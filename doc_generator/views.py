@@ -20,16 +20,16 @@ from doc_generator.geospatial_utils import (
     _calculate_slope_from_dem,
 )
 from doc_generator.models import FreshwaterPlan, RegionalCouncil, MonitoringSite
-from doc_generator.services.llm_service import LLMService # This is unused, consider removing
+from doc_generator.services.llm_service import LLMService
 from doc_generator.services.vulnerability_service import VulnerabilityService
-from doc_generator.tasks import generate_plan_task, populate_admin_details_task, fetch_lawa_water_quality_task, run_vulnerability_analysis_v2_task, fetch_lawa_data_for_closest_sites_task
+# Removed: from doc_generator.tasks import generate_plan_task, populate_admin_details_task, fetch_lawa_water_quality_task, run_vulnerability_analysis_v2_task, fetch_lawa_data_for_closest_sites_task, generate_water_quality_report_task
 from django_rq import get_queue
 
 import base64
 from django.core.files.base import ContentFile
 
 from doc_generator.services.embedding_service import get_embedding_model
-from doc_generator.services.retrieval_service import RetrievalService  # <-- Add this import
+from doc_generator.services.retrieval_service import RetrievalService
 # LangChain components for RAG - needed for the new analysis view
 from langchain_chroma import Chroma
 from langchain_groq import ChatGroq
@@ -42,8 +42,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-# The user requested this to be added.
-logger = logging.getLogger(__name__)
+# Removed: # The user requested this to be added.
+# Removed: logger = logging.getLogger(__name__)
 
 from doc_generator.services.data_service import DataService
 from django.contrib.gis.db.models.functions import Distance
@@ -124,6 +124,7 @@ def plan_wizard_start(request):
                     logger.error(f"Error saving map snapshot for plan {plan.pk}: {e}")
 
             # Trigger the FAST background task to populate admin details
+            from doc_generator.tasks import populate_admin_details_task # Local import
             queue = get_queue('default')
             job = queue.enqueue(populate_admin_details_task, plan.pk)
             return redirect(reverse('doc_generator:plan_wizard_details', kwargs={'pk': plan.pk}))
@@ -159,6 +160,7 @@ def plan_wizard_details(request, pk):
         if form.is_valid():
             form.save()
             # Now trigger the SLOW task to generate the full plan in the background
+            # from doc_generator.tasks import generate_plan_task # Local import
             # queue = get_queue('default')
             # job = queue.enqueue(generate_plan_task, plan.pk) # This can be enabled when ready
             messages.success(request, "Your details have been saved.")
@@ -543,38 +545,44 @@ def api_generate_risk_report(request, pk):
 
 @login_required
 def water_quality_summary(request, pk):
-    plan = get_object_or_404(FreshwaterPlan, id=pk)
-    if plan.user != request.user:
-        return redirect('some_error_page')
-
-    # This view will now handle both the loading and final display.
-    # Check if the analysis has already been run and data is saved.
-    if plan.vulnerability_analysis_data and plan.vulnerability_analysis_data.get('status') == 'complete':
-        context = {
-            'plan': plan,
-            'analysis': plan.vulnerability_analysis_data.get('data', {}),
-            'status': 'finished'
-        }
-        return render(request, 'doc_generator/plan_step4_water_quality_summary.html', context)
-
-    # If not complete, show the loading page which will trigger and poll the job.
+    """
+    Step 4 of the wizard: Display regional water quality data.
+    The template's JavaScript will handle fetching the data.
+    """
+    plan = get_object_or_404(FreshwaterPlan, pk=pk, user=request.user)
     context = {
         'plan': plan,
-        'status': 'loading'
     }
-    return render(request, 'doc_generator/plan_step4_loading.html', context)
+    return render(request, 'doc_generator/water_quality_summary.html', context)
 
 
 @login_required
 def api_get_closest_lawa_sites_data(request):
     """
-    API endpoint to enqueue the task for fetching data from the 5 closest LAWA sites.
+    API endpoint to enqueue the new orchestrated task for generating the full water quality report.
     """
+    logger.info("--- api_get_closest_lawa_sites_data VIEW CALLED ---")
     lat = request.GET.get('lat')
     lon = request.GET.get('lon')
+    plan_pk = request.GET.get('plan_pk')
+    logger.info(f"--- Received params: lat={lat}, lon={lon}, plan_pk={plan_pk} ---")
+
+    if not all([lat, lon, plan_pk]):
+        logger.error("--- Missing parameters, returning BadRequest ---")
+        return HttpResponseBadRequest("Missing 'lat', 'lon', or 'plan_pk' parameters.")
+
+    # Define the predictable job ID that the frontend will poll.
+    final_job_id = f"water_quality_report_{plan_pk}"
+    logger.info(f"--- Final job ID: {final_job_id} ---")
+
     queue = get_queue('default')
-    job = queue.enqueue(fetch_lawa_data_for_closest_sites_task, float(lat), float(lon))
-    return JsonResponse({'job_id': job.id})
+    # Enqueue the main orchestrator task, which will then enqueue the others in a chain.
+    logger.info(f"--- Enqueuing generate_water_quality_report_task for plan_pk={plan_pk} ---")
+    from doc_generator.tasks import generate_water_quality_report_task # Local import
+    job = queue.enqueue(generate_water_quality_report_task, plan_pk=int(plan_pk), final_job_id=final_job_id)
+    logger.info(f"--- Task enqueued with job ID: {job.id} ---")
+    
+    return JsonResponse({'job_id': final_job_id})
 
 
 # =============================================================================
@@ -829,6 +837,7 @@ def api_generate_vulnerability_analysis_v2(request, pk):
 
     queue = get_queue('default')
     # Enqueue the orchestrator task, passing the final job's ID to it.
+    from doc_generator.tasks import run_vulnerability_analysis_v2_task # Local import
     queue.enqueue(run_vulnerability_analysis_v2_task, plan.pk, final_job_id=final_job_id)
 
     # Return the ID of the job we actually want to poll.
@@ -981,6 +990,7 @@ def api_get_water_quality_data(request):
 
     # Enqueue the job to the default RQ queue
     queue = get_queue('default')
+    from doc_generator.tasks import fetch_lawa_water_quality_task # Local import
     job = queue.enqueue(fetch_lawa_water_quality_task, user_lat, user_lon, measurements_to_fetch)
 
     # Return the Job ID so the frontend can poll for the result
@@ -1010,3 +1020,29 @@ def check_job_status(request):
         return JsonResponse({'status': 'failed', 'message': job.exc_info})
     else:
         return JsonResponse({'status': 'pending', 'position': job.get_position()})
+
+def api_get_lawa_sites_data(request):
+    """
+    API endpoint to enqueue a task that finds the 5 closest LAWA sites with data.
+    """
+    lat = request.GET.get('lat')
+    lon = request.GET.get('lon')
+    plan_pk = request.GET.get('plan_pk')
+
+    if not all([lat, lon, plan_pk]):
+        return HttpResponseBadRequest("Missing 'lat', 'lon', or 'plan_pk' parameters.")
+
+    # The final job ID is the one we want to poll for the complete report.
+    final_job_id = f"water_quality_report_{plan_pk}"
+    
+    # We enqueue the orchestrator task. It will create the chain.
+    queue = get_queue('default')
+    from doc_generator.tasks import generate_water_quality_report_task # Local import
+    job = queue.enqueue(
+        generate_water_quality_report_task,
+        plan_pk=int(plan_pk),
+        final_job_id=final_job_id
+    )
+    
+    # We return the final job's ID, which is predictable.
+    return JsonResponse({'job_id': final_job_id})

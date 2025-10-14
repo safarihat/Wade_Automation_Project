@@ -1,0 +1,1927 @@
+[
+  {
+    "LawaId": "ARC-00079",
+    "SiteName": "Puhinui",
+    "Lat": -36.99258182898936,
+    "Long": 174.87011645400878,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00078",
+    "SiteName": "Patumahoe",
+    "Lat": -37.19075997533971,
+    "Long": 174.83955275897202,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00080",
+    "SiteName": "Puhinui at Lambie",
+    "Lat": -36.9925185845935,
+    "Long": 174.8701261411982,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00073",
+    "SiteName": "Otara",
+    "Lat": -36.958491188161226,
+    "Long": 174.8828494670408,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00076",
+    "SiteName": "Papakura",
+    "Lat": -37.03334351526178,
+    "Long": 174.9066299222033,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00077",
+    "SiteName": "Parakai",
+    "Lat": -36.6599563736191,
+    "Long": 174.4354938659383,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00081",
+    "SiteName": "Rangitopuni",
+    "Lat": -36.73705931111285,
+    "Long": 174.6216958636026,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00082",
+    "SiteName": "Rangitopuni at Walkers",
+    "Lat": -36.73702764567875,
+    "Long": 174.6193881544811,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00083",
+    "SiteName": "Revell Court",
+    "Lat": -37.21509662269627,
+    "Long": 174.8976841156257,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00084",
+    "SiteName": "Rimmer Road",
+    "Lat": -36.685839851806094,
+    "Long": 174.40111144562616,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00085",
+    "SiteName": "Selaks",
+    "Lat": -36.78418420791603,
+    "Long": 174.5773933434756,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00086",
+    "SiteName": "Swanson",
+    "Lat": -36.85591695291624,
+    "Long": 174.6128752811887,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00087",
+    "SiteName": "Tamahunga",
+    "Lat": -36.327764663860094,
+    "Long": 174.73289495547843,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00088",
+    "SiteName": "Tamahunga at Quintals",
+    "Lat": -36.3269569671706,
+    "Long": 174.73389080718258,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00056",
+    "SiteName": "Karaka",
+    "Lat": -37.0942950732745,
+    "Long": 174.88842538043073,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00057",
+    "SiteName": "Kaukapakapa",
+    "Lat": -36.630598495645366,
+    "Long": 174.51898579747032,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00058",
+    "SiteName": "Kumeu",
+    "Lat": -36.77396849147273,
+    "Long": 174.56054499956852,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00059",
+    "SiteName": "Leslie",
+    "Lat": -36.878280449597895,
+    "Long": 174.72821354203674,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00061",
+    "SiteName": "Makarau",
+    "Lat": -36.5760394250338,
+    "Long": 174.50665072424044,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00064",
+    "SiteName": "Maraeorahia",
+    "Lat": -37.23276889371457,
+    "Long": 174.71714520447262,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00065",
+    "SiteName": "Mauku",
+    "Lat": -37.20080926335975,
+    "Long": 174.8820031145995,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00067",
+    "SiteName": "Ngakaroa",
+    "Lat": -37.19498158694423,
+    "Long": 174.97314746495084,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00068",
+    "SiteName": "Omaha Flats Rd",
+    "Lat": -36.338132101881904,
+    "Long": 174.74335263650707,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00069",
+    "SiteName": "Opanuku",
+    "Lat": -36.88006990788526,
+    "Long": 174.62240417286398,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00071",
+    "SiteName": "Orewa",
+    "Lat": -36.59745846908709,
+    "Long": 174.657917555976,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00072",
+    "SiteName": "Ostrich farm",
+    "Lat": -37.166101351120595,
+    "Long": 174.86983330476534,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00089",
+    "SiteName": "Waharau",
+    "Lat": -37.0415281766876,
+    "Long": 175.29294176246862,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00091",
+    "SiteName": "Waitangi",
+    "Lat": -37.21235358562685,
+    "Long": 174.76562351887847,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00092",
+    "SiteName": "Waiteitei",
+    "Lat": -36.26510009959332,
+    "Long": 174.5859111540258,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00093",
+    "SiteName": "Waiwera",
+    "Lat": -36.54630214073941,
+    "Long": 174.7078668754571,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00094",
+    "SiteName": "Mahurangi @ Satellite",
+    "Lat": -36.43210612172294,
+    "Long": 174.66493492871103,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00095",
+    "SiteName": "West Hoe",
+    "Lat": -36.578731958153746,
+    "Long": 174.65759521021093,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00096",
+    "SiteName": "Whenuapai",
+    "Lat": -36.78700175893565,
+    "Long": 174.63046924448835,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00004",
+    "SiteName": "Lucas @ Gills ",
+    "Lat": -36.72307999896997,
+    "Long": 174.69620000048707,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00098",
+    "SiteName": "Lake Tomorata",
+    "Lat": -36.192749999537725,
+    "Long": 174.6490100004015,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00099",
+    "SiteName": "Lake Pupuke",
+    "Lat": -36.780582629044396,
+    "Long": 174.76775278042675,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00100",
+    "SiteName": "Lake Rototoa",
+    "Lat": -36.51377999885865,
+    "Long": 174.23866000048878,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00104",
+    "SiteName": "Aroaro @ Phillips",
+    "Lat": -36.99572991343829,
+    "Long": 175.1339924753204,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00113",
+    "SiteName": "Duck Creek @ Trotters",
+    "Lat": -36.398985141040185,
+    "Long": 174.7017501748994,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-10002",
+    "SiteName": "Lake Wainamu",
+    "Lat": -36.88933999885789,
+    "Long": 174.46688000010224,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-100059",
+    "SiteName": "Glen Eden",
+    "Lat": -36.92214281016663,
+    "Long": 174.65200090001127,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-100064",
+    "SiteName": "Henderson",
+    "Lat": -36.86800045022969,
+    "Long": 174.62835260050133,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-100074",
+    "SiteName": "Khyber Pass",
+    "Lat": -36.86636306965465,
+    "Long": 174.77116760050245,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-100103",
+    "SiteName": "Pakuranga",
+    "Lat": -36.90548374980429,
+    "Long": 174.890288700387,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-100106",
+    "SiteName": "Patumahoe",
+    "Lat": -37.20450360989916,
+    "Long": 174.86401940002827,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-100110",
+    "SiteName": "Penrose",
+    "Lat": -36.90455846010009,
+    "Long": 174.8155635003509,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-100113",
+    "SiteName": "Queen Street",
+    "Lat": -36.84765325981903,
+    "Long": 174.76557679960956,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-100124",
+    "SiteName": "Takapuna",
+    "Lat": -36.78030524996484,
+    "Long": 174.74890449976124,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-101648",
+    "SiteName": "Patumahoe Springs",
+    "Lat": -37.2005167591316,
+    "Long": 174.84767009973038,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-101652",
+    "SiteName": "Waitakere Rd Deep",
+    "Lat": -36.784393308437174,
+    "Long": 174.5566526035937,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-101653",
+    "SiteName": "Waitakere Rd Shallow",
+    "Lat": -36.782358380256824,
+    "Long": 174.56035453591664,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-103730",
+    "SiteName": "Tiwai Rd Bore",
+    "Lat": -36.910200888910104,
+    "Long": 174.78209133004077,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-101661",
+    "SiteName": "Ostrich Farm Obs NO2",
+    "Lat": -37.16738680876166,
+    "Long": 174.86981827973034,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-101662",
+    "SiteName": "Ostrich Farm Rd Deep #1",
+    "Lat": -37.166102294799124,
+    "Long": 174.86983341699036,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-101663",
+    "SiteName": "Fielding Rd Sand",
+    "Lat": -37.116167499457596,
+    "Long": 174.96297602969034,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-101664",
+    "SiteName": "Fielding Rd Volc",
+    "Lat": -37.116167499457596,
+    "Long": 174.96297602969034,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-101665",
+    "SiteName": "Hillview Springs",
+    "Lat": -37.169147999395804,
+    "Long": 174.98655400035054,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-101666",
+    "SiteName": "Hickey Springs",
+    "Lat": -37.19286599873929,
+    "Long": 174.9009300002945,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-101667",
+    "SiteName": "Rifle Range Rd Deep",
+    "Lat": -37.20292932334612,
+    "Long": 174.87352636071685,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-101668",
+    "SiteName": "Rifle Range Rd Shallow",
+    "Lat": -37.202952746985986,
+    "Long": 174.87347775108086,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-101671",
+    "SiteName": "Watson Ave",
+    "Lat": -36.88658943886486,
+    "Long": 174.73770313958502,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-101673",
+    "SiteName": "Seagrove Rd",
+    "Lat": -37.13027357629981,
+    "Long": 174.75614930771886,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-101674",
+    "SiteName": "BP Bombay",
+    "Lat": -37.193085839188356,
+    "Long": 174.98227329994745,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-101675",
+    "SiteName": "Wilcox Gunclub Road",
+    "Lat": -37.20333690947625,
+    "Long": 174.850612099904,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102309",
+    "SiteName": "Omaha @ Walkway",
+    "Lat": -36.20160999901829,
+    "Long": 174.46439000030912,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102310",
+    "SiteName": "Selkirk ",
+    "Lat": -36.87829999929044,
+    "Long": 174.72807000053413,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102311",
+    "SiteName": "Waiwera BF",
+    "Lat": -36.546239999438185,
+    "Long": 174.7079599997748,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102312",
+    "SiteName": "Tawaipareira",
+    "Lat": -36.795939999240666,
+    "Long": 175.05298000040148,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102313",
+    "SiteName": "Albany Heights",
+    "Lat": -36.70991999933555,
+    "Long": 174.69101000025938,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102314",
+    "SiteName": "Albert Park",
+    "Lat": -36.850299999430135,
+    "Long": 174.76762000055598,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102315",
+    "SiteName": "Alexandra Park",
+    "Lat": -36.89131999898927,
+    "Long": 174.78008000023647,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102317",
+    "SiteName": "Avondale",
+    "Lat": -36.89957999890563,
+    "Long": 174.68744000026177,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102319",
+    "SiteName": "Bayswater",
+    "Lat": -36.81395999939413,
+    "Long": 174.78254999987536,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102320",
+    "SiteName": "Birkdale",
+    "Lat": -36.796639999184585,
+    "Long": 174.70744000008824,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102321",
+    "SiteName": "Churchill Park",
+    "Lat": -36.85490999912499,
+    "Long": 174.874549999828,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102322",
+    "SiteName": "Clevedon Show Grounds",
+    "Lat": -37.00429999876822,
+    "Long": 175.0415200003862,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102323",
+    "SiteName": "Constable Lane ",
+    "Lat": -36.81947999878621,
+    "Long": 174.6422799995233,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102324",
+    "SiteName": "Cox's Bay",
+    "Lat": -36.85230999917931,
+    "Long": 174.72937000029378,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102325",
+    "SiteName": "Cutler Park ",
+    "Lat": -36.92291999869465,
+    "Long": 174.68398000020227,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102327",
+    "SiteName": "Drury Rain",
+    "Lat": -37.15011110888799,
+    "Long": 175.03211109991813,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102328",
+    "SiteName": "Forrest Hill Rd ",
+    "Lat": -36.91490999886721,
+    "Long": 174.58864000015666,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102329",
+    "SiteName": "Harmel Rd ",
+    "Lat": -36.894379999052944,
+    "Long": 174.65897999978407,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102330",
+    "SiteName": "Karaka Rainfall",
+    "Lat": -37.13115099873305,
+    "Long": 174.84492799972165,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102331",
+    "SiteName": "Keeling Rd ",
+    "Lat": -36.883409999496216,
+    "Long": 174.6238000003959,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102332",
+    "SiteName": "Kumeu Waitak Domain ",
+    "Lat": -36.850199999202054,
+    "Long": 174.53962000018214,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102333",
+    "SiteName": "Leigh",
+    "Lat": -36.26921999882291,
+    "Long": 174.79752999977654,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102334",
+    "SiteName": "Longford Park",
+    "Lat": -37.05414999936465,
+    "Long": 174.92388000055362,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102335",
+    "SiteName": "Mangemangeroa at reserve",
+    "Lat": -36.920833329266,
+    "Long": 174.93318890011687,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102336",
+    "SiteName": "Manukau ",
+    "Lat": -36.9809850594082,
+    "Long": 174.88391429988422,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102337",
+    "SiteName": "Mt Albert Grammar",
+    "Lat": -36.88584999896401,
+    "Long": 174.72483000015097,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102338",
+    "SiteName": "Muriwai ",
+    "Lat": -36.824909999246586,
+    "Long": 174.4283100002026,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102339",
+    "SiteName": "Okahu Bay Bowls",
+    "Lat": -36.85528999876272,
+    "Long": 174.82058000048926,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102340",
+    "SiteName": "Omaha Golf Course RG",
+    "Lat": -36.33932999936724,
+    "Long": 174.77271000024913,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102341",
+    "SiteName": "Onehunga @ Harbour Rd",
+    "Lat": -36.93054999919134,
+    "Long": 174.7836799997807,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102342",
+    "SiteName": "Opanuku @Candia Rd ",
+    "Lat": -36.89387999889714,
+    "Long": 174.5949600002609,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102343",
+    "SiteName": "Oratia Cemetary ",
+    "Lat": -36.91069999883285,
+    "Long": 174.6210600002637,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102344",
+    "SiteName": "Orewa T/P",
+    "Lat": -36.59837999917222,
+    "Long": 174.67930000036077,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102346",
+    "SiteName": "Papakura ",
+    "Lat": -37.06109999925966,
+    "Long": 174.9774199999569,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102347",
+    "SiteName": "Piha Wetlands",
+    "Lat": -36.952222218923204,
+    "Long": 174.47527779978338,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102348",
+    "SiteName": "Reservoir @ Bush Rd ",
+    "Lat": -36.93463999879385,
+    "Long": 174.58595999944993,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102349",
+    "SiteName": "Rosedale T/P",
+    "Lat": -36.74758999912942,
+    "Long": 174.71563000003917,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102351",
+    "SiteName": "School @ Mairangi Bay ",
+    "Lat": -36.74406999944107,
+    "Long": 174.74698999962752,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102353",
+    "SiteName": "Substn @Lincoln Park ",
+    "Lat": -36.84035999892471,
+    "Long": 174.61869000031163,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102354",
+    "SiteName": "Swanson @ Waitak FStn ",
+    "Lat": -36.892509999408404,
+    "Long": 174.55604999970896,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102355",
+    "SiteName": "Tamaki",
+    "Lat": -36.880309999014194,
+    "Long": 174.8487000002116,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102356",
+    "SiteName": "Te Muri RF",
+    "Lat": -36.516509998847084,
+    "Long": 174.7045599997739,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102357",
+    "SiteName": "Te Pai Park ",
+    "Lat": -36.86102999892444,
+    "Long": 174.6332199999371,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102358",
+    "SiteName": "Torbay @ School ",
+    "Lat": -36.70138999897219,
+    "Long": 174.7344699997905,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102359",
+    "SiteName": "Waiatarua",
+    "Lat": -36.879279999398584,
+    "Long": 174.82782000044654,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102360",
+    "SiteName": "Waiheke Island Matiatia",
+    "Lat": -36.77929999899249,
+    "Long": 174.9996900000551,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102361",
+    "SiteName": "Wairau @ Testing stn",
+    "Lat": -36.784109998899076,
+    "Long": 174.74183999965302,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102362",
+    "SiteName": "Waituna @ Huia FStn ",
+    "Lat": -36.93890999886397,
+    "Long": 174.640460000267,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102363",
+    "SiteName": "Waiuku Rain",
+    "Lat": -37.261609998970165,
+    "Long": 174.7310900000116,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102364",
+    "SiteName": "Whau @ Mt Roskill Substn",
+    "Lat": -36.91260999928902,
+    "Long": 174.72521000021115,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102365",
+    "SiteName": "Zanders",
+    "Lat": -36.703629999035826,
+    "Long": 174.5559600002866,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102366",
+    "SiteName": "Alexandra @ Rosedale",
+    "Lat": -36.741589999021436,
+    "Long": 174.70672999981917,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102367",
+    "SiteName": "Kaipatiki",
+    "Lat": -36.781979999162964,
+    "Long": 174.71086999973275,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102368",
+    "SiteName": "Mairangi Bay",
+    "Lat": -36.74003999926271,
+    "Long": 174.7510300004872,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102369",
+    "SiteName": "Wairau @ Chartwell",
+    "Lat": -36.78430999870608,
+    "Long": 174.73405000053174,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102370",
+    "SiteName": "Bowden Tamaki Trib ",
+    "Lat": -36.91659999885193,
+    "Long": 174.85041999961433,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-103554",
+    "SiteName": "Mangemangeroa ",
+    "Lat": -36.935679998789205,
+    "Long": 174.93430999970022,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102372",
+    "SiteName": "Mangawheau",
+    "Lat": -37.10559999897308,
+    "Long": 175.06825000048738,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102374",
+    "SiteName": "Motions Creek",
+    "Lat": -36.86479999881826,
+    "Long": 174.72471000027437,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102375",
+    "SiteName": "Mahurangi Argo ",
+    "Lat": -36.40289999929946,
+    "Long": 174.65704999992593,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102376",
+    "SiteName": "Wairau @ Motorway ",
+    "Lat": -36.78016999895716,
+    "Long": 174.74891000015432,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102377",
+    "SiteName": "Taiaotea @ Freyburg ",
+    "Lat": -36.71646999939212,
+    "Long": 174.73960000033142,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102378",
+    "SiteName": "Taiorahi ",
+    "Lat": -36.7314899994902,
+    "Long": 174.7512699997325,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102379",
+    "SiteName": "Awaruku @ Glenvar ",
+    "Lat": -36.694539998656595,
+    "Long": 174.74257999965238,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00074",
+    "SiteName": "Oteha",
+    "Lat": -36.73196668028931,
+    "Long": 174.69477053750876,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00090",
+    "SiteName": "Wairoa",
+    "Lat": -37.01334935788497,
+    "Long": 175.05318225578247,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00041",
+    "SiteName": "Angle Street",
+    "Lat": -36.92729827119432,
+    "Long": 174.8055608675504,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00043",
+    "SiteName": "Arataki",
+    "Lat": -36.94657449448708,
+    "Long": 174.6076314521352,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00044",
+    "SiteName": "Awanohi",
+    "Lat": -36.68426401054977,
+    "Long": 174.69870323895262,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00045",
+    "SiteName": "Awhitu",
+    "Lat": -37.08824366258153,
+    "Long": 174.65118964666755,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-103538",
+    "SiteName": "Puhinui @ Botanic Gardens",
+    "Lat": -37.012026458264316,
+    "Long": 174.91007190745955,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00048",
+    "SiteName": "Douglas Road",
+    "Lat": -37.217606429138314,
+    "Long": 174.87307801350357,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00049",
+    "SiteName": "Fielding",
+    "Lat": -37.114173688118115,
+    "Long": 174.96336141937013,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00050",
+    "SiteName": "Glenbrook",
+    "Lat": -37.1928488049721,
+    "Long": 174.76022330852393,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00051",
+    "SiteName": "Hoteo",
+    "Lat": -36.38439061728165,
+    "Long": 174.5098897443875,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00052",
+    "SiteName": "Hoteo at Oldfields",
+    "Lat": -36.342987864805,
+    "Long": 174.51268900919482,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00053",
+    "SiteName": "Hunua",
+    "Lat": -37.080911679373806,
+    "Long": 175.0727093460792,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00054",
+    "SiteName": "Kaipara",
+    "Lat": -36.76326722463358,
+    "Long": 174.4939939635127,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00055",
+    "SiteName": "Kaipara heads",
+    "Lat": -36.433204781453874,
+    "Long": 174.2362804769717,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00034",
+    "SiteName": "Omaru Ck @ Maybury",
+    "Lat": -36.8805199987454,
+    "Long": 174.8629999996136,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00029",
+    "SiteName": "Whangamarie Stream",
+    "Lat": -37.17068999941302,
+    "Long": 174.8424299997295,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00035",
+    "SiteName": "Kaukapakapa @ Taylors Rd",
+    "Lat": -36.630599998787844,
+    "Long": 174.51898999971314,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00074",
+    "SiteName": "Oteha Stream",
+    "Lat": -36.7319099989078,
+    "Long": 174.69479000053462,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00005",
+    "SiteName": "Mahurangi River FHQ",
+    "Lat": -36.44846999949938,
+    "Long": 174.6487999996622,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00004",
+    "SiteName": "Lucas Creek",
+    "Lat": -36.72307999896997,
+    "Long": 174.69620000048707,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00026",
+    "SiteName": "Waiwera Stream",
+    "Lat": -36.55097999938836,
+    "Long": 174.66049999993757,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00022",
+    "SiteName": "Puhinui LTB",
+    "Lat": -36.99273288785211,
+    "Long": 174.8704020936162,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00019",
+    "SiteName": "Pakuranga Ck Greenmt",
+    "Lat": -36.93336999901314,
+    "Long": 174.90294000053447,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00016",
+    "SiteName": "Otara Ck Kennel Hill",
+    "Lat": -36.95570212382885,
+    "Long": 174.89062089394727,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00015",
+    "SiteName": "Otara Ck East Tamaki",
+    "Lat": -36.9622799988304,
+    "Long": 174.87998000016867,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00014",
+    "SiteName": "Otaki Creek",
+    "Lat": -36.96658999950078,
+    "Long": 174.8456499999835,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00010",
+    "SiteName": "Oakley LTB",
+    "Lat": -36.87616067122332,
+    "Long": 174.70477437172605,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00006",
+    "SiteName": "Mahurangi River WS",
+    "Lat": -36.39950999919659,
+    "Long": 174.66003999980734,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102239",
+    "SiteName": "Papakura @ Alfriston-Ardmore Rd",
+    "Lat": -37.00644999949265,
+    "Long": 174.95821999958298,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00001",
+    "SiteName": "Cascades LTB",
+    "Lat": -36.88888972677283,
+    "Long": 174.5221147393787,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00027",
+    "SiteName": "West Hoe LTB",
+    "Lat": -36.57847326341921,
+    "Long": 174.6575683937058,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102722",
+    "SiteName": "Anns Creek @ Hamlins Hill",
+    "Lat": -36.923074632221564,
+    "Long": 174.83122511556132,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102725",
+    "SiteName": "Castor @ Braemar",
+    "Lat": -36.7566610254316,
+    "Long": 174.7644183792308,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102728",
+    "SiteName": "Kaitoke Creek @ Hotsprings Tk",
+    "Lat": -36.22949578764646,
+    "Long": 175.42401805033745,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102740",
+    "SiteName": "Tararata Creek @ Elmdon Street",
+    "Lat": -36.960150836110216,
+    "Long": 174.79491399980745,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102743",
+    "SiteName": "Tryphena @ Medlands Rd",
+    "Lat": -36.29965833654028,
+    "Long": 175.48825262452954,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00066",
+    "SiteName": "Meola",
+    "Lat": -36.86676387849296,
+    "Long": 174.71871041560604,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00070",
+    "SiteName": "Oratia @ Millbrook",
+    "Lat": -36.88918869863557,
+    "Long": 174.63314531533644,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00009",
+    "SiteName": "Ngakoroa LTB",
+    "Lat": -37.19547159325546,
+    "Long": 174.97363438055797,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00024",
+    "SiteName": "Vaughan Lower",
+    "Lat": -36.68438092368166,
+    "Long": 174.73945485836447,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00038",
+    "SiteName": "Nukumea Upper",
+    "Lat": -36.57116832712299,
+    "Long": 174.66982460679236,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00001",
+    "SiteName": "Cascades LTB",
+    "Lat": -36.88888972677283,
+    "Long": 174.5221147393787,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00003",
+    "SiteName": "Kumeu @ Weza",
+    "Lat": -36.77619490503417,
+    "Long": 174.5600309056112,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00008",
+    "SiteName": "Matakana LTB",
+    "Lat": -36.34494067830874,
+    "Long": 174.71135806478358,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00010",
+    "SiteName": "Oakley LTB",
+    "Lat": -36.87616067122332,
+    "Long": 174.70477437172605,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00013",
+    "SiteName": "Opanuku Stream",
+    "Lat": -36.89491459949185,
+    "Long": 174.5946636503634,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00016",
+    "SiteName": "Otara Ck Kennel Hill",
+    "Lat": -36.95570212382885,
+    "Long": 174.89062089394727,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00017",
+    "SiteName": "Oteha LTB",
+    "Lat": -36.73804410533427,
+    "Long": 174.69840953717966,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00021",
+    "SiteName": "Papakura LTB",
+    "Lat": -37.02815702083256,
+    "Long": 174.92321720322968,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00025",
+    "SiteName": "Wairoa LTB",
+    "Lat": -37.01197015967825,
+    "Long": 175.05333725647736,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00027",
+    "SiteName": "West Hoe LTB",
+    "Lat": -36.57847326341921,
+    "Long": 174.6575683937058,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00028",
+    "SiteName": "Waitangi Stream",
+    "Lat": -37.2270234521527,
+    "Long": 174.73981746099662,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00030",
+    "SiteName": "Wairoa @ Caitchen Rd Trib",
+    "Lat": -37.09236018039983,
+    "Long": 175.1007313459117,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00030",
+    "SiteName": "Wairoa @ Caitchen Rd Trib",
+    "Lat": -37.09236018039983,
+    "Long": 175.1007313459117,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00031",
+    "SiteName": "Riverhead Forest Stream",
+    "Lat": -36.73687605189812,
+    "Long": 174.53581694748698,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00037",
+    "SiteName": "Papakura Trib @ Alfriston",
+    "Lat": -37.02048219972188,
+    "Long": 174.92836174944412,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00114",
+    "SiteName": "Duders",
+    "Lat": -36.90625293823862,
+    "Long": 175.08313648334874,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00115",
+    "SiteName": "Dyers Creek @ Mid Paddock",
+    "Lat": -36.458773191425514,
+    "Long": 174.68414154722734,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00124",
+    "SiteName": "Lucas LTB @ Tennis",
+    "Lat": -36.72314268813609,
+    "Long": 174.6993251971295,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00125",
+    "SiteName": "Mahu Reference @ Trappit",
+    "Lat": -36.445335596362675,
+    "Long": 174.6621059285383,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00126",
+    "SiteName": "Mahurangi LTB",
+    "Lat": -36.44994868006646,
+    "Long": 174.64730878884566,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00128",
+    "SiteName": "Marawhara",
+    "Lat": -36.94012165675628,
+    "Long": 174.4685711248196,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00131",
+    "SiteName": "Motutapu",
+    "Lat": -36.76876729597582,
+    "Long": 174.92545556924256,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00132",
+    "SiteName": "Mt Auckland",
+    "Lat": -36.45768404133169,
+    "Long": 174.460291306415,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00133",
+    "SiteName": "Okura Creek@Awanohi Road",
+    "Lat": -36.66960442109936,
+    "Long": 174.7148078389483,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00134",
+    "SiteName": "Okura Trib 2",
+    "Lat": -36.68427602696629,
+    "Long": 174.7087320859172,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00135",
+    "SiteName": "Okura Trib 1",
+    "Lat": -36.68214150970093,
+    "Long": 174.72424050029562,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00138",
+    "SiteName": "Orere B",
+    "Lat": -36.992439246131255,
+    "Long": 175.21277452487453,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00139",
+    "SiteName": "Otanerua",
+    "Lat": -36.56373538768255,
+    "Long": 174.67433854995966,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00141",
+    "SiteName": "Puhinui Upper (hard)",
+    "Lat": -37.00116836848561,
+    "Long": 174.91117596723973,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00146",
+    "SiteName": "Vaughan Upper",
+    "Lat": -36.689532032461585,
+    "Long": 174.72677827155164,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00148",
+    "SiteName": "Wekatahi",
+    "Lat": -36.942971746239024,
+    "Long": 174.47714906938995,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102236",
+    "SiteName": "Avondale @ Reserve",
+    "Lat": -36.93420240731105,
+    "Long": 174.666387006265,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102373",
+    "SiteName": "Ayr St",
+    "Lat": -36.86454398802612,
+    "Long": 174.786112250393,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00031",
+    "SiteName": "Riverhead Forest Stream",
+    "Lat": -36.73687605189812,
+    "Long": 174.53581694748698,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00028",
+    "SiteName": "Waitangi Stream",
+    "Lat": -37.2270234521527,
+    "Long": 174.73981746099662,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00040",
+    "SiteName": "Cascades @ Whakanewha",
+    "Lat": -36.818319421573385,
+    "Long": 175.0847172939409,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00039",
+    "SiteName": "Onetangi @ Waiheke Rd",
+    "Lat": -36.791679998769204,
+    "Long": 175.0873700000377,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00036",
+    "SiteName": "Avondale @ Shadbolt",
+    "Lat": -36.92327960194836,
+    "Long": 174.69177897746974,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00025",
+    "SiteName": "Wairoa River",
+    "Lat": -37.01334999895916,
+    "Long": 175.05318999980588,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00033",
+    "SiteName": "Makarau @ Rail Bridge",
+    "Lat": -36.55660033003525,
+    "Long": 174.52067659350396,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00024",
+    "SiteName": "Vaughan Lower",
+    "Lat": -36.68438092368166,
+    "Long": 174.73945485836447,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00009",
+    "SiteName": "Ngakaroa ",
+    "Lat": -37.195395381690325,
+    "Long": 174.97329913346442,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00003",
+    "SiteName": "Kumeu @ Weza",
+    "Lat": -36.77619490503417,
+    "Long": 174.5600309056112,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00021",
+    "SiteName": "Papakura LTB",
+    "Lat": -37.02815702083256,
+    "Long": 174.92321720322968,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00018",
+    "SiteName": "Pakuranga @ Botany Rd",
+    "Lat": -36.91292862830201,
+    "Long": 174.9150427651998,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00013",
+    "SiteName": "Opanuku Stream",
+    "Lat": -36.89491459949185,
+    "Long": 174.5946636503634,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00008",
+    "SiteName": "Matakana LTB",
+    "Lat": -36.34494067830874,
+    "Long": 174.71135806478358,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102723",
+    "SiteName": "Auckland Domain @ Lower Domain",
+    "Lat": -36.854975284598865,
+    "Long": 174.77323766914645,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102726",
+    "SiteName": "Dyers Creek @ Bush",
+    "Lat": -36.46003333016077,
+    "Long": 174.68602010336767,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102732",
+    "SiteName": "Meola Ck @ Motions Rd",
+    "Lat": -36.86575226182721,
+    "Long": 174.71885601828868,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102738",
+    "SiteName": "Oakley Creek @ May Road",
+    "Lat": -36.90488607554339,
+    "Long": 174.73889019127338,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102739",
+    "SiteName": "Pakuranga @ Botany Rd",
+    "Lat": -36.91292862830201,
+    "Long": 174.9150427651998,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102741",
+    "SiteName": "Te Muri @ Fenceline",
+    "Lat": -36.513457692491095,
+    "Long": 174.70706655729543,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102724",
+    "SiteName": "Botany Creek @ Tangello Place",
+    "Lat": -36.89523952614727,
+    "Long": 174.90539159159948,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102733",
+    "SiteName": "Newmarket Stream @ Ayr Street",
+    "Lat": -36.864545764860814,
+    "Long": 174.78610473561005,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102734",
+    "SiteName": "Oakley @ Beagle Road",
+    "Lat": -36.89659161172944,
+    "Long": 174.72605635595625,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102736",
+    "SiteName": "Oakley @ Walmsley Park",
+    "Lat": -36.89883532959481,
+    "Long": 174.73009602351172,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102737",
+    "SiteName": "Oakley @ War memorial Park",
+    "Lat": -36.90241301114924,
+    "Long": 174.73366933392404,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102730",
+    "SiteName": "La Rosa Reserve TL (North Stream)",
+    "Lat": -36.92973819886569,
+    "Long": 174.67665159774,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102744",
+    "SiteName": "Whangamarie Stream @ Hunter Rd",
+    "Lat": -37.187437253275796,
+    "Long": 174.8391017435309,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102729",
+    "SiteName": "Kaukapakapa Ref",
+    "Lat": -36.63060766888376,
+    "Long": 174.4627975483012,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-103455",
+    "SiteName": "Glendowie Stream @ Athlone Road",
+    "Lat": -36.856479784481394,
+    "Long": 174.87315377170341,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-103456",
+    "SiteName": "Paramuka Stream @ Brookwood Drive",
+    "Lat": -36.87628242014124,
+    "Long": 174.6086137310046,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-103457",
+    "SiteName": "Waiwera R @ Waiwera Rd",
+    "Lat": -36.54874598523338,
+    "Long": 174.64888838592765,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-103469",
+    "SiteName": "Rangitopuni @ Walkers",
+    "Lat": -36.737019999401355,
+    "Long": 174.61938999961455,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-103536",
+    "SiteName": "Mangere @ Greenwood",
+    "Lat": -36.963029999545725,
+    "Long": 174.78065700043564,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-103537",
+    "SiteName": "Tomarata at Briens",
+    "Lat": -36.21350778312957,
+    "Long": 174.61669227228055,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-103539",
+    "SiteName": "Karaka Lysimeter",
+    "Lat": -37.10171944084431,
+    "Long": 174.89780293535844,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-103540",
+    "SiteName": "Pakuranga @ College",
+    "Lat": -36.89729549770499,
+    "Long": 174.90506167443556,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-103543",
+    "SiteName": "Puni Lysimeter",
+    "Lat": -37.23093623544703,
+    "Long": 174.87432460436895,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-103546",
+    "SiteName": "Mahurangi RAWS",
+    "Lat": -36.36159480927963,
+    "Long": 174.57170633818922,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-103547",
+    "SiteName": "Clevedon RAWS",
+    "Lat": -36.921258480750396,
+    "Long": 175.00712585191653,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-103541",
+    "SiteName": "Paremoremo @ Paremoremo Rd",
+    "Lat": -36.755693625899156,
+    "Long": 174.64979724005627,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-103542",
+    "SiteName": "Piha @ Rangers Shed",
+    "Lat": -36.93712081213186,
+    "Long": 174.5125495413663,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-103544",
+    "SiteName": "Cornwallis RAWS",
+    "Lat": -37.00002093723323,
+    "Long": 174.60268447854278,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-103545",
+    "SiteName": "Great Barrier Island @ Claris RAWS",
+    "Lat": -36.241094156881374,
+    "Long": 175.46690759411618,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-103548",
+    "SiteName": "Woodhill RAWS",
+    "Lat": -36.70298426475413,
+    "Long": 174.37767087291365,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-103549",
+    "SiteName": "Mauku RAWS",
+    "Lat": -37.20163099994772,
+    "Long": 174.81410700033953,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-103550",
+    "SiteName": "Te Muri",
+    "Lat": -36.5122828550461,
+    "Long": 174.70743206222028,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-103552",
+    "SiteName": "Oakley Creek",
+    "Lat": -36.89856126559479,
+    "Long": 174.71818495516928,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-103553",
+    "SiteName": "Whau",
+    "Lat": -36.91146155591816,
+    "Long": 174.70264849666088,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00116",
+    "SiteName": "Eskdale Lower",
+    "Lat": -36.79144932680188,
+    "Long": 174.70768685136315,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-103551",
+    "SiteName": "Kourawhero",
+    "Lat": -36.393301901891654,
+    "Long": 174.53006224627828,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-103555",
+    "SiteName": "Opanuku @ Candia",
+    "Lat": -36.89491176274836,
+    "Long": 174.5946637967026,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00009",
+    "SiteName": "Ngakoroa",
+    "Lat": -37.19539516634332,
+    "Long": 174.97329918418782,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-103556",
+    "SiteName": "Waitangi SHB",
+    "Lat": -37.22878383227353,
+    "Long": 174.74936096054373,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-103558",
+    "SiteName": "Karaka",
+    "Lat": -37.09442940397728,
+    "Long": 174.88848761304368,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-103559",
+    "SiteName": "Longford Pk",
+    "Lat": -37.05041832169473,
+    "Long": 174.92821944804268,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-103560",
+    "SiteName": "Mill Rd",
+    "Lat": -37.040545164747975,
+    "Long": 174.9516097462247,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-103561",
+    "SiteName": "Hamlin Rd",
+    "Lat": -37.03622443935218,
+    "Long": 174.96520553522285,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-103562",
+    "SiteName": "Bruce Pulman",
+    "Lat": -37.04111938779362,
+    "Long": 174.94120965904003,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "ARC-00042",
+    "SiteName": "Ararimu",
+    "Lat": -36.74246851225571,
+    "Long": 174.5121157967441,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-103721",
+    "SiteName": "Birmingham Dam",
+    "Lat": -36.95546852216169,
+    "Long": 174.89596669369078,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-103726",
+    "SiteName": "Paremuka @ Universal",
+    "Lat": -36.85888445357769,
+    "Long": 174.61509694946284,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-103727",
+    "SiteName": "Omaha  @ Walkway",
+    "Lat": -36.33781710128166,
+    "Long": 174.77895717383313,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-103731",
+    "SiteName": "Hunua East RAWS",
+    "Lat": -37.0414738128681,
+    "Long": 175.29295753248763,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-103722",
+    "SiteName": "Maddrens Weir",
+    "Lat": -36.77579701175098,
+    "Long": 174.56026207046472,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-103723",
+    "SiteName": "Waiatarua Wetland",
+    "Lat": -36.88303634708601,
+    "Long": 174.82542114552118,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-103724",
+    "SiteName": "Pukekohe DSIR Bore",
+    "Lat": -37.21440666103368,
+    "Long": 174.85899512356153,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-103725",
+    "SiteName": "Opanuku @ Border Rd",
+    "Lat": -36.88972978968519,
+    "Long": 174.61564240129175,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-103728",
+    "SiteName": "Caroline Heights Bore",
+    "Lat": -36.33515153801601,
+    "Long": 174.77536485064778,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-104049",
+    "SiteName": "Lake Whatihua",
+    "Lat": -37.2755171146516,
+    "Long": 174.67055993310447,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102733",
+    "SiteName": "Newmarket Stream @ Ayr St",
+    "Lat": -36.864545764860814,
+    "Long": 174.78610473561005,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-102372",
+    "SiteName": "Mangawhaeu @ Aldridge Rd",
+    "Lat": -37.10559999897308,
+    "Long": 175.06825000048738,
+    "Region": "Auckland"
+  },
+  {
+    "LawaId": "LAWA-104129",
+    "SiteName": "Rifle Range Central Volcanics Shallow",
+    "Lat": -37.20293743961313,
+    "Long": 174.87328997044958,
+    "Region": "Auckland"
+  }
+]

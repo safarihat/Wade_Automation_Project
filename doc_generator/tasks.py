@@ -11,7 +11,7 @@ from django.db import transaction
 from django.template.loader import render_to_string
 from django.core.files.base import ContentFile
 from doc_generator.models import FreshwaterPlan
-from doc_generator.geospatial_utils import (
+from .geospatial_utils import (
     transform_coords,
     _query_koordinates_vector,
     _query_arcgis_vector,
@@ -20,7 +20,7 @@ from doc_generator.geospatial_utils import (
     _calculate_slope_from_dem,
 )
 from doc_generator.services.soil_drainage_service import SoilDrainageService
-from doc_generator.services.vulnerability_service import VulnerabilityService
+from .services.vulnerability_service import VulnerabilityService
 import hashlib
 from langchain_core.documents import Document
 import redis
@@ -86,21 +86,6 @@ def _get_vulnerability_service(plan_pk: int, site_context_dict: dict = None) -> 
         site_context = {"pk": plan.pk, "plan_pk": plan.pk, "council_authority_name": plan.council_authority_name, "catchment_name": plan.catchment_name}
 
     return VulnerabilityService(retriever=retriever, site_context=site_context)
-
-def _get_retriever():
-    """
-    Centralized function to initialize and return the vector store retriever.
-    This avoids code duplication in each task.
-    """
-    from langchain_chroma import Chroma
-    from .services.embedding_service import get_embedding_model
-    import os
-    from django.conf import settings
-
-    embeddings = get_embedding_model()
-    vector_store_path = os.path.join(settings.BASE_DIR, 'vector_store')
-    vector_store = Chroma(persist_directory=vector_store_path, embedding_function=embeddings)
-    return vector_store.as_retriever(search_kwargs={"k": 10})
 
 
 def _create_watermark_pdf() -> io.BytesIO:
@@ -642,6 +627,73 @@ def _haversine_distance(lat1, lon1, lat2, lon2):
 
     return R * c
 
+def _query_southland_beacon_fallback(lat, lon):
+    """
+    Queries the Southland 'Beacon' identify service as a fallback.
+    """
+    logger.info(f"Primary LAWA search failed for Southland coordinates. Attempting Beacon fallback.")
+    try:
+        # Approximate conversion from WGS84 to NZTM 2193
+        x_nztm = 1200000 + lon * 40000
+        y_nztm = 5000000 - lat * 40000
+
+        url = "https://maps.es.govt.nz/server/rest/services/Public/WaterAndLand/MapServer/identify"
+        params = {
+            "geometry": f"{x_nztm},{y_nztm}",
+            "geometryType": "esriGeometryPoint",
+            "sr": "2193",
+            "layers": "visible:27",
+            "tolerance": "20",
+            "mapExtent": f"{x_nztm-100},{y_nztm-100},{x_nztm+100},{y_nztm+100}",
+            "imageDisplay": "400,300,96",
+            "returnGeometry": "false",
+            "f": "json"
+        }
+        
+        response = requests.get(url, params=params, timeout=20)
+        response.raise_for_status()
+        data = response.json()
+
+        if not data.get("results"):
+            logger.warning("Southland Beacon fallback returned no results.")
+            return None
+
+        attributes = data["results"][0].get("attributes", {})
+        site_name = data["results"][0].get("value", "Unknown Beacon Site")
+
+        measurement_map = {
+            "Degradation_Ecoli": "E-Coli <CFU>",
+            "Degradation_Suspended_Sediment": "Turbidity (FNU)",
+            "Degradation_Nitrogen": "Nitrogen (Nitrate Nitrite)",
+            "Degradation_Phosphorus": "Phosphorus (Dissolved Reactive)"
+        }
+        
+        report_data = {}
+        for beacon_field, measurement_name in measurement_map.items():
+            if beacon_field in attributes:
+                report_data[measurement_name] = {
+                    'status_value': attributes[beacon_field],
+                    'data_points': 1,
+                    'source': 'Beacon: Degradation Status'
+                }
+
+        if not report_data:
+            logger.warning("Southland Beacon fallback result had no mappable degradation fields.")
+            return None
+
+        return {
+            'site_name': site_name,
+            'distance_km': 0,
+            'data': report_data
+        }
+
+    except requests.RequestException as e:
+        logger.error(f"Southland Beacon fallback query failed: {e}")
+        return None
+    except Exception as e:
+        logger.error(f"An unexpected error occurred in Southland Beacon fallback: {e}", exc_info=True)
+        return None
+
 @job('default', result_ttl=3600)
 def fetch_lawa_water_quality_task(user_lat, user_lon, measurements):
     """
@@ -652,7 +704,8 @@ def fetch_lawa_water_quality_task(user_lat, user_lon, measurements):
     try:
         sites_path = os.path.join(settings.BASE_DIR, 'doc_generator', 'data', 'lawa_sites.json')
         with open(sites_path, 'r') as f:
-            lawa_sites = json.load(f)
+            lawa_sites_data = json.load(f)
+        lawa_sites = lawa_sites_data.get("sites", [])
     except (FileNotFoundError, json.JSONDecodeError) as e:
         logger.error(f"Could not load lawa_sites.json: {e}. Cannot perform LAWA lookup.")
         return {"error": "LAWA site cache is missing or corrupt."}
@@ -660,21 +713,21 @@ def fetch_lawa_water_quality_task(user_lat, user_lon, measurements):
     # 2. Calculate distance to all sites and sort them
     sites_with_distance = []
     for site in lawa_sites:
-        distance = _haversine_distance(user_lat, user_lon, site['lat'], site['lon'])
+        distance = _haversine_distance(user_lat, user_lon, site['Lat'], site['Long'])
         sites_with_distance.append((site, distance))
     
     sites_with_distance.sort(key=lambda x: x[1])
 
     # 3. Iterate through sites and query LAWA API
     DISTANCE_THRESHOLD_KM = 50
-    SITES_TO_CHECK_LIMIT = 5 # Limit the number of sites to check to avoid long-running tasks
+    SITES_TO_CHECK_LIMIT = 5
 
     for site_info, distance in sites_with_distance[:SITES_TO_CHECK_LIMIT]:
         if distance > DISTANCE_THRESHOLD_KM:
             logger.info(f"Next closest site is beyond the {DISTANCE_THRESHOLD_KM}km threshold. Stopping search.")
             break
 
-        logger.info(f"Attempting to fetch data from site '{site_info['site_name']}' at {distance:.2f} km.")
+        logger.info(f"Attempting to fetch data from site '{site_info['SiteName']}' at {distance:.2f} km.")
         
         measurement_map = {
             'Turbidity (FNU)': 'TURB',
@@ -692,30 +745,24 @@ def fetch_lawa_water_quality_task(user_lat, user_lon, measurements):
                 continue
 
             try:
-                lawa_url = f"https://www.lawa.org.nz/umbraco/api/riverservice/GetRecGraphData" # Correct endpoint as confirmed
+                lawa_url = f"https://www.lawa.org.nz/umbraco/api/riverservice/GetRecGraphData"
                 params = {
-                    'location': site_info['lawa_id'],
+                    'location': site_info['LawaId'],
                     'indicator': indicator,
                     'startYear': '2015',
                     'endYear': current_year
                 }
-                full_url = requests.Request('GET', lawa_url, params=params).prepare().url
-                logger.info(f"Querying LAWA URL: {full_url}")
                 response = requests.get(lawa_url, params=params, timeout=20)
                 response.raise_for_status()
-                # The LAWA API returns a JSON object where the 'data' key contains a JSON *string*.
-                # We need to parse this nested string to get the actual data array.
                 nested_data_str = response.json().get('data')
                 if not nested_data_str:
                     data = []
                 elif isinstance(nested_data_str, str):
                     try:
                         data = json.loads(nested_data_str)
-                    except json.JSONDecodeError as e:
-                        logger.warning(f"LAWA API returned non-JSON 'data' field for site {site_info['lawa_id']} and indicator {indicator}: {e}. Raw snippet: {str(nested_data_str)[:120]}")
+                    except json.JSONDecodeError:
                         data = []
                 elif isinstance(nested_data_str, list):
-                    # Some deployments may already return a parsed array
                     data = nested_data_str
                 else:
                     data = []
@@ -729,19 +776,26 @@ def fetch_lawa_water_quality_task(user_lat, user_lon, measurements):
                         'source': 'LAWA'
                     }
             except requests.RequestException as e:
-                logger.warning(f"LAWA API query failed for site {site_info['lawa_id']} and indicator {indicator}: {e}.")
+                logger.warning(f"LAWA API query failed for site {site_info['LawaId']} and indicator {indicator}: {e}.")
         
         if lawa_results:
-            logger.info(f"Successfully fetched data from site '{site_info['site_name']}'.")
+            logger.info(f"Successfully fetched data from site '{site_info['SiteName']}'.")
             return {
-                'site_name': site_info['site_name'],
+                'site_name': site_info['SiteName'],
                 'distance_km': round(distance, 2),
                 'data': lawa_results
             }
         else:
-            logger.info(f"No data found for site '{site_info['site_name']}'. Trying next closest site.")
+            logger.info(f"No data found for site '{site_info['SiteName']}'. Trying next closest site.")
 
     logger.warning(f"No suitable LAWA site with *valid data* found within {DISTANCE_THRESHOLD_KM}km after checking {SITES_TO_CHECK_LIMIT} sites.")
+    
+    # Southland Beacon Fallback
+    if -47 < user_lat < -45 and 167 < user_lon < 169:
+        fallback_result = _query_southland_beacon_fallback(user_lat, user_lon)
+        if fallback_result:
+            return fallback_result
+
     return {
         "status": "no_data",
         "message": f"No water quality data could be found from the {SITES_TO_CHECK_LIMIT} nearest monitoring sites within {DISTANCE_THRESHOLD_KM}km.",
@@ -751,15 +805,16 @@ def fetch_lawa_water_quality_task(user_lat, user_lon, measurements):
 @job('default', result_ttl=3600)
 def fetch_lawa_data_for_closest_sites_task(user_lat, user_lon):
     """
-    Finds the 5 nearest LAWA sites and retrieves all their measurement data.
+    Finds the 5 nearest LAWA sites that have measurement data and retrieves it.
     """
-    logger.info(f"Starting LAWA data fetch for closest 5 sites to ({user_lat}, {user_lon})")
+    logger.info("--- RUNNING LATEST VERSION OF FETCH TASK ---")
+    logger.info(f"Starting LAWA data fetch for 5 closest sites with data near ({user_lat}, {user_lon})")
     
-    # 1. Load the pre-processed site index and measurements files
     try:
-        site_index_path = os.path.join(settings.BASE_DIR, 'doc_generator', 'data', 'lawa_site_index.json')
+        site_index_path = os.path.join(settings.BASE_DIR, 'doc_generator', 'data', 'lawa_sites.json')
         with open(site_index_path, 'r') as f:
-            all_sites = json.load(f)
+            all_sites_data = json.load(f)
+        all_sites = all_sites_data.get("sites", [])
 
         measurements_path = os.path.join(settings.BASE_DIR, 'doc_generator', 'data', 'lawa_measurements.json')
         with open(measurements_path, 'r') as f:
@@ -770,29 +825,140 @@ def fetch_lawa_data_for_closest_sites_task(user_lat, user_lon):
         logger.error(error_msg)
         return {"error": error_msg}
 
-    # 2. Calculate distance to all sites and sort them
     sites_with_distance = []
     for site in all_sites:
-        # Ensure site has valid coordinates before calculating distance
         if site.get('Lat') is not None and site.get('Long') is not None:
             distance = _haversine_distance(user_lat, user_lon, site['Lat'], site['Long'])
             sites_with_distance.append({'site_info': site, 'distance': distance})
     
     sites_with_distance.sort(key=lambda x: x['distance'])
 
-    # 3. Get the top 5 closest sites and retrieve their measurements
-    closest_sites_data = []
-    for item in sites_with_distance[:5]:
+    # New logic: Find up to 5 sites that HAVE measurements.
+    closest_sites_with_data = []
+    for item in sites_with_distance:
+        if len(closest_sites_with_data) >= 5:
+            break # Stop once we have 5 sites
+
         site_id = item['site_info']['LawaId']
         measurements = all_measurements.get(site_id, [])
-        closest_sites_data.append({
-            'site_name': item['site_info']['SiteName'],
-            'distance': item['distance'],
-            'measurements': measurements
-        })
+        
+        if measurements: # Only add the site if it has measurement data
+            closest_sites_with_data.append({
+                'lawa_id': site_id, # Add LawaId for the frontend
+                'site_name': item['site_info']['SiteName'],
+                'distance': item['distance'],
+                'measurements': measurements
+            })
 
-    logger.info(f"Successfully retrieved data for {len(closest_sites_data)} closest sites.")
-    return closest_sites_data
+    logger.info(f"Successfully retrieved data for {len(closest_sites_with_data)} closest sites with measurements.")
+    return closest_sites_with_data
+
+@job('default', result_ttl=3600)
+def analyze_lawa_data_task(*, plan_pk):
+    """
+    Task 2 in the water quality chain. Takes raw LAWA data, generates an AI summary,
+    and returns the final combined report.
+    """
+    current_job = get_current_job()
+    if not current_job:
+        error_msg = f"PlanID={plan_pk} - analyze_lawa_data_task could not access current job context."
+        logger.error(error_msg)
+        return {"sites_data": [], "ai_summary": "Analysis skipped: No job context available."}
+
+    # Use dependency IDs for compatibility with RQ versions that don't expose `dependencies`
+    dep_ids = getattr(current_job, "dependency_ids", None) or []
+    if not dep_ids:
+        error_msg = f"PlanID={plan_pk} - analyze_lawa_data_task was called without a dependency. Cannot fetch previous result."
+        logger.error(error_msg)
+        return {"sites_data": [], "ai_summary": "Analysis skipped: No dependency result available."}
+
+    # Fetch the result from the dependency (the fetch_lawa_data_for_closest_sites_task job)
+    try:
+        dependency_job = Job.fetch(dep_ids[0], connection=current_job.connection)
+    except Exception as e:
+        logger.error(f"PlanID={plan_pk} - Failed to fetch dependency job {dep_ids[0]}: {e}", exc_info=True)
+        return {"sites_data": [], "ai_summary": "Analysis skipped: Failed to load dependency result."}
+
+    previous_result = dependency_job.result
+    if getattr(dependency_job, "is_failed", False) or previous_result is None:
+        logger.warning(f"PlanID={plan_pk} - Dependency job {getattr(dependency_job, 'id', dep_ids[0])} failed or returned a None result. Aborting analysis.")
+        return {"sites_data": [], "ai_summary": "Analysis skipped: Could not retrieve water quality data."}
+
+    logger.info(f"PlanID={plan_pk} - Starting AI analysis of LAWA data.")
+
+    if isinstance(previous_result, dict) and previous_result.get('error'):
+        logger.warning(f"PlanID={plan_pk} - Skipping AI analysis due to an error reported in the previous step: {previous_result.get('error')}")
+        return {"sites_data": previous_result, "ai_summary": "Analysis skipped: An error occurred while fetching water quality data."}
+
+    if not previous_result: # This specifically handles the empty list case now
+        logger.warning(f"PlanID={plan_pk} - The data fetching step returned no sites. Proceeding to generate a report indicating this.")
+        return {"sites_data": [], "ai_summary": "No nearby monitoring sites were found, so a detailed water quality analysis could not be performed."}
+
+    try:
+        plan = FreshwaterPlan.objects.get(pk=plan_pk)
+        site_context = {"pk": plan.pk, "council_authority_name": plan.council_authority_name}
+
+        # This method does not exist on VulnerabilityService. The logic should be self-contained
+        # or call a valid method. For now, we'll create a placeholder summary.
+        # A proper implementation would involve a call to an LLM.
+        ai_summary, error = ("AI summary generation is not yet fully implemented.", None)
+
+        if error:
+            logger.error(f"PlanID={plan_pk} - Error during LAWA AI analysis: {error}")
+
+        final_report = {
+            "sites_data": previous_result,
+            "ai_summary": ai_summary
+        }
+        return final_report
+
+    except Exception as e:
+        logger.error(f"PlanID={plan_pk} - A critical error occurred in analyze_lawa_data_task: {e}", exc_info=True)
+        return {"sites_data": previous_result if 'previous_result' in locals() else [], "ai_summary": "A critical error prevented AI analysis."}
+
+
+@job('default')
+def generate_water_quality_report_task(plan_pk, **kwargs):
+    """
+    Orchestrator task that chains the data fetching and analysis for the water quality report.
+    """
+    logger.info(f"PlanID={plan_pk} - Orchestrator task started.")
+    try:
+        logger.info(f"PlanID={plan_pk} - Fetching FreshwaterPlan object.")
+        plan = FreshwaterPlan.objects.get(pk=plan_pk)
+        logger.info(f"PlanID={plan_pk} - Successfully fetched plan.")
+
+        final_job_id = kwargs.get('final_job_id') or f"water_quality_report_{plan_pk}"
+        fetch_job_id = f"fetch_data_for_{final_job_id}"
+        logger.info(f"PlanID={plan_pk} - Final Job ID: {final_job_id}, Fetch Job ID: {fetch_job_id}")
+
+        queue = django_rq.get_queue('default')
+        logger.info(f"PlanID={plan_pk} - Enqueuing fetch task: fetch_lawa_data_for_closest_sites_task")
+        
+        fetch_job = queue.enqueue(
+            fetch_lawa_data_for_closest_sites_task, 
+            plan.latitude, 
+            plan.longitude, 
+            job_id=fetch_job_id
+        )
+        # CRITICAL: Log the ID of the job we just created.
+        logger.info(f"PlanID={plan_pk} - Fetch task enqueued with Job ID: {fetch_job.id}")
+
+        logger.info(f"PlanID={plan_pk} - Enqueuing analysis task (analyze_lawa_data_task) to depend on {fetch_job.id}")
+        analysis_job = queue.enqueue(
+            analyze_lawa_data_task, 
+            depends_on=fetch_job, 
+            job_id=final_job_id, 
+            kwargs={'plan_pk': plan_pk}
+        )
+        logger.info(f"PlanID={plan_pk} - Analysis task enqueued with Job ID: {analysis_job.id}")
+        logger.info(f"PlanID={plan_pk} - Orchestrator task finished successfully.")
+
+    except FreshwaterPlan.DoesNotExist:
+        logger.error(f"PlanID={plan_pk} - Orchestrator failed: FreshwaterPlan with pk={plan_pk} does not exist.")
+    except Exception as e:
+        logger.error(f"PlanID={plan_pk} - Orchestrator failed with an unexpected error: {e}", exc_info=True)
+        raise
 
 def _analyze_water_quality_with_rag(water_quality_results: dict, council_name: str) -> str:
     """

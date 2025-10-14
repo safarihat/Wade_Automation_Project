@@ -1,0 +1,3663 @@
+[
+  {
+    "LawaId": "ES-00072",
+    "SiteName": "Aparima River at Thornbury",
+    "Lat": -46.28592732681144,
+    "Long": 168.0829234032511,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00073",
+    "SiteName": "Balfour at Glenure St Patricks Road",
+    "Lat": -45.81532659146983,
+    "Long": 168.4975003048847,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00074",
+    "SiteName": "Carran Creek 1km us Waituna Lagoon Road",
+    "Lat": -46.53589496122815,
+    "Long": 168.65863464991446,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00075",
+    "SiteName": "Castlerock Aquifer at Sutherland Road",
+    "Lat": -45.689929658483514,
+    "Long": 168.30935968713055,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00076",
+    "SiteName": "Central Plains Aquifer at Heddon Bush",
+    "Lat": -46.059586811474226,
+    "Long": 168.17267970838185,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00077",
+    "SiteName": "Chatton Aquifer at Cunningham Road",
+    "Lat": -46.051129780315655,
+    "Long": 169.05667207489245,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00078",
+    "SiteName": "Dipton at English Road",
+    "Lat": -45.8969097309863,
+    "Long": 168.31087537244431,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00079",
+    "SiteName": "Edendale Aquifer at Hilda Road",
+    "Lat": -46.2852237181464,
+    "Long": 168.77753734511134,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00080",
+    "SiteName": "Edendale at Coal Pit Road",
+    "Lat": -46.28899245837467,
+    "Long": 168.79599588611725,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00081",
+    "SiteName": "Eyre Creek at Shepherd Creek Hut",
+    "Lat": -45.40404658500626,
+    "Long": 168.4316910118604,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00082",
+    "SiteName": "Eyre Forest at Acton Valley Road",
+    "Lat": -45.56028260379441,
+    "Long": 168.26545421925871,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00083",
+    "SiteName": "Fairlight at Cainard Station",
+    "Lat": -45.378698265113115,
+    "Long": 168.56689371294726,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00084",
+    "SiteName": "Ferndale at Waddle Road",
+    "Lat": -46.19705871919828,
+    "Long": 168.9102594186985,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00085",
+    "SiteName": "Five River Aquifer at Mossburn Five Riv",
+    "Lat": -45.62643925932057,
+    "Long": 168.36719321804233,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00087",
+    "SiteName": "Five Rivers at Five Rivers Station",
+    "Lat": -45.59530919548658,
+    "Long": 168.3704534388967,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00088",
+    "SiteName": "Garston at Nevis Road",
+    "Lat": -45.43622839681524,
+    "Long": 168.7784500423766,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00089",
+    "SiteName": "Garvie Aquifer at Wallis Road",
+    "Lat": -45.791516773108526,
+    "Long": 168.72505010414892,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00090",
+    "SiteName": "Glenlapa at Round Hill",
+    "Lat": -45.69378342925895,
+    "Long": 168.69309622233635,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00091",
+    "SiteName": "Hamilton Burn at Mt Hamilton Road",
+    "Lat": -45.65025512235659,
+    "Long": 168.0931002479313,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00092",
+    "SiteName": "Hamilton Burn at Waterloo Road",
+    "Lat": -45.71345661755622,
+    "Long": 168.17195419720193,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00093",
+    "SiteName": "Hokonui Hills at Lora Station",
+    "Lat": -46.021156146352425,
+    "Long": 168.55382875706002,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00094",
+    "SiteName": "Kingswell Creek at Tisbury Dam",
+    "Lat": -46.439727329782684,
+    "Long": 168.40118017982766,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00095",
+    "SiteName": "Knapdale Aquifer at Knapdale-Otama Rd",
+    "Lat": -46.00559626574084,
+    "Long": 168.8859486789686,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00097",
+    "SiteName": "Lower Aparima Aquifer at Riverton",
+    "Lat": -46.33169106371054,
+    "Long": 168.0341121483282,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00099",
+    "SiteName": "Makarewa Aquifer at Mckinnon Road",
+    "Lat": -46.24136287501815,
+    "Long": 168.38855041457884,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00100",
+    "SiteName": "Makarewa River at Counsell Road",
+    "Lat": -46.309257601262466,
+    "Long": 168.37073373135902,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00102",
+    "SiteName": "Mataura River at Seaward Downs",
+    "Lat": -46.38596134910749,
+    "Long": 168.7911589555252,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00104",
+    "SiteName": "McKellars Flat at Gorge Burn",
+    "Lat": -45.29623038038257,
+    "Long": 168.25667548523285,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00105",
+    "SiteName": "Middle Creek at Otahuti",
+    "Lat": -46.19327274739487,
+    "Long": 168.16410986141034,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00107",
+    "SiteName": "Mokoreta at Mt Alexander",
+    "Lat": -46.377648939955975,
+    "Long": 169.01706873343542,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00108",
+    "SiteName": "Mokoreta River at McKays Road",
+    "Lat": -46.358639390403006,
+    "Long": 168.86343704305614,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00109",
+    "SiteName": "North Range Aquifer at Sutherland Road",
+    "Lat": -45.69082672244954,
+    "Long": 168.30928453280742,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00110",
+    "SiteName": "Ohai at Wether Hill Station",
+    "Lat": -45.892398724325005,
+    "Long": 167.95922834182775,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00111",
+    "SiteName": "Oreti River at Lumsden Cableway",
+    "Lat": -45.70144694678976,
+    "Long": 168.42374436037284,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00112",
+    "SiteName": "Oreti River at Wallacetown",
+    "Lat": -46.32630079840934,
+    "Long": 168.26619287442745,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00113",
+    "SiteName": "Otautau Stream at Otautau",
+    "Lat": -46.14187450648753,
+    "Long": 167.99082517433175,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00114",
+    "SiteName": "Pourakino Valley at Cascade Road",
+    "Lat": -46.264497248683234,
+    "Long": 167.87845724328648,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00115",
+    "SiteName": "Riversdale Aquifer at Liverpool Street",
+    "Lat": -45.897348911900224,
+    "Long": 168.74247267364402,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00116",
+    "SiteName": "Riversdale Aquifer at Roche Road",
+    "Lat": -45.97650624858412,
+    "Long": 168.81497092158108,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00117",
+    "SiteName": "Scotts Gap at Scotts Gap",
+    "Lat": -46.05802467010617,
+    "Long": 167.92689087873637,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00118",
+    "SiteName": "Upper Mataura Aquifer at Nokomai",
+    "Lat": -45.49639567684903,
+    "Long": 168.66594627918113,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00119",
+    "SiteName": "Upper Waikaia at Hyde Rock",
+    "Lat": -45.38547115941541,
+    "Long": 169.17957935931824,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00120",
+    "SiteName": "Waiau River at Clifden",
+    "Lat": -46.02901817408055,
+    "Long": 167.71736638427637,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00121",
+    "SiteName": "Waiau River at Sunnyside",
+    "Lat": -45.79869742740688,
+    "Long": 167.6400248523438,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00122",
+    "SiteName": "Waihopai River at Kennington",
+    "Lat": -46.38873665644778,
+    "Long": 168.46235716523486,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00123",
+    "SiteName": "Waihopai River at Waihopai Dam",
+    "Lat": -46.384406332400204,
+    "Long": 168.39448271304613,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00124",
+    "SiteName": "Waikaia River at Mahers Beach",
+    "Lat": -45.75802492849063,
+    "Long": 168.8139260152217,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00125",
+    "SiteName": "Waikaia River at Piano Flat",
+    "Lat": -45.568419300039686,
+    "Long": 169.0061986638053,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00126",
+    "SiteName": "Waikaka Stream at Willowbank",
+    "Lat": -46.04889362257196,
+    "Long": 169.0200023877089,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00127",
+    "SiteName": "Waikawa River at Biggar Road",
+    "Lat": -46.560179445164025,
+    "Long": 169.1396364797877,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00128",
+    "SiteName": "Waimatuku Aquifer at Isla Bank",
+    "Lat": -46.2210612287856,
+    "Long": 168.14824277831252,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00129",
+    "SiteName": "Waimatuku at Waimatuku Township Road",
+    "Lat": -46.315443865134796,
+    "Long": 168.17357296658054,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00130",
+    "SiteName": "Waimea Stream at Mandeville",
+    "Lat": -45.987238795946546,
+    "Long": 168.80109308017236,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00131",
+    "SiteName": "Waimeamea River at Young Road",
+    "Lat": -46.25896198302654,
+    "Long": 167.74006241631335,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00132",
+    "SiteName": "Waipounamu Aquifer at Sanson Road",
+    "Lat": -45.86224920419101,
+    "Long": 168.76655728738237,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00133",
+    "SiteName": "Wairio at Otautau Nightcaps Road",
+    "Lat": -46.012700972091324,
+    "Long": 168.02862639023155,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00134",
+    "SiteName": "Waituna at Lawson Road",
+    "Lat": -46.475629854931874,
+    "Long": 168.57600432468544,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00135",
+    "SiteName": "Waituna Creek at Marshall Road",
+    "Lat": -46.52024873251673,
+    "Long": 168.5427125191807,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00136",
+    "SiteName": "Wendon Aquifer at Pyramid Waiparu Road",
+    "Lat": -45.83273646902253,
+    "Long": 168.79656189417256,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00137",
+    "SiteName": "Wendon Valley at Waikaka",
+    "Lat": -45.89054323092636,
+    "Long": 168.97120092711035,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00138",
+    "SiteName": "Whitestone Aquifer at Lynwood",
+    "Lat": -45.4786764839518,
+    "Long": 167.79202265849293,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00139",
+    "SiteName": "Whitestone Aquifer at Te Anau-Mossburn",
+    "Lat": -45.484547394507885,
+    "Long": 167.7893047168766,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00140",
+    "SiteName": "Winton Stream at Winton Dam",
+    "Lat": -45.96454848298886,
+    "Long": 168.37084653857576,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00141",
+    "SiteName": "Woodlands at Garvie Road",
+    "Lat": -46.35087521059594,
+    "Long": 168.57622162258963,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00004",
+    "SiteName": "Aparima River at Dunrobin",
+    "Lat": -45.73740999005314,
+    "Long": 168.12038065929988,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00013",
+    "SiteName": "Irthing Stream at Ellis Road",
+    "Lat": -45.6796047654239,
+    "Long": 168.4258758076006,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00037",
+    "SiteName": "Mataura River at Gore",
+    "Lat": -46.10021934601596,
+    "Long": 168.94944875579347,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00024",
+    "SiteName": "Mataura River at Parawa",
+    "Lat": -45.559401758447244,
+    "Long": 168.56146743068862,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00061",
+    "SiteName": "Orauea River at Orawia Pukemaori Road",
+    "Lat": -46.07723723150518,
+    "Long": 167.7916289680427,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00009",
+    "SiteName": "Oreti River at Three Kings",
+    "Lat": -45.44712728703565,
+    "Long": 168.13624776980163,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00046",
+    "SiteName": "Otapiri Stream at Otapiri Gorge",
+    "Lat": -46.00050779748315,
+    "Long": 168.45767333948004,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00086",
+    "SiteName": "Five Rivers Aquifer at Ellis Road",
+    "Lat": -45.665458763308806,
+    "Long": 168.3808895659281,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00168",
+    "SiteName": "Lumsden Aquifer at Castlerock",
+    "Lat": -45.694046118921,
+    "Long": 168.40468377729465,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100070",
+    "SiteName": "Invercargill at Pomona Street",
+    "Lat": -46.431928389271704,
+    "Long": 168.36991681187706,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100145",
+    "SiteName": "Winton at Essex Street",
+    "Lat": -46.147584303603104,
+    "Long": 168.32346639570287,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100060",
+    "SiteName": "Gore at Main Street",
+    "Lat": -46.106208888047334,
+    "Long": 168.93967923519796,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00048",
+    "SiteName": "Bog Burn d/s Hundred Line Road",
+    "Lat": -46.0623949577964,
+    "Long": 168.23473467996885,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00057",
+    "SiteName": "Carran Creek at Waituna Lagoon Road",
+    "Lat": -46.5427930860308,
+    "Long": 168.6511570548522,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00006",
+    "SiteName": "Cascade Stream at Pourakino Valley Road",
+    "Lat": -46.24949892362675,
+    "Long": 167.93585807826082,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00012",
+    "SiteName": "Cromel Stream at Selbie Road",
+    "Lat": -45.58137736465576,
+    "Long": 168.37384442081023,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00163",
+    "SiteName": "Dipton Stream at South Hillend-Dipton Road",
+    "Lat": -45.982762281462314,
+    "Long": 168.3123320320318,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00016",
+    "SiteName": "Dunsdale Stream at Dunsdale Reserve",
+    "Lat": -46.13470574960075,
+    "Long": 168.6018700711537,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00164",
+    "SiteName": "Hamilton Burn at Affleck Road",
+    "Lat": -45.78480904100342,
+    "Long": 168.19125854841604,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00165",
+    "SiteName": "Hedgehope Stream 20m u/s Makarewa Confl",
+    "Lat": -46.26676983384902,
+    "Long": 168.45350341074632,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00166",
+    "SiteName": "Lil Burn at Lil Burn-Monowai Road",
+    "Lat": -46.00242118525146,
+    "Long": 167.66929655242586,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00065",
+    "SiteName": "Longridge Stream at Sandstone",
+    "Lat": -45.88638084250459,
+    "Long": 168.60145273654996,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00047",
+    "SiteName": "Makarewa River at Lora Gorge Road",
+    "Lat": -46.06665142567877,
+    "Long": 168.4826547872636,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00015",
+    "SiteName": "Makarewa River at Wallacetown",
+    "Lat": -46.32979542477408,
+    "Long": 168.29911627291816,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00003",
+    "SiteName": "Mararoa River at South Mavora Lake",
+    "Lat": -45.315828774576374,
+    "Long": 168.17927597500022,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00045",
+    "SiteName": "Mararoa River at The Key",
+    "Lat": -45.541514150687995,
+    "Long": 167.8883304986121,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00002",
+    "SiteName": "Mararoa River at Weir Road",
+    "Lat": -45.60616145704952,
+    "Long": 167.70225564455387,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00022",
+    "SiteName": "Mataura River 200m d/s Mataura Bridge",
+    "Lat": -46.198569628194555,
+    "Long": 168.86352160652834,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00021",
+    "SiteName": "Mataura River at Mataura Island Bridge",
+    "Lat": -46.389068533739234,
+    "Long": 168.777560827914,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00029",
+    "SiteName": "Mimihau Stream Tributary at Venlaw Forest",
+    "Lat": -46.30962530819218,
+    "Long": 169.08222848002075,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00044",
+    "SiteName": "Mimihau Stream at Wyndham",
+    "Lat": -46.321174453848464,
+    "Long": 168.8601214008768,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00028",
+    "SiteName": "Mokoreta River at Wyndham River Road",
+    "Lat": -46.35851696760051,
+    "Long": 168.8434648015306,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00054",
+    "SiteName": "Mokotua Stream at Awarua",
+    "Lat": -46.54213994542992,
+    "Long": 168.43387325268517,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00067",
+    "SiteName": "North Peak Stream at Waimea Valley Road",
+    "Lat": -45.94495122242253,
+    "Long": 168.62247775402682,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00052",
+    "SiteName": "Opouriki Stream at Tweedie Road",
+    "Lat": -46.28164696919388,
+    "Long": 167.97623871747095,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00011",
+    "SiteName": "Oreti River at Lumsden Bridge",
+    "Lat": -45.71620880176963,
+    "Long": 168.42776694893612,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00030",
+    "SiteName": "Otamita Stream at Mandeville",
+    "Lat": -45.99804151841966,
+    "Long": 168.8241807099943,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00008",
+    "SiteName": "Otautau Stream at Otautau-Tuatapere Road",
+    "Lat": -46.1266337611375,
+    "Long": 167.97708936056685,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00053",
+    "SiteName": "Otautau Stream at Waikouro",
+    "Lat": -46.09918760648418,
+    "Long": 167.96218480674702,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00019",
+    "SiteName": "Otepuni Creek at Nith Street",
+    "Lat": -46.414114104118994,
+    "Long": 168.35041030199767,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00036",
+    "SiteName": "Oteramika Stream at Seaward Downs",
+    "Lat": -46.38281060377237,
+    "Long": 168.76122718404412,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00051",
+    "SiteName": "Pourakino River at Traill Road",
+    "Lat": -46.29208026762716,
+    "Long": 167.9578951065445,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00068",
+    "SiteName": "Sandstone Stream at Kingston Crossing Rd",
+    "Lat": -45.939240312362216,
+    "Long": 168.72945651005077,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00064",
+    "SiteName": "Tokanui River at Fortrose Otara Road",
+    "Lat": -46.621445985762726,
+    "Long": 168.87966810863247,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00049",
+    "SiteName": "Tussock Creek at Cooper Road",
+    "Lat": -46.245993648816786,
+    "Long": 168.41321422301624,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00043",
+    "SiteName": "Upukerora River at Te Anau Milford Road",
+    "Lat": -45.41016065886193,
+    "Long": 167.7412131716804,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00001",
+    "SiteName": "Waiau River at Tuatapere",
+    "Lat": -46.13077333496723,
+    "Long": 167.6859969227447,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00018",
+    "SiteName": "Waihopai River u/s Queens Drive",
+    "Lat": -46.38474974515228,
+    "Long": 168.3667228707164,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00042",
+    "SiteName": "Waikaia River at Waikaia",
+    "Lat": -45.72262841751934,
+    "Long": 168.84189208972214,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00025",
+    "SiteName": "Waikaia River at Waipounamu Bridge Road",
+    "Lat": -45.85192153191067,
+    "Long": 168.79298886451642,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00026",
+    "SiteName": "Waikaia River u/s Piano Flat",
+    "Lat": -45.54964194528216,
+    "Long": 169.02887492494972,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00027",
+    "SiteName": "Waikaka Stream at Gore",
+    "Lat": -46.107457295593214,
+    "Long": 168.95430113295686,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00034",
+    "SiteName": "Waikawa River at Progress Valley",
+    "Lat": -46.57421684799316,
+    "Long": 169.14673111307212,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00017",
+    "SiteName": "Waikiwi Stream at North Road",
+    "Lat": -46.36294480307419,
+    "Long": 168.34671453597014,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00033",
+    "SiteName": "Waikopikopiko Stream at Haldane CurioBay",
+    "Lat": -46.62971124125043,
+    "Long": 169.02321588186248,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00035",
+    "SiteName": "Waimatuku Stream at Lorneville Riverton Hwy",
+    "Lat": -46.299542442012864,
+    "Long": 168.17238927598748,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00167",
+    "SiteName": "Wairaki River at Blackmount Road",
+    "Lat": -45.93488771942049,
+    "Long": 167.69973433093176,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00062",
+    "SiteName": "Whitestone River d/s Manapouri-Hillside",
+    "Lat": -45.530665014282995,
+    "Long": 167.75461789703246,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00014",
+    "SiteName": "Winton Stream at Lochiel",
+    "Lat": -46.199483383670085,
+    "Long": 168.30303320088817,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100165",
+    "SiteName": "Aparima River at Etalvale",
+    "Lat": -45.85069633010993,
+    "Long": 168.12925338568138,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100166",
+    "SiteName": "Aparima River at Wreys Bush",
+    "Lat": -46.032589593555514,
+    "Long": 168.11430746035091,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100167",
+    "SiteName": "Brightwater Spring West at Garston Kings",
+    "Lat": -45.435578980307945,
+    "Long": 168.68369284432478,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100168",
+    "SiteName": "Eglington River at McKay Creek Confluence",
+    "Lat": -45.06536522399506,
+    "Long": 167.98827910818244,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100169",
+    "SiteName": "Hamilton Burn at Goodall Road",
+    "Lat": -45.70881770371227,
+    "Long": 168.15342881732235,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100170",
+    "SiteName": "Hedgehope Stream at Block Road",
+    "Lat": -46.211963458993864,
+    "Long": 168.54804591368037,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100171",
+    "SiteName": "Hillpoint Stream at Waikana Road",
+    "Lat": -45.94362728612809,
+    "Long": 168.1645460885616,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100172",
+    "SiteName": "Home Creek at Manapouri",
+    "Lat": -45.56424296760497,
+    "Long": 167.6327119969443,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100173",
+    "SiteName": "Lil Burn at Hindley Road",
+    "Lat": -45.99346885757542,
+    "Long": 167.5406727166544,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100174",
+    "SiteName": "Makarewa River at King Road",
+    "Lat": -46.10434769193941,
+    "Long": 168.49036270430585,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100175",
+    "SiteName": "Makarewa River at Winton - Hedgehope Hwy",
+    "Lat": -46.214592832633016,
+    "Long": 168.49852181534487,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100176",
+    "SiteName": "Makarewa River u/s Hedgehope Confluence",
+    "Lat": -46.26359855023115,
+    "Long": 168.452753835421,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100177",
+    "SiteName": "Mararoa River at Kiwiburn",
+    "Lat": -45.348905966093305,
+    "Long": 168.1260614693919,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00038",
+    "SiteName": "Mataura River at Garston",
+    "Lat": -45.462813827113195,
+    "Long": 168.68382413667732,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100178",
+    "SiteName": "Mataura River at Keowns Road Bridge",
+    "Lat": -45.8021511666828,
+    "Long": 168.6525251948342,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00023",
+    "SiteName": "Mataura River at Otamita Bridge",
+    "Lat": -46.009328798245015,
+    "Long": 168.84908812890274,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100179",
+    "SiteName": "Mataura River at Pyramid Bridge",
+    "Lat": -45.911694978668024,
+    "Long": 168.81392177665757,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100180",
+    "SiteName": "Mataura River d/s Robert Creek confluence",
+    "Lat": -45.39432500600933,
+    "Long": 168.58312213924262,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100181",
+    "SiteName": "McKay Creek at Milford Road",
+    "Lat": -45.06468264001494,
+    "Long": 167.99343253083237,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100182",
+    "SiteName": "Meadow Burn at Roundhill Rd",
+    "Lat": -45.956079412603366,
+    "Long": 168.81316909583285,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100183",
+    "SiteName": "Mimihau Stream at Mimihau School Road",
+    "Lat": -46.3162190061949,
+    "Long": 168.86495141766957,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100184",
+    "SiteName": "Mokoreta River at Egremont Road",
+    "Lat": -46.36275285244297,
+    "Long": 169.15171396696104,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100185",
+    "SiteName": "North Etal Creek u/s Dunrobin Valley Rd",
+    "Lat": -45.74872204758409,
+    "Long": 168.03031461530904,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100186",
+    "SiteName": "Oreti River at Benmore",
+    "Lat": -45.95194637598177,
+    "Long": 168.32560874917561,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100187",
+    "SiteName": "Oreti River at McKellars Flat",
+    "Lat": -45.32798256385224,
+    "Long": 168.20833414501735,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100188",
+    "SiteName": "Oreti River at Mossburn",
+    "Lat": -45.659695188213,
+    "Long": 168.25070920617867,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100189",
+    "SiteName": "Oreti River at Ram Hill",
+    "Lat": -45.797095283632565,
+    "Long": 168.39041164997556,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100190",
+    "SiteName": "Otapiri Stream at Anderson Road",
+    "Lat": -46.1465755464767,
+    "Long": 168.4870250398558,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100191",
+    "SiteName": "Pig Creek at Borland Lodge",
+    "Lat": -45.77522355839863,
+    "Long": 167.53324451870222,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00007",
+    "SiteName": "Pourakino River at Ermedale Road",
+    "Lat": -46.24056598313088,
+    "Long": 167.95873631411658,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100192",
+    "SiteName": "Pourakino River at Jubilee Hill Road",
+    "Lat": -46.195625586916414,
+    "Long": 167.9198876951071,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100193",
+    "SiteName": "Rowallan Burn East at Rowallan Road",
+    "Lat": -46.13885217865142,
+    "Long": 167.5195706836988,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100194",
+    "SiteName": "Silver Stream at Lora Gorge Road",
+    "Lat": -46.065122523977365,
+    "Long": 168.4779176306869,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100195",
+    "SiteName": "Taringatura Creek at Tiromaunga",
+    "Lat": -45.85015228387454,
+    "Long": 168.14921527553108,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100196",
+    "SiteName": "Thicket Burn at Lake Hauroko Road",
+    "Lat": -46.00686663547554,
+    "Long": 167.45406461288616,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100197",
+    "SiteName": "Thicket Burn u/s Lill Burn confluence",
+    "Lat": -46.01192613510593,
+    "Long": 167.5040465476188,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100199",
+    "SiteName": "Waianiwa Creek 1 at Lornville Riverton Highway",
+    "Lat": -46.31630525090622,
+    "Long": 168.2420755751876,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100200",
+    "SiteName": "Waiau River 600m us Clifden Highway",
+    "Lat": -46.03083299880408,
+    "Long": 167.71027800057118,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00060",
+    "SiteName": "Waiau River at Duncraigen Road",
+    "Lat": -45.61874226278106,
+    "Long": 167.6903819623135,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100201",
+    "SiteName": "Waimatuku Stream at Rance Road",
+    "Lat": -46.34680209530621,
+    "Long": 168.15207694903225,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100202",
+    "SiteName": "Winton Stream at Benmore - Otapiri Road",
+    "Lat": -45.97427876879692,
+    "Long": 168.36618694862634,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00063",
+    "SiteName": "Waimea Stream at Nine Mile Road",
+    "Lat": -45.94478092644887,
+    "Long": 168.6599483172941,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00039",
+    "SiteName": "Oreti River at Centre Bush",
+    "Lat": -46.055493119204435,
+    "Long": 168.31232231236868,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00050",
+    "SiteName": "Waimatuku Stream d/s Bayswater Bog",
+    "Lat": -46.161050898482486,
+    "Long": 168.0929598100743,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00055",
+    "SiteName": "Waituna Creek 1m upstream Waituna Road",
+    "Lat": -46.43900203383025,
+    "Long": 168.58802433128722,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-000142",
+    "SiteName": "Waituna Lagoon at Lagoon Centre",
+    "Lat": -46.56384680162766,
+    "Long": 168.58573673370427,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-000158",
+    "SiteName": "Waituna Lagoon at Lagoon South",
+    "Lat": -46.57893523636187,
+    "Long": 168.58837379372758,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-000159",
+    "SiteName": "Waituna Lagoon at Lagoon West",
+    "Lat": -46.5639413331101,
+    "Long": 168.57283583253377,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00059",
+    "SiteName": "Winton Stream d/s Winton Dam",
+    "Lat": -45.96582715707485,
+    "Long": 168.3706365370345,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-000146",
+    "SiteName": "Lake Te Anau at South Fiord",
+    "Lat": -45.34531301021203,
+    "Long": 167.66864056817593,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00056",
+    "SiteName": "Carran Creek Trib at Waituna Lagoon Rd",
+    "Lat": -46.54853045144564,
+    "Long": 168.65716880745975,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-10014",
+    "SiteName": "Awarua Bay at Tiwai pumphouse",
+    "Lat": -46.57882943390837,
+    "Long": 168.40810064457216,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-10005",
+    "SiteName": "Colac Bay at Colac Bay Road opp marae",
+    "Lat": -46.36724945765585,
+    "Long": 167.88146278441786,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-10007",
+    "SiteName": "Halfmoon Bay at Elgin Terrace",
+    "Lat": -46.89842560436588,
+    "Long": 168.12972703217318,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-10006",
+    "SiteName": "Halfmoon Bay at bathing beach",
+    "Lat": -46.893941292788426,
+    "Long": 168.13010774114647,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-10008",
+    "SiteName": "Jacobs River Estuary d/s Railway Br East",
+    "Lat": -46.352298375011046,
+    "Long": 168.0125209744327,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-10010",
+    "SiteName": "Monkey Island at Frentz Road",
+    "Lat": -46.2996515265573,
+    "Long": 167.72822114413987,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-102433",
+    "SiteName": "New River Estuary at Omaui",
+    "Lat": -46.51610524330794,
+    "Long": 168.26045620404068,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-10015",
+    "SiteName": "Oreti Beach at Dunns Road",
+    "Lat": -46.43891672920805,
+    "Long": 168.22991814185622,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-10016",
+    "SiteName": "Porpoise Bay at camping ground",
+    "Lat": -46.66128381117338,
+    "Long": 169.10626365949858,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-10013",
+    "SiteName": "Riverton Rocks at Mitchells Bay North",
+    "Lat": -46.370642574828324,
+    "Long": 168.0292088205021,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-10012",
+    "SiteName": "New River Estuary at Water Ski Club",
+    "Lat": -46.46369067661021,
+    "Long": 168.26824769605835,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-10004",
+    "SiteName": "Bluff Harbour at Morrison Beach",
+    "Lat": -46.60103247200559,
+    "Long": 168.35000224585667,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-000157",
+    "SiteName": "Waituna Lagoon at Lagoon East",
+    "Lat": -46.56665103550823,
+    "Long": 168.6129539089586,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00020",
+    "SiteName": "Mataura River at Gorge Road",
+    "Lat": -46.51037916051026,
+    "Long": 168.7375095223325,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00071",
+    "SiteName": "Waimea Tributary at McCale Road",
+    "Lat": -45.74491179114223,
+    "Long": 168.4848425952651,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00070",
+    "SiteName": "Waimea Stream at Old Balfour Road",
+    "Lat": -45.767645643465045,
+    "Long": 168.4922526233447,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00069",
+    "SiteName": "Waimea Stream at Murphy Road",
+    "Lat": -45.84004343581362,
+    "Long": 168.53386833438023,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00066",
+    "SiteName": "Waimea Stream at Pahiwi - Balfour Road",
+    "Lat": -45.89831910749554,
+    "Long": 168.54931376144384,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-000152",
+    "SiteName": "Lake Te Anau at Blue Gum Point",
+    "Lat": -45.40469494383082,
+    "Long": 167.69130874042497,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00144",
+    "SiteName": "Lake George North East",
+    "Lat": -46.35949888724459,
+    "Long": 167.8650954339087,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100263",
+    "SiteName": "Lake Te Anau at South Fiord Top",
+    "Lat": -45.34531301021203,
+    "Long": 167.66864056817593,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100215",
+    "SiteName": "Lake George South West",
+    "Lat": -46.361911262485506,
+    "Long": 167.85890089084444,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100213",
+    "SiteName": "Lake Manapouri at Pomona Island Top",
+    "Lat": -45.52708563203583,
+    "Long": 167.48453713052015,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100211",
+    "SiteName": "Lake Manapouri at Stony Point Top",
+    "Lat": -45.541705080067736,
+    "Long": 167.58452262150195,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100264",
+    "SiteName": "Lake Manapouri near Frazers Beach Top",
+    "Lat": -45.56112929346187,
+    "Long": 167.6213389087386,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100266",
+    "SiteName": "Lake Te Anau at Blue Gum Point Top",
+    "Lat": -45.40795615767313,
+    "Long": 167.69567073533275,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100210",
+    "SiteName": "Lake Vincent Centre",
+    "Lat": -46.596537440086024,
+    "Long": 168.83078329552288,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100209",
+    "SiteName": "Lake Vincent North",
+    "Lat": -46.59337166414366,
+    "Long": 168.8261694224555,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100208",
+    "SiteName": "The Reservoir Centre",
+    "Lat": -46.657905998694325,
+    "Long": 169.05685900057964,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100207",
+    "SiteName": "The Reservoir West",
+    "Lat": -46.65862699869268,
+    "Long": 169.0485320004159,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00161",
+    "SiteName": "Lake Manapouri at Frazers Beach",
+    "Lat": -45.55980980269098,
+    "Long": 167.61602809817714,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-10002",
+    "SiteName": "Lake Te Anau at Boat Harbour Beach",
+    "Lat": -45.410776079965665,
+    "Long": 167.70611220083694,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-10003",
+    "SiteName": "Oreti River at Winton Bridge",
+    "Lat": -46.12389399483908,
+    "Long": 168.29831691543475,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-100206",
+    "SiteName": "Mataura River 300m ds Riversdale Bridge",
+    "Lat": -45.870911261695724,
+    "Long": 168.76275440699627,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00106",
+    "SiteName": "Moffat Creek at Moffat Road",
+    "Lat": -46.54017045132045,
+    "Long": 168.57029804378976,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100654",
+    "SiteName": "Waikaka Stream at Hamilton Park",
+    "Lat": -46.09136281856027,
+    "Long": 168.96725272587213,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100753",
+    "SiteName": "F44/0467",
+    "Lat": -45.781890311835845,
+    "Long": 168.71199594289442,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100754",
+    "SiteName": "F46/0185",
+    "Lat": -46.34526344872566,
+    "Long": 168.77422131912624,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100755",
+    "SiteName": "E44/0008",
+    "Lat": -45.85578943344651,
+    "Long": 168.61746068263724,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100756",
+    "SiteName": "F46/0184",
+    "Lat": -46.31331986330884,
+    "Long": 168.8280719465893,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100757",
+    "SiteName": "E45/0011",
+    "Lat": -46.1418350920516,
+    "Long": 168.2227547687944,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100758",
+    "SiteName": "E45/0012",
+    "Lat": -46.05839609488646,
+    "Long": 168.24136334699696,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100759",
+    "SiteName": "E46/0097",
+    "Lat": -46.349150399836795,
+    "Long": 168.39206976059086,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100760",
+    "SiteName": "F45/0167",
+    "Lat": -45.94095074026066,
+    "Long": 168.77174655670063,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100761",
+    "SiteName": "E46/0094",
+    "Lat": -46.29053484275313,
+    "Long": 168.17798696180478,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100762",
+    "SiteName": "E46/0099",
+    "Lat": -46.24280370796573,
+    "Long": 168.3334489668155,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100763",
+    "SiteName": "E44/0036",
+    "Lat": -45.8673061968004,
+    "Long": 168.54946228737722,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100764",
+    "SiteName": "F45/0168",
+    "Lat": -46.06529950459794,
+    "Long": 168.94982240724536,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100765",
+    "SiteName": "D45/0004",
+    "Lat": -46.02596373194471,
+    "Long": 168.03428346716072,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100766",
+    "SiteName": "E45/0055",
+    "Lat": -46.12435707802048,
+    "Long": 168.28772704902406,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100767",
+    "SiteName": "E46/0092",
+    "Lat": -46.18375936550266,
+    "Long": 168.0952114487592,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100768",
+    "SiteName": "D45/0005",
+    "Lat": -46.12200818441681,
+    "Long": 168.02186015212084,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100769",
+    "SiteName": "E44/0173",
+    "Lat": -45.63993216584271,
+    "Long": 168.41236559391518,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100770",
+    "SiteName": "F46/0183",
+    "Lat": -46.33123725255874,
+    "Long": 168.58860639877415,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100771",
+    "SiteName": "F44/0039",
+    "Lat": -45.781919167475046,
+    "Long": 168.71204518682566,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100772",
+    "SiteName": "F44/0139",
+    "Lat": -45.78599316094043,
+    "Long": 168.74101521370562,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100773",
+    "SiteName": "D43/0004",
+    "Lat": -45.54519667965781,
+    "Long": 167.89477286026042,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100774",
+    "SiteName": "D46/0031",
+    "Lat": -46.25670585402882,
+    "Long": 168.04003278656342,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100775",
+    "SiteName": "E44/0044",
+    "Lat": -45.876257153570805,
+    "Long": 168.33229528377393,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100776",
+    "SiteName": "E44/0007",
+    "Lat": -45.79094099050541,
+    "Long": 168.43073146335124,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100777",
+    "SiteName": "E46/0093",
+    "Lat": -46.1515820584868,
+    "Long": 168.15020860399795,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100778",
+    "SiteName": "E44/0014",
+    "Lat": -45.64598274969249,
+    "Long": 168.31633541473013,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100779",
+    "SiteName": "E45/0010",
+    "Lat": -46.05161817227338,
+    "Long": 168.12670468387103,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100780",
+    "SiteName": "E45/0034",
+    "Lat": -46.076856430436415,
+    "Long": 168.3312687753537,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100781",
+    "SiteName": "D46/0003",
+    "Lat": -46.302290549381645,
+    "Long": 167.97283940450401,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100782",
+    "SiteName": "E45/0088",
+    "Lat": -45.95964286653762,
+    "Long": 168.11098093571394,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100783",
+    "SiteName": "E44/0045",
+    "Lat": -45.690208351115956,
+    "Long": 168.29297299976028,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100784",
+    "SiteName": "F44/0005",
+    "Lat": -45.89753969656209,
+    "Long": 168.75604606306658,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100785",
+    "SiteName": "E45/0768",
+    "Lat": -46.059586811474226,
+    "Long": 168.17267970838185,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100786",
+    "SiteName": "F45/0463",
+    "Lat": -46.068654797102816,
+    "Long": 168.9396321177691,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100787",
+    "SiteName": "E43/0026",
+    "Lat": -45.509300814319296,
+    "Long": 168.57401809606478,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100788",
+    "SiteName": "F45/0172",
+    "Lat": -45.99028058801202,
+    "Long": 168.87260959751234,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100789",
+    "SiteName": "D43/0007",
+    "Lat": -45.42691424981786,
+    "Long": 167.75490468992183,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100790",
+    "SiteName": "E44/0012",
+    "Lat": -45.715156411081054,
+    "Long": 168.40160089173452,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100791",
+    "SiteName": "E46/0095",
+    "Lat": -46.195356563779725,
+    "Long": 168.1808033290458,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100792",
+    "SiteName": "F46/0194",
+    "Lat": -46.31128294728379,
+    "Long": 168.8088342571898,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100793",
+    "SiteName": "F44/0040",
+    "Lat": -45.81148815845286,
+    "Long": 168.7141874784265,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100794",
+    "SiteName": "D45/0006",
+    "Lat": -46.112958558676986,
+    "Long": 168.06132416880368,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100795",
+    "SiteName": "E44/0241",
+    "Lat": -45.645573693284796,
+    "Long": 168.3136103153556,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100796",
+    "SiteName": "E44/0046",
+    "Lat": -45.857986765615685,
+    "Long": 168.54984661789476,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100797",
+    "SiteName": "F45/0170",
+    "Lat": -46.14620232277125,
+    "Long": 168.91149542445444,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100798",
+    "SiteName": "F46/0195",
+    "Lat": -46.28393475467438,
+    "Long": 168.7660690196859,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100799",
+    "SiteName": "F47/0256",
+    "Lat": -46.55670753034497,
+    "Long": 168.57035904807006,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100800",
+    "SiteName": "F44/0018",
+    "Lat": -45.75795025326728,
+    "Long": 168.7392309564025,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100801",
+    "SiteName": "D46/0027",
+    "Lat": -46.229781015570346,
+    "Long": 168.04455297236106,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100802",
+    "SiteName": "E45/0772",
+    "Lat": -46.059586811474226,
+    "Long": 168.17267970838185,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100803",
+    "SiteName": "F45/0171",
+    "Lat": -46.00667151349019,
+    "Long": 168.88905938529467,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100804",
+    "SiteName": "E44/0047",
+    "Lat": -45.86555196286512,
+    "Long": 168.53682112177952,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100805",
+    "SiteName": "E44/0223",
+    "Lat": -45.79096430873564,
+    "Long": 168.43063948295463,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100806",
+    "SiteName": "E45/0009",
+    "Lat": -46.078584918827666,
+    "Long": 168.33699491368554,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100807",
+    "SiteName": "E46/0104",
+    "Lat": -46.19445453672074,
+    "Long": 168.30354038274152,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100808",
+    "SiteName": "F47/0252",
+    "Lat": -46.451819077541245,
+    "Long": 168.57638680144856,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100809",
+    "SiteName": "E45/0070",
+    "Lat": -46.076901198535175,
+    "Long": 168.38723055307017,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100810",
+    "SiteName": "E45/0074",
+    "Lat": -45.96014320956164,
+    "Long": 168.31039794876335,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100811",
+    "SiteName": "E45/0076",
+    "Lat": -46.08060587464394,
+    "Long": 168.3256743858572,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100812",
+    "SiteName": "E45/0771",
+    "Lat": -46.059586811474226,
+    "Long": 168.17267970838185,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100813",
+    "SiteName": "E45/0769",
+    "Lat": -46.059586811474226,
+    "Long": 168.17267970838185,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100814",
+    "SiteName": "E45/0770",
+    "Lat": -46.059586811474226,
+    "Long": 168.17267970838185,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100815",
+    "SiteName": "F45/0343",
+    "Lat": -45.987494753863785,
+    "Long": 168.89343865249413,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100816",
+    "SiteName": "F46/0420",
+    "Lat": -46.255661539959654,
+    "Long": 168.84415850112316,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100817",
+    "SiteName": "D45/0066",
+    "Lat": -46.11806357794442,
+    "Long": 167.99775213528335,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100818",
+    "SiteName": "D46/0037",
+    "Lat": -46.17806100251931,
+    "Long": 167.661953757397,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100819",
+    "SiteName": "E44/0087",
+    "Lat": -45.68580339945336,
+    "Long": 168.41436311851865,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100820",
+    "SiteName": "E46/0207",
+    "Lat": -46.324898776897385,
+    "Long": 168.27427867571143,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100821",
+    "SiteName": "E46/0446",
+    "Lat": -46.25160930225694,
+    "Long": 168.3119919101476,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100822",
+    "SiteName": "F46/0221",
+    "Lat": -46.26755489811944,
+    "Long": 168.83708033405404,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100823",
+    "SiteName": "F46/0419",
+    "Lat": -46.28104548027189,
+    "Long": 168.78503793183594,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100824",
+    "SiteName": "D45/0079",
+    "Lat": -46.116716849438085,
+    "Long": 167.98533186856824,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100825",
+    "SiteName": "E45/0069",
+    "Lat": -46.02635503672632,
+    "Long": 168.22487851860555,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100826",
+    "SiteName": "E46/0098",
+    "Lat": -46.39360588656911,
+    "Long": 168.45691827133737,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100827",
+    "SiteName": "F44/0326",
+    "Lat": -45.89719025965927,
+    "Long": 168.7553636855657,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100828",
+    "SiteName": "F45/0347",
+    "Lat": -45.992428174630916,
+    "Long": 168.85686260388044,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100829",
+    "SiteName": "F45/0348",
+    "Lat": -46.0071079052645,
+    "Long": 168.87820228668815,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100830",
+    "SiteName": "F45/0576",
+    "Lat": -46.06754260021069,
+    "Long": 168.9387310123423,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100831",
+    "SiteName": "F46/0694",
+    "Lat": -46.419586699783395,
+    "Long": 168.603181507044,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100832",
+    "SiteName": "D45/0024",
+    "Lat": -46.037593842261664,
+    "Long": 167.97063018610254,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100833",
+    "SiteName": "E45/0032",
+    "Lat": -46.07282029778291,
+    "Long": 168.33294198633305,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100834",
+    "SiteName": "E45/0047",
+    "Lat": -45.99475652672845,
+    "Long": 168.33196790407962,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100835",
+    "SiteName": "E45/0161",
+    "Lat": -46.07151426581742,
+    "Long": 168.28804616388825,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100836",
+    "SiteName": "E45/0162",
+    "Lat": -46.13819457716214,
+    "Long": 168.10066701870193,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100837",
+    "SiteName": "E46/0096",
+    "Lat": -46.4164573817121,
+    "Long": 168.50642408984208,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100838",
+    "SiteName": "F45/0179",
+    "Lat": -46.03031837755132,
+    "Long": 168.899089157573,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100839",
+    "SiteName": "F46/0265",
+    "Lat": -46.33169490592671,
+    "Long": 168.61425894136357,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100840",
+    "SiteName": "F46/0422",
+    "Lat": -46.335750948189705,
+    "Long": 168.71463271727774,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100841",
+    "SiteName": "F46/0436",
+    "Lat": -46.2441905008484,
+    "Long": 168.8280184725805,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100842",
+    "SiteName": "F46/0456",
+    "Lat": -46.371025739371085,
+    "Long": 168.7737786506301,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100843",
+    "SiteName": "F46/0486",
+    "Lat": -46.29793858395037,
+    "Long": 168.6593985312726,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100844",
+    "SiteName": "F46/0501",
+    "Lat": -46.43586719254679,
+    "Long": 168.6206821648487,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100845",
+    "SiteName": "F47/0221",
+    "Lat": -46.501859757489896,
+    "Long": 168.6585602963083,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100846",
+    "SiteName": "F47/0253",
+    "Lat": -46.542442774192175,
+    "Long": 168.6306659635143,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100847",
+    "SiteName": "D46/0019",
+    "Lat": -46.18321845676605,
+    "Long": 168.04149137019934,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100848",
+    "SiteName": "E45/0221",
+    "Lat": -46.006744919465724,
+    "Long": 168.23142709385402,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100849",
+    "SiteName": "E46/0456",
+    "Lat": -46.354918294296695,
+    "Long": 168.434795394532,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100850",
+    "SiteName": "F44/0109",
+    "Lat": -45.86653860345322,
+    "Long": 168.7805330254725,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100851",
+    "SiteName": "F45/0289",
+    "Lat": -45.9375102163441,
+    "Long": 168.79043134995553,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100852",
+    "SiteName": "F45/0353",
+    "Lat": -45.961235925884246,
+    "Long": 168.8065202907466,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100853",
+    "SiteName": "D45/0070",
+    "Lat": -46.06798167926307,
+    "Long": 167.72386970831116,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100854",
+    "SiteName": "E44/0113",
+    "Lat": -45.63469145781436,
+    "Long": 168.29309122320248,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100855",
+    "SiteName": "E45/0050",
+    "Lat": -45.963301912335936,
+    "Long": 168.11108425270845,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100856",
+    "SiteName": "E46/0023",
+    "Lat": -46.161861196266145,
+    "Long": 168.27913000980374,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100857",
+    "SiteName": "E46/0118",
+    "Lat": -46.22505484211747,
+    "Long": 168.55160253749676,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100858",
+    "SiteName": "F46/0218",
+    "Lat": -46.24877130282907,
+    "Long": 168.72343505622706,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100859",
+    "SiteName": "F46/0417",
+    "Lat": -46.43950961232243,
+    "Long": 168.70876840621153,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100860",
+    "SiteName": "F47/0262",
+    "Lat": -46.54288874317577,
+    "Long": 168.5702982772801,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100861",
+    "SiteName": "D45/0023",
+    "Lat": -46.033835372896874,
+    "Long": 167.99383491005096,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100862",
+    "SiteName": "D45/0101",
+    "Lat": -46.06209072355626,
+    "Long": 168.05653695819922,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100863",
+    "SiteName": "E46/0234",
+    "Lat": -46.26837513451736,
+    "Long": 168.13625923144969,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100864",
+    "SiteName": "E46/0415",
+    "Lat": -46.41028138350709,
+    "Long": 168.50045189418373,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100865",
+    "SiteName": "F44/0022",
+    "Lat": -45.88399717286138,
+    "Long": 168.81831332171933,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100866",
+    "SiteName": "F45/0305",
+    "Lat": -45.99850353447796,
+    "Long": 168.85239173631876,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100867",
+    "SiteName": "F46/0193",
+    "Lat": -46.299065275062105,
+    "Long": 168.8050672121271,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100868",
+    "SiteName": "F46/0277",
+    "Lat": -46.41964901205813,
+    "Long": 168.60316347324317,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100869",
+    "SiteName": "F46/0351",
+    "Lat": -46.36886432728516,
+    "Long": 168.624451126809,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100870",
+    "SiteName": "F46/0520",
+    "Lat": -46.30691337523535,
+    "Long": 168.76289178130554,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100871",
+    "SiteName": "F46/0593",
+    "Lat": -46.32462606456181,
+    "Long": 168.7779182839788,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100872",
+    "SiteName": "E45/0173",
+    "Lat": -45.975200886160444,
+    "Long": 168.3336149182562,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100873",
+    "SiteName": "E45/0459",
+    "Lat": -46.05665676555311,
+    "Long": 168.2518953708007,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100874",
+    "SiteName": "E46/0202",
+    "Lat": -46.3037671368639,
+    "Long": 168.26654240856544,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100875",
+    "SiteName": "E47/0129",
+    "Lat": -46.54342911960575,
+    "Long": 168.56821923601083,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100876",
+    "SiteName": "F45/0195",
+    "Lat": -45.997213626116775,
+    "Long": 168.91745076849136,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100877",
+    "SiteName": "F46/0469",
+    "Lat": -46.381992909908774,
+    "Long": 168.74771231488305,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100878",
+    "SiteName": "D46/0001",
+    "Lat": -46.19837813662687,
+    "Long": 168.04814856702205,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100879",
+    "SiteName": "D46/0068",
+    "Lat": -46.26272300182444,
+    "Long": 167.97106751576257,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100880",
+    "SiteName": "D46/0075",
+    "Lat": -46.22980119373595,
+    "Long": 168.04460303348634,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100881",
+    "SiteName": "D46/0099",
+    "Lat": -46.16728979772108,
+    "Long": 168.01227342042515,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100882",
+    "SiteName": "E45/0054",
+    "Lat": -46.03934190918878,
+    "Long": 168.25956038582353,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100883",
+    "SiteName": "E45/0185",
+    "Lat": -45.99551567180936,
+    "Long": 168.17696255612194,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100884",
+    "SiteName": "E45/0193",
+    "Lat": -46.00320237590768,
+    "Long": 168.2055497423877,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100885",
+    "SiteName": "E45/0340",
+    "Lat": -46.02235132345341,
+    "Long": 168.31279158810796,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100886",
+    "SiteName": "E46/0203",
+    "Lat": -46.22402746903532,
+    "Long": 168.3692423060171,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100887",
+    "SiteName": "E46/0222",
+    "Lat": -46.26654165171641,
+    "Long": 168.51391240499387,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100888",
+    "SiteName": "E46/0440",
+    "Lat": -46.232334148734,
+    "Long": 168.13563816277306,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100889",
+    "SiteName": "E46/0481",
+    "Lat": -46.30673371423626,
+    "Long": 168.5245079350127,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100890",
+    "SiteName": "F44/0020",
+    "Lat": -45.85673349493948,
+    "Long": 168.705695230846,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100891",
+    "SiteName": "F45/0220",
+    "Lat": -46.04102521183756,
+    "Long": 168.97862605093852,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100892",
+    "SiteName": "F45/0247",
+    "Lat": -46.141821247738044,
+    "Long": 168.91633945703003,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100893",
+    "SiteName": "F46/0251",
+    "Lat": -46.35463937813818,
+    "Long": 168.81469261488627,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100894",
+    "SiteName": "F46/0280",
+    "Lat": -46.22629996378182,
+    "Long": 168.73919019124514,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100895",
+    "SiteName": "F46/0418",
+    "Lat": -46.31331836220554,
+    "Long": 168.68186067734956,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100896",
+    "SiteName": "F46/0566",
+    "Lat": -46.393202200953375,
+    "Long": 168.73428680337142,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100897",
+    "SiteName": "D46/0014",
+    "Lat": -46.21454403481113,
+    "Long": 168.06370452910122,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100898",
+    "SiteName": "E45/0058",
+    "Lat": -46.12462771607525,
+    "Long": 168.2772958784459,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100899",
+    "SiteName": "E45/0075",
+    "Lat": -46.017970242348746,
+    "Long": 168.1898644309533,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100900",
+    "SiteName": "E45/0078",
+    "Lat": -46.00507345770165,
+    "Long": 168.21237597726986,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100901",
+    "SiteName": "E45/0180",
+    "Lat": -46.014718998893066,
+    "Long": 168.25037784774574,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100902",
+    "SiteName": "E45/0204",
+    "Lat": -46.147629483227476,
+    "Long": 168.2321597232598,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100903",
+    "SiteName": "E46/0213",
+    "Lat": -46.25651156383521,
+    "Long": 168.21200418524833,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100904",
+    "SiteName": "E46/0411",
+    "Lat": -46.391062998486525,
+    "Long": 168.42166869196606,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100905",
+    "SiteName": "E46/0514",
+    "Lat": -46.25402567079811,
+    "Long": 168.12905761778399,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100906",
+    "SiteName": "E46/0574",
+    "Lat": -46.254128415847845,
+    "Long": 168.21999768584533,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100907",
+    "SiteName": "F44/0056",
+    "Lat": -45.86426317199338,
+    "Long": 168.71754761267866,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100908",
+    "SiteName": "F44/0079",
+    "Lat": -45.737171069027845,
+    "Long": 168.74997988945094,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100909",
+    "SiteName": "F44/0090",
+    "Lat": -45.859329590454365,
+    "Long": 168.80447474422488,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100910",
+    "SiteName": "F46/0463",
+    "Lat": -46.38326462067088,
+    "Long": 168.78759475066528,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100911",
+    "SiteName": "F47/0258",
+    "Lat": -46.568210982469,
+    "Long": 168.65918430384025,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100912",
+    "SiteName": "D45/0064",
+    "Lat": -45.92765488487872,
+    "Long": 168.09785530858034,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100913",
+    "SiteName": "D45/0108",
+    "Lat": -46.05016446261481,
+    "Long": 167.80987606644504,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100914",
+    "SiteName": "D46/0065",
+    "Lat": -46.36580602466793,
+    "Long": 167.783061266444,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100915",
+    "SiteName": "E45/0036",
+    "Lat": -45.9691199237103,
+    "Long": 168.3497979729002,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100916",
+    "SiteName": "E45/0060",
+    "Lat": -46.0567588591266,
+    "Long": 168.17540917092043,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100917",
+    "SiteName": "E45/0329",
+    "Lat": -45.90342653126802,
+    "Long": 168.11681953436477,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100918",
+    "SiteName": "E46/0311",
+    "Lat": -46.34899762925512,
+    "Long": 168.55708393815502,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100919",
+    "SiteName": "E46/0383",
+    "Lat": -46.2276326433704,
+    "Long": 168.31709888447597,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100920",
+    "SiteName": "E46/0693",
+    "Lat": -46.292015860147885,
+    "Long": 168.26231126470293,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100921",
+    "SiteName": "E47/0076",
+    "Lat": -46.49961294738756,
+    "Long": 168.38849758494558,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100922",
+    "SiteName": "F44/0097",
+    "Lat": -45.88948420141239,
+    "Long": 168.78690055692448,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100923",
+    "SiteName": "F45/0188",
+    "Lat": -46.04380490986052,
+    "Long": 168.9854815572499,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100924",
+    "SiteName": "F46/0040",
+    "Lat": -46.29038869050237,
+    "Long": 168.8207794813772,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100925",
+    "SiteName": "F46/0209",
+    "Lat": -46.359296545528665,
+    "Long": 168.73455189009417,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100926",
+    "SiteName": "F46/0462",
+    "Lat": -46.397632430006446,
+    "Long": 168.7657627782839,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100927",
+    "SiteName": "F47/0254",
+    "Lat": -46.56866900973493,
+    "Long": 168.67338619555645,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100928",
+    "SiteName": "D45/0012",
+    "Lat": -46.05566916739516,
+    "Long": 168.04111790527307,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100929",
+    "SiteName": "D45/0027",
+    "Lat": -46.051664148340556,
+    "Long": 167.96840613415608,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100930",
+    "SiteName": "D45/0111",
+    "Lat": -45.99860514572789,
+    "Long": 167.67065861785753,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100931",
+    "SiteName": "D45/0125",
+    "Lat": -46.05534458876023,
+    "Long": 167.7008081338932,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100932",
+    "SiteName": "D46/0029",
+    "Lat": -46.24943606956155,
+    "Long": 168.06189102349347,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100933",
+    "SiteName": "D46/0052",
+    "Lat": -46.249037754821224,
+    "Long": 168.0670389859037,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100934",
+    "SiteName": "D46/0057",
+    "Lat": -46.325960355121126,
+    "Long": 168.03832213049634,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100935",
+    "SiteName": "D46/0061",
+    "Lat": -46.320494638385135,
+    "Long": 167.93081477027127,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100936",
+    "SiteName": "E45/0191",
+    "Lat": -46.019167609979355,
+    "Long": 168.1981975085962,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100937",
+    "SiteName": "E45/0210",
+    "Lat": -45.907901879424976,
+    "Long": 168.1137053987983,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100938",
+    "SiteName": "E45/0213",
+    "Lat": -46.040080793531544,
+    "Long": 168.13308565845458,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100939",
+    "SiteName": "E46/0165",
+    "Lat": -46.25571233567499,
+    "Long": 168.27834423907953,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100940",
+    "SiteName": "E46/0176",
+    "Lat": -46.201053653301294,
+    "Long": 168.37161774645048,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100941",
+    "SiteName": "E46/0454",
+    "Lat": -46.26388125108951,
+    "Long": 168.27845901672066,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100942",
+    "SiteName": "E46/0667",
+    "Lat": -46.358029334703915,
+    "Long": 168.38592658777023,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100943",
+    "SiteName": "E46/0685",
+    "Lat": -46.34633389472502,
+    "Long": 168.2793555494755,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100944",
+    "SiteName": "F44/0168",
+    "Lat": -45.75413049627921,
+    "Long": 168.6653408010572,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100945",
+    "SiteName": "F45/0181",
+    "Lat": -46.02197380856403,
+    "Long": 168.97924746309928,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100946",
+    "SiteName": "F45/0407",
+    "Lat": -46.03745868105711,
+    "Long": 168.92881612766055,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100947",
+    "SiteName": "F45/0411",
+    "Lat": -46.06590464676918,
+    "Long": 168.9417737517001,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100948",
+    "SiteName": "F45/0451",
+    "Lat": -45.918842412925926,
+    "Long": 168.66381915754712,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100949",
+    "SiteName": "F46/0543",
+    "Lat": -46.254502396100456,
+    "Long": 168.7894501462109,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100950",
+    "SiteName": "F46/0592",
+    "Lat": -46.30484147148657,
+    "Long": 168.85551051833025,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100951",
+    "SiteName": "F46/0693",
+    "Lat": -46.40075017007555,
+    "Long": 168.63255354044054,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100952",
+    "SiteName": "D45/0118",
+    "Lat": -45.96416905457429,
+    "Long": 167.70803556018348,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100953",
+    "SiteName": "E45/0081",
+    "Lat": -46.05582375347234,
+    "Long": 168.20359888550425,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100954",
+    "SiteName": "E45/0215",
+    "Lat": -46.0481750169561,
+    "Long": 168.16953948483754,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100955",
+    "SiteName": "E45/0456",
+    "Lat": -45.930843649222346,
+    "Long": 168.1106929926203,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100956",
+    "SiteName": "E46/0175",
+    "Lat": -46.22641252766714,
+    "Long": 168.3612597252323,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100957",
+    "SiteName": "E46/0195",
+    "Lat": -46.203026336841276,
+    "Long": 168.23502035725045,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100958",
+    "SiteName": "E46/0445",
+    "Lat": -46.391460938374,
+    "Long": 168.30869461481205,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100959",
+    "SiteName": "E46/0491",
+    "Lat": -46.1617362941657,
+    "Long": 168.1584858984853,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100960",
+    "SiteName": "E46/0575",
+    "Lat": -46.25778350040694,
+    "Long": 168.17681663781727,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100961",
+    "SiteName": "E46/0650",
+    "Lat": -46.196251318109965,
+    "Long": 168.1014471166844,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100962",
+    "SiteName": "E46/0740",
+    "Lat": -46.159048652413595,
+    "Long": 168.2135933324271,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100963",
+    "SiteName": "E47/0188",
+    "Lat": -46.45915982294305,
+    "Long": 168.40518059242905,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100964",
+    "SiteName": "F45/0350",
+    "Lat": -45.97490417092791,
+    "Long": 168.79856722262514,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100965",
+    "SiteName": "F45/0464",
+    "Lat": -45.99757710551538,
+    "Long": 168.8289555574132,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100966",
+    "SiteName": "F45/0465",
+    "Lat": -46.14550871477626,
+    "Long": 168.89868770554486,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100967",
+    "SiteName": "F45/0555",
+    "Lat": -46.084460552562106,
+    "Long": 168.9434250159901,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100968",
+    "SiteName": "F46/0511",
+    "Lat": -46.32622087856134,
+    "Long": 168.6895877462769,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100969",
+    "SiteName": "F46/0515",
+    "Lat": -46.336394917150855,
+    "Long": 168.77244967983827,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100970",
+    "SiteName": "F46/0585",
+    "Lat": -46.35492895308295,
+    "Long": 168.77199305837544,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100971",
+    "SiteName": "F46/0591",
+    "Lat": -46.316716305947104,
+    "Long": 168.81119866252575,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100972",
+    "SiteName": "F46/0604",
+    "Lat": -46.43869324032766,
+    "Long": 168.70907998800678,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100973",
+    "SiteName": "F46/0729",
+    "Lat": -46.402339657214064,
+    "Long": 169.01530845610515,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100974",
+    "SiteName": "F47/0115",
+    "Lat": -46.461516672499634,
+    "Long": 168.70517386166094,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100975",
+    "SiteName": "D43/0065",
+    "Lat": -45.51875392492367,
+    "Long": 167.97036376199227,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100976",
+    "SiteName": "D45/0036",
+    "Lat": -46.01677542277658,
+    "Long": 167.68985231474127,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100977",
+    "SiteName": "D46/0026",
+    "Lat": -46.20090165132855,
+    "Long": 168.05195295930912,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100978",
+    "SiteName": "E44/0069",
+    "Lat": -45.782484377532434,
+    "Long": 168.43961900595949,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100979",
+    "SiteName": "E44/0377",
+    "Lat": -45.84932208334457,
+    "Long": 168.57237188984516,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100980",
+    "SiteName": "E44/0396",
+    "Lat": -45.736697570827424,
+    "Long": 168.41390526194616,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100981",
+    "SiteName": "E45/0182",
+    "Lat": -46.053570355853566,
+    "Long": 168.21466742419682,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100982",
+    "SiteName": "E45/0396",
+    "Lat": -45.965903677305775,
+    "Long": 168.33496530017905,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100983",
+    "SiteName": "E45/0432",
+    "Lat": -46.0824908436121,
+    "Long": 168.11339931930388,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100984",
+    "SiteName": "E45/0442",
+    "Lat": -46.11097852625126,
+    "Long": 168.13651475734505,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100985",
+    "SiteName": "E45/0445",
+    "Lat": -46.13830806534323,
+    "Long": 168.15599956805048,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100986",
+    "SiteName": "E45/0458",
+    "Lat": -46.09415439956652,
+    "Long": 168.1009681257992,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100987",
+    "SiteName": "E45/0495",
+    "Lat": -46.02368782660877,
+    "Long": 168.14424493183924,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100988",
+    "SiteName": "E46/0173",
+    "Lat": -46.32824562478862,
+    "Long": 168.24758677880456,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100989",
+    "SiteName": "E46/0410",
+    "Lat": -46.38738152055322,
+    "Long": 168.42234136520838,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100990",
+    "SiteName": "E46/0437",
+    "Lat": -46.33839613948921,
+    "Long": 168.23112315944098,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100991",
+    "SiteName": "E46/0713",
+    "Lat": -46.276173823400036,
+    "Long": 168.49178405635055,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100992",
+    "SiteName": "E46/0859",
+    "Lat": -46.194590303642286,
+    "Long": 168.15231529654656,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100993",
+    "SiteName": "E46/0878",
+    "Lat": -46.164100551220194,
+    "Long": 168.25760171490873,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100994",
+    "SiteName": "E46/0895",
+    "Lat": -46.30653308025261,
+    "Long": 168.52627772809862,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100995",
+    "SiteName": "E47/0102",
+    "Lat": -46.45959680853537,
+    "Long": 168.40217407946398,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100996",
+    "SiteName": "F44/0050",
+    "Lat": -45.8995997427866,
+    "Long": 168.75166015182413,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100997",
+    "SiteName": "F44/0058",
+    "Lat": -45.87308897689356,
+    "Long": 168.7052194233826,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100998",
+    "SiteName": "F44/0077",
+    "Lat": -45.78186936126209,
+    "Long": 168.71239636778733,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-100999",
+    "SiteName": "F44/0123",
+    "Lat": -45.787782200024786,
+    "Long": 168.62961002846257,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101000",
+    "SiteName": "F45/0540",
+    "Lat": -45.9070735316029,
+    "Long": 168.7230702043758,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101001",
+    "SiteName": "F46/0190",
+    "Lat": -46.36813409008325,
+    "Long": 168.74247054667228,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101002",
+    "SiteName": "F46/0192",
+    "Lat": -46.38239349374442,
+    "Long": 168.7625991516395,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101003",
+    "SiteName": "F46/0260",
+    "Lat": -46.30810169700156,
+    "Long": 168.85829031263896,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101004",
+    "SiteName": "F46/0377",
+    "Lat": -46.31310911399492,
+    "Long": 168.82747748106985,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101005",
+    "SiteName": "F46/0510",
+    "Lat": -46.327924061186,
+    "Long": 168.68725786521654,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101006",
+    "SiteName": "F46/0516",
+    "Lat": -46.26822319706938,
+    "Long": 168.77225201669216,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101007",
+    "SiteName": "F46/0584",
+    "Lat": -46.238470720510826,
+    "Long": 168.8197875804594,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101008",
+    "SiteName": "D45/0163",
+    "Lat": -46.066914144664665,
+    "Long": 167.9590639981338,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101009",
+    "SiteName": "D45/0186",
+    "Lat": -46.018351769996556,
+    "Long": 168.0610918779565,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101010",
+    "SiteName": "D46/0021",
+    "Lat": -46.31279588635977,
+    "Long": 167.96143098825175,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101011",
+    "SiteName": "E44/0153",
+    "Lat": -45.80688396745612,
+    "Long": 168.48613475390223,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101012",
+    "SiteName": "E44/0359",
+    "Lat": -45.829731418463886,
+    "Long": 168.60345364128213,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101013",
+    "SiteName": "E44/0440",
+    "Lat": -45.63771633870148,
+    "Long": 168.4143432762207,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101014",
+    "SiteName": "E45/0091",
+    "Lat": -46.05863849862022,
+    "Long": 168.26166815083923,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101015",
+    "SiteName": "E45/0110",
+    "Lat": -46.09005355988426,
+    "Long": 168.2200445319718,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101016",
+    "SiteName": "E45/0115",
+    "Lat": -46.1252197917669,
+    "Long": 168.21913285001813,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101017",
+    "SiteName": "E45/0187",
+    "Lat": -46.039621721127105,
+    "Long": 168.1318205927729,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101018",
+    "SiteName": "E45/0194",
+    "Lat": -46.018722321459165,
+    "Long": 168.2064406517131,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101019",
+    "SiteName": "E45/0410",
+    "Lat": -46.06280441687939,
+    "Long": 168.09578312433013,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101020",
+    "SiteName": "E46/0012",
+    "Lat": -46.246642385337886,
+    "Long": 168.28038275600312,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101021",
+    "SiteName": "E46/0547",
+    "Lat": -46.33737437187291,
+    "Long": 168.2136028491833,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101022",
+    "SiteName": "E46/0860",
+    "Lat": -46.1614663231696,
+    "Long": 168.09257302476723,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101023",
+    "SiteName": "E46/0889",
+    "Lat": -46.303177078436406,
+    "Long": 168.26273604991235,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101024",
+    "SiteName": "E46/0906",
+    "Lat": -46.16824178408958,
+    "Long": 168.23515563175926,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101025",
+    "SiteName": "E47/0057",
+    "Lat": -46.46704467889924,
+    "Long": 168.46776012532732,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101026",
+    "SiteName": "E48/0013",
+    "Lat": -46.8995597352801,
+    "Long": 168.12719466007346,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101027",
+    "SiteName": "F44/0052",
+    "Lat": -45.89023809845124,
+    "Long": 168.6308467217383,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101028",
+    "SiteName": "F44/0114",
+    "Lat": -45.879677765328935,
+    "Long": 168.75111945766253,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101029",
+    "SiteName": "F44/0182",
+    "Lat": -45.898458780195426,
+    "Long": 168.78544711964872,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101030",
+    "SiteName": "F44/0253",
+    "Lat": -45.89104150783381,
+    "Long": 168.71681391569044,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101031",
+    "SiteName": "F44/0274",
+    "Lat": -45.86009586537057,
+    "Long": 168.80279373635253,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101032",
+    "SiteName": "F45/0272",
+    "Lat": -46.51193938567413,
+    "Long": 168.79463331362584,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101033",
+    "SiteName": "F45/0274",
+    "Lat": -45.659679631686885,
+    "Long": 168.2540096487826,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101034",
+    "SiteName": "F45/0457",
+    "Lat": -45.92425369936263,
+    "Long": 168.74391951304818,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101035",
+    "SiteName": "F45/0469",
+    "Lat": -46.16836886917201,
+    "Long": 168.8938639025202,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101036",
+    "SiteName": "F45/0539",
+    "Lat": -46.02188525406678,
+    "Long": 168.88736150653284,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101037",
+    "SiteName": "F46/0202",
+    "Lat": -46.34833326679061,
+    "Long": 168.7531355865333,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101038",
+    "SiteName": "F46/0213",
+    "Lat": -46.2705926293518,
+    "Long": 168.74614947313606,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101039",
+    "SiteName": "F46/0223",
+    "Lat": -46.268074145252704,
+    "Long": 168.75780502030238,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101040",
+    "SiteName": "F46/0266",
+    "Lat": -46.34899031090378,
+    "Long": 168.5861226997869,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101041",
+    "SiteName": "F46/0471",
+    "Lat": -46.35124760807958,
+    "Long": 168.76980771116308,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101042",
+    "SiteName": "F46/0557",
+    "Lat": -46.32454983658191,
+    "Long": 168.79413853282375,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101043",
+    "SiteName": "F46/0558",
+    "Lat": -46.3497499012026,
+    "Long": 168.7935803558722,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101044",
+    "SiteName": "F46/0844",
+    "Lat": -46.250322442583354,
+    "Long": 168.72928264054212,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101045",
+    "SiteName": "F46/0847",
+    "Lat": -46.34698463828688,
+    "Long": 168.78547437413386,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101046",
+    "SiteName": "F47/0145",
+    "Lat": -46.507747013780325,
+    "Long": 168.64251242138155,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-101047",
+    "SiteName": "F47/0148",
+    "Lat": -46.469638765312,
+    "Long": 168.58469781434675,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-102220",
+    "SiteName": "Waiau Lagoon Middle",
+    "Lat": -46.2117497663829,
+    "Long": 167.64439232451963,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-102221",
+    "SiteName": "Waiau Lagoon Monitoring Station",
+    "Lat": -46.21499820943266,
+    "Long": 167.65011836370587,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-102219",
+    "SiteName": "Waiau Lagoon opp Boat Ramp",
+    "Lat": -46.20621650450634,
+    "Long": 167.63468916376098,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00163",
+    "SiteName": "Dipton Stream at South Hillend-Dipton Rd",
+    "Lat": -45.982762281462314,
+    "Long": 168.3123320320318,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-102768",
+    "SiteName": "Oreti River at Branxholme",
+    "Lat": -46.29545819419266,
+    "Long": 168.2841285426309,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-00103",
+    "SiteName": "Mataura River at Tuturau",
+    "Lat": -46.233706878289134,
+    "Long": 168.84684361050006,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-102840",
+    "SiteName": "Pourakino at Bald Hill",
+    "Lat": -46.16839294346684,
+    "Long": 167.8334849035602,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-102842",
+    "SiteName": "D43/0067",
+    "Lat": -45.533019589447406,
+    "Long": 167.6436967432331,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-102843",
+    "SiteName": "D45/0276",
+    "Lat": -46.01648045326051,
+    "Long": 167.69105638122736,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-102844",
+    "SiteName": "D46/0247",
+    "Lat": -46.32969117753889,
+    "Long": 168.05230350315847,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-102845",
+    "SiteName": "E45/0699",
+    "Lat": -46.12238674650323,
+    "Long": 168.09812364608814,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-102846",
+    "SiteName": "E46/0013",
+    "Lat": -46.252711169104856,
+    "Long": 168.406567522135,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-102848",
+    "SiteName": "E46/0867",
+    "Lat": -46.33922450983108,
+    "Long": 168.3215696237558,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-102847",
+    "SiteName": "F45/0610",
+    "Lat": -45.91585242810272,
+    "Long": 168.62113406615543,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-103395",
+    "SiteName": "Murray Creek at Double Road",
+    "Lat": -45.76411239507419,
+    "Long": 168.4209789231196,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-103393",
+    "SiteName": "Mararoa River at Mararoa Road Bridge",
+    "Lat": -45.503038895082135,
+    "Long": 167.97714344006238,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "LAWA-103394",
+    "SiteName": "Murray Creek at Cumming Road",
+    "Lat": -45.723831834351834,
+    "Long": 168.39151871740322,
+    "Region": "Southland"
+  },
+  {
+    "LawaId": "ES-10009",
+    "SiteName": "Kawakaputa Bay at Wakapatu Road",
+    "Lat": -46.37418717354902,
+    "Long": 167.8110931866868,
+    "Region": "Southland"
+  }
+]
