@@ -230,12 +230,12 @@ RQ_QUEUES = {
     'default': {
         'URL': os.environ.get('REDIS_URL', 'redis://localhost:6379/0'),
         'DEFAULT_TIMEOUT': 360,
-        'DEFAULT_RESULT_TTL': 500,
+        'DEFAULT_RESULT_TTL': 3600,
     },
     'high': {
         'URL': os.environ.get('REDIS_URL', 'redis://localhost:6379/0'),
         'DEFAULT_TIMEOUT': 500,
-        'DEFAULT_RESULT_TTL': 500,
+        'DEFAULT_RESULT_TTL': 3600,
     },
 }
 
