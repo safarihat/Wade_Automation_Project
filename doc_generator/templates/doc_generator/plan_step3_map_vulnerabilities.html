@@ -202,9 +202,6 @@
                     <div id="explanation-groundwater-zones" class="p-3 bg-light border rounded">
                         <div class="text-center text-muted small"><div class="spinner-border spinner-border-sm me-2" role="status"></div>Loading explanation...</div>
                     </div>
-                    <div id="water-quality-container" class="mt-5 p-3 bg-white border rounded">
-                        <div class="text-center text-muted small">Loading water quality data...</div>
-                    </div>
                 </div>
             </div>
 
@@ -216,7 +213,7 @@
         <!-- Navigation buttons -->
         <div class="d-flex justify-content-between mt-5">
             <a href="{% url 'doc_generator:plan_wizard_details' pk=plan.pk %}" class="btn btn-lg btn-outline-secondary"><i class="fas fa-chevron-left me-2"></i>Back to Details</a>
-            <a href="{% url 'doc_generator:plan_wizard_map_activities' pk=plan.pk %}" class="btn btn-lg btn-gradient ms-3">Continue<i class="fas fa-chevron-right ms-2"></i></a>
+            <a href="{% url 'doc_generator:water_quality_summary' pk=plan.pk %}" class="btn btn-lg btn-gradient ms-3">Continue<i class="fas fa-chevron-right ms-2"></i></a>
         </div>
     </div>
 
@@ -550,84 +547,68 @@ document.addEventListener('DOMContentLoaded', function() {
         const explanationProtected = document.getElementById('explanation-protected-areas');
         const explanationGroundwater = document.getElementById('explanation-groundwater-zones');
 
-        // Ensure selectors match HTML
-        console.log('DOM Selectors Check:');
-        console.log('  #technical-summary-output:', techSummaryOutput ? 'Found' : 'Not Found');
-        console.log('  #catchment-summary-output:', catchmentSummaryOutput ? 'Found' : 'Not Found');
-        console.log('  #explanation-land-use:', explanationLandUse ? 'Found' : 'Not Found');
-        console.log('  #explanation-erosion:', explanationErosion ? 'Found' : 'Not Found');
-        console.log('  #explanation-protected-areas:', explanationProtected ? 'Found' : 'Not Found');
-        console.log('  #explanation-groundwater-zones:', explanationGroundwater ? 'Found' : 'Not Found');
-        
-
-
         try {
-            console.log('Fetching vulnerability analysis from:', config.urls.analysis);
-            const response = await fetch(config.urls.analysis);
-            console.log('Vulnerability Analysis API Response:', response);
-            const responseText = await response.text(); // Read response body once as text
-            console.log('Vulnerability Analysis API Response Text:', responseText);
+            // 1. Start the job
+            const initialResponse = await fetch(config.urls.analysis);
+            if (!initialResponse.ok) {
+                throw new Error(`HTTP error! status: ${initialResponse.status}`);
+            }
+            const jobData = await initialResponse.json();
 
-            if (!response.ok) {
-                let errorMessage = `HTTP error! status: ${response.status}`;
+            if (!jobData.job_id) {
+                throw new Error("Failed to start vulnerability analysis job.");
+            }
+
+            // 2. Poll for the result
+            const pollJobStatus = async (jobId) => {
+                const statusUrl = `/doc-generator/api/vulnerability-analysis/v2/${config.planPk}/status/`;
                 try {
-                    const errorData = JSON.parse(responseText); // Try parsing as JSON
-                    errorMessage = errorData.error || errorMessage;
-                } catch (e) {
-                    console.error("Server returned non-JSON error response for analysis:", responseText, e.stack);
-                    errorMessage = `Server returned an unexpected error format for analysis (status: ${response.status}).`;
+                    const statusResponse = await fetch(statusUrl);
+                    if (!statusResponse.ok) {
+                        throw new Error(`HTTP error! status: ${statusResponse.status}`);
+                    }
+                    const statusData = await statusResponse.json();
+
+                    if (statusData.status === 'finished') {
+                        // 3. Render the result
+                        const reportData = statusData.result; // The result is now the report itself
+                        if (!reportData) {
+                            throw new Error('Vulnerability analysis report data is missing or invalid.');
+                        }
+
+                        techLoader.style.display = 'none';
+                        techSummaryOutput.innerHTML = reportData.technical_summary || 'No technical summary was returned.';
+                        
+                        catchmentLoader.style.display = 'none';
+                        catchmentSummaryOutput.innerHTML = reportData.catchment_context_summary || 'No catchment context summary was returned.';
+
+                        if (reportData.layer_explanations) {
+                            explanationLandUse.innerHTML = reportData.layer_explanations.land_use || 'No explanation available.';
+                            explanationErosion.innerHTML = reportData.layer_explanations.erosion || 'No explanation available.';
+                            explanationProtected.innerHTML = reportData.layer_explanations.protected_areas || 'No explanation available.';
+                            explanationGroundwater.innerHTML = reportData.layer_explanations.groundwater_zones || 'No explanation available.';
+                        } else {
+                            const noExplanationMessage = 'No layer explanations were returned.';
+                            explanationLandUse.innerHTML = noExplanationMessage;
+                            explanationErosion.innerHTML = noExplanationMessage;
+                            explanationProtected.innerHTML = noExplanationMessage;
+                            explanationGroundwater.innerHTML = noExplanationMessage;
+                        }
+
+                    } else if (statusData.status === 'failed') {
+                        throw new Error(statusData.message || "Vulnerability analysis job failed.");
+                    } else {
+                        setTimeout(() => pollJobStatus(jobId), 3000); // Poll every 3 seconds
+                    }
+                } catch (error) {
+                    console.error("Failed to poll job status:", error);
+                    const errorMessage = `<p class="text-danger"><strong>Could not load analysis.</strong><br>Error: ${error.message}</p>`;
+                    techSummaryOutput.innerHTML = errorMessage;
+                    catchmentSummaryOutput.innerHTML = errorMessage;
                 }
-                throw new Error(errorMessage);
-            }
+            };
 
-            let data;
-            try {
-                data = JSON.parse(responseText); // Parse as JSON for success case
-                console.log('Parsed Data:', data);
-                console.log('Value of data.data before assignment:', data.data); // NEW LOG
-            } catch (e) {
-                console.error("Failed to parse vulnerability analysis data as JSON:", responseText, e.stack);
-                throw new Error("Received invalid JSON data for vulnerability analysis from the server.");
-            }
-            
-            console.log('API response structure:', data);
-            const reportData = data.data;
-            console.log('Report Data (extracted from data.data):', reportData);
-            console.log('Type of reportData:', typeof reportData); // NEW LOG
-            if (!reportData) { // NEW CHECK
-                console.error('reportData is undefined or null. Cannot proceed with DOM updates.');
-                throw new Error('Vulnerability analysis report data is missing or invalid.');
-            }
-
-            // Update DOM elements
-            console.log('Attempting to update DOM with reportData...');
-
-            techLoader.style.display = 'none';
-            techSummaryOutput.innerHTML = reportData.technical_summary || 'No technical summary was returned. Check server logs or API response.';
-            console.log('Technical Summary updated:', techSummaryOutput.innerHTML);
-
-            catchmentLoader.style.display = 'none';
-            catchmentSummaryOutput.innerHTML = reportData.catchment_context_summary || 'No catchment context summary was returned. Check server logs or API response.';
-            console.log('Catchment Summary updated:', catchmentSummaryOutput.innerHTML);
-
-            // Populate individual explanations
-            if (reportData.layer_explanations) {
-                explanationLandUse.innerHTML = reportData.layer_explanations.land_use || 'No explanation available. Check server logs or API response.';
-                explanationErosion.innerHTML = reportData.layer_explanations.erosion || 'No explanation available. Check server logs or API response.';
-                explanationProtected.innerHTML = reportData.layer_explanations.protected_areas || 'No explanation available. Check server logs or API response.';
-                explanationGroundwater.innerHTML = reportData.layer_explanations.groundwater_zones || 'No explanation available. Check server logs or API response.';
-                console.log('Layer explanations updated.');
-            } else {
-                const noExplanationMessage = 'No layer explanations were returned. Check server logs or API response.';
-                explanationLandUse.innerHTML = noExplanationMessage;
-                explanationErosion.innerHTML = noExplanationMessage;
-                explanationProtected.innerHTML = noExplanationMessage;
-                explanationGroundwater.innerHTML = noExplanationMessage;
-                console.log('No layer explanations found in reportData.');
-            }
-
-            
-            console.log('DOM update complete.');
+            pollJobStatus(jobData.job_id);
 
         } catch (error) {
             console.error('Failed to fetch or parse vulnerability analysis:', error.message, error.stack);
@@ -636,80 +617,10 @@ document.addEventListener('DOMContentLoaded', function() {
             catchmentLoader.style.display = 'none';
             techSummaryOutput.innerHTML = errorMessage;
             catchmentSummaryOutput.innerHTML = errorMessage;
-            // Also update the explanation sections with an error message
             explanationLandUse.innerHTML = errorMessage;
             explanationErosion.innerHTML = errorMessage;
             explanationProtected.innerHTML = errorMessage;
             explanationGroundwater.innerHTML = errorMessage;
-            console.log('Error message displayed in all relevant sections.');
-        }
-    }
-
-    // --- Function to fetch and display water quality data ---
-    async function fetchWaterQualityData(lat, lon) {
-        const waterQualityApiUrl = `{% url 'doc_generator:api_get_water_quality_data' %}?lat=${lat}&lon=${lon}`;
-        const container = document.getElementById('water-quality-container');
-        container.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Loading water quality data...</span></div></div>';
-
-        try {
-            const response = await fetch(waterQualityApiUrl);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const data = await response.json();
-
-            if (data.error && !data.data) { // Show error only if there's no data at all
-                container.innerHTML = `<div class="alert alert-warning">${data.error}</div>`;
-                return;
-            }
-
-            let content = `<h3>Nearby Water Quality</h3>`;
-            content += `<p>Data from monitoring site: <strong>${data.site_name}</strong> (${data.distance_km} km away)</p>`;
-            
-            // Determine the overall source
-            let overallSource = 'Unknown';
-            if (Object.values(data.data).length > 0) {
-                const sources = new Set(Object.values(data.data).map(item => item.source));
-                if (sources.has('LAWA')) {
-                    overallSource = 'LAWA';
-                } else if (sources.has('Regional')) {
-                    overallSource = 'Regional';
-                } else if (sources.has('Hilltop')) {
-                    overallSource = 'Hilltop';
-                } else if (sources.has('mock')) {
-                    overallSource = 'Mock';
-                }
-            }
-            content += `<p>Data Source: <strong>${overallSource}</strong></p>`;
-
-            // Check for mock data warning
-            const isMock = Object.values(data.data).some(result => result.mock_data);
-            if (isMock) {
-                content += `<div class="alert alert-info"><strong>Note:</strong> Live water quality data could not be fetched. The values below are illustrative mock data.</div>`;
-            }
-
-            let table = '<table class="table table-bordered"><thead><tr><th>Measurement</th><th>Result</th></tr></thead><tbody>';
-            for (const [measurement, result] of Object.entries(data.data)) {
-                table += '<tr>';
-                table += `<td>${measurement}</td>`;
-                if (result.error && !result.mock_data) {
-                    table += `<td><span class="text-muted">${result.error}</span></td>`;
-                } else {
-                    let value = result.average_value;
-                    let dataPoints = result.data_points;
-                    let mockTag = result.mock_data ? ' (mock)' : '';
-                    table += `<td>${value} (avg of ${dataPoints} points)${mockTag}</td>`;
-                }
-                table += '</tr>';
-            }
-            table += '</tbody></table>';
-            content += table;
-
-            container.innerHTML = content;
-
-        } catch (error) {
-            console.error("Failed to fetch water quality data:", error);
-            container.innerHTML = '<div class="alert alert-danger">Failed to fetch nearby water quality data.</div>';
         }
     }
 
@@ -791,9 +702,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Wait for all to complete
         await Promise.all([...mapPromises, analysisPromise]);
         console.log("All maps and analysis have been initialized.");
-
-        // Fetch water quality data
-        fetchWaterQualityData(config.center.lat, config.center.lon);
     }
 
     initializePage();

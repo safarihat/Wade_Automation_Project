@@ -1,0 +1,351 @@
+{% extends 'wade_automation/base.html' %}
+{% load static %}
+
+{% block title %}Step 5: Risk Management{% endblock %}
+
+{% block content %}
+<style>
+    .guidance-row td {
+        font-size: 0.85em;
+        color: #6c757d;
+        font-style: italic;
+        padding-top: 0.25rem;
+        padding-bottom: 0.25rem;
+    }
+    .other-input {
+        margin-top: 5px;
+    }
+    .table-responsive {
+        overflow-x: visible; /* Allow dropdowns to overflow */
+    }
+    .table-responsive table {
+        width: 100%;
+        min-width: 1200px; /* Ensure enough width for all columns */
+    }
+    .table-responsive th, .table-responsive td {
+        vertical-align: top;
+        white-space: normal; /* Allow text to wrap */
+    }
+    .table-responsive td:nth-child(1) { width: 50px; } /* Row number */
+    .table-responsive td:nth-child(2) { width: 30px; } /* Checkbox */
+    .table-responsive td:nth-child(3) { width: 80px; } /* Land unit no. */
+    .table-responsive td:nth-child(4) { min-width: 180px; } /* Activity group */
+    .table-responsive td:nth-child(5) { min-width: 180px; } /* Activity sub-group */
+    .table-responsive td:nth-child(6) { min-width: 200px; } /* Activity description */
+    .table-responsive td:nth-child(7) { min-width: 200px; } /* Inherent vulnerabilities */
+    .table-responsive td:nth-child(8) { min-width: 200px; } /* Catchment context */
+    .table-responsive td:nth-child(9) { min-width: 180px; } /* Risk group(s) */
+    .table-responsive td:nth-child(10) { min-width: 200px; } /* Risk */
+
+    .table-responsive textarea.form-control-sm {
+        min-height: 60px; /* Ensure textareas are large enough for placeholder */
+    }
+
+    ::placeholder {
+        color: #999;
+        opacity: 1; /* Firefox */
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h1 class="mb-0">Step 5: Risk Management Table</h1>
+            <p class="lead mt-1">Identify potential risks and outline mitigation actions.</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <button type="button" id="add-row-btn" class="btn btn-success"><i class="fas fa-plus me-1"></i> Add Row</button>
+            <button type="button" id="remove-selected-rows-btn" class="btn btn-outline-danger"><i class="fas fa-trash me-1"></i> Remove Selected</button>
+            <!-- <button id="generate-risk-btn" class="btn btn-gradient btn-lg"><i class="fas fa-robot me-2"></i> Generate AI Risk Analysis</button> -->
+            <!-- Functionality temporarily disabled -->
+        </div>
+    </div>
+    <div id="loading-spinner" class="text-center my-5" style="display: none;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2">Generating risk analysis... this may take a moment.</p>
+    </div>
+
+    <form method="post" id="risk-form">
+        {% csrf_token %}
+        <input type="hidden" name="risk_management_data" id="id_risk_management_data">
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle" id="risk-table">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col"><input type="checkbox" id="select-all-rows"></th>
+                        <th scope="col">#</th>
+                        <th scope="col">Land unit no.</th>
+                        <th scope="col">Farming/growing activity group</th>
+                        <th scope="col">Farming/growing activity sub-group(s)</th>
+                        <th scope="col">Farming/growing activity description</th>
+                        <th scope="col">Inherent vulnerabilities</th>
+                        <th scope="col">Catchment context</th>
+                        <th scope="col">Risk group(s)</th>
+                        <th scope="col">Risk</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Dynamic rows will be inserted here -->
+                </tbody>
+            </table>
+        </div>
+
+        <hr>
+        <div class="d-flex justify-content-between">
+            <a href="{% url 'doc_generator:plan_wizard_map_activities' pk=plan.pk %}" class="btn btn-secondary">&laquo; Back to Step 5</a>
+            <button type="submit" class="btn btn-success">Save and Continue &raquo;</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const tableBody = document.querySelector('#risk-table tbody');
+    const addRowBtn = document.getElementById('add-row-btn');
+    const removeSelectedRowsBtn = document.getElementById('remove-selected-rows-btn');
+    const selectAllRowsCheckbox = document.getElementById('select-all-rows');
+    const riskForm = document.getElementById('risk-form');
+    const hiddenInput = document.getElementById('id_risk_management_data');
+    const generateBtn = document.getElementById('generate-risk-btn');
+    const loadingSpinner = document.getElementById('loading-spinner');
+    const planId = {{ plan.pk }};
+
+    let rowCounter = 0;
+
+    // Dropdown Options
+    const activityGroups = ['Nutrients', 'Land and soil', 'Intensive winter grazing', 'Waterbodies and wetlands', 'Point source', 'Hazardous substances', 'Effluent', 'Water use', 'Irrigation', 'Other'];
+    const subgroupMappings = {
+        'Nutrients': ['Nutrient management', 'Nutrient storage and loading', 'Nutrient application'],
+        'Land and soil': ['Cultivation', 'Earthworks', 'Erosion control', 'Pasture and grazing management'],
+        'Intensive winter grazing': ['Site selection', 'Crop establishment', 'Grazing management', 'Post grazing management'],
+        'Waterbodies and wetlands': ['Stock exclusion', 'Riparian management', 'Drain management (channels and sub-surface)', 'Critical source areas'],
+        'Point source': ['Tracks and gateways', 'Troughs and stock camps', 'Stock waterbody crossings', 'Yards, feed pads, and barns', 'Silage pits and feed bunkers', 'Farm dumps', 'Offal pit'],
+        'Hazardous substances': ['Fuel and agrichemical storage', 'Agrichemcial use', 'Agrichemcial disposal'],
+        'Effluent': ['Storage, treatment, and application infrastructure', 'Application management'],
+        'Water use': ['Take and application infrastructure', 'Use management'],
+        'Irrigation': ['Take and application infrastructure', 'Application management'],
+        'Other': []
+    };
+    const riskGroups = ['Impact on species significant to tangata whenua', 'Impact on threatened species', 'Impact on site(s) significant to tangata whenua', 'Impact on area of indigenous biodiversity', 'Impact on recreational site', 'Nitrogen – groundwater', 'Nitrogen – surface water', 'Phosphorous – groundwater', 'Phosphorous – surface water', 'Pathogen – groundwater', 'Pathogen – surface water', 'Sediment', 'Other'];
+
+    function createSelectOptions(options, selectedValues = [], includeOther = true) {
+        let selectedValue = Array.isArray(selectedValues) ? selectedValues[0] : selectedValues;
+        let optionsHtml = `<option value="" disabled ${!selectedValue ? 'selected' : ''}>Select...</option>`;
+        optionsHtml += options.map(option => 
+            `<option value="${option}" ${selectedValue === option ? 'selected' : ''}>${option}</option>`
+        ).join('');
+        if (includeOther) {
+            optionsHtml += `<option value="Other" ${selectedValue === "Other" ? 'selected' : ''}>Other</option>`;
+        }
+        return optionsHtml;
+    }
+
+    function addRow(rowData = {}) {
+        rowCounter++;
+        const newRow = tableBody.insertRow();
+        newRow.dataset.rowId = rowCounter;
+
+        newRow.innerHTML = `
+            <td><input type="checkbox" class="form-check-input row-select-checkbox"></td>
+            <td>${rowCounter}</td>
+            <td><input type="text" class="form-control form-control-sm" name="land_unit_no" value="${rowData.land_unit_no || rowCounter}" aria-label="Land unit number"></td>
+            <td>
+                <select class="form-select form-select-sm activity-group-select" name="activity_group" aria-label="Farming/growing activity group">
+                    ${createSelectOptions(activityGroups, rowData.activity_group || [])}
+                </select>
+                <input type="text" class="form-control form-control-sm other-input" style="display:none;" placeholder="Custom Group" value="${rowData.custom_activity_group || ''}" aria-label="Custom activity group">
+            </td>
+            <td>
+                <select class="form-select form-select-sm sub-group-select" name="sub_group" aria-label="Farming/growing activity sub-group">
+                    ${createSelectOptions([], rowData.sub_group || [], false)}
+                </select>
+                <input type="text" class="form-control form-control-sm other-input" style="display:none;" placeholder="Custom Sub-Group" value="${rowData.custom_sub_group || ''}" aria-label="Custom activity sub-group">
+            </td>
+            <td><textarea class="form-control form-control-sm" name="activity_description" placeholder="Describe the specific farming/growing activity." aria-label="Farming/growing activity description" rows="3">${rowData.activity_description || ''}</textarea></td>
+            <td><textarea class="form-control form-control-sm" name="inherent_vulnerabilities" placeholder="List any inherent vulnerabilities that may impact the level of risk." aria-label="Inherent vulnerabilities" rows="3">${rowData.inherent_vulnerabilities || ''}</textarea></td>
+            <td><textarea class="form-control form-control-sm" name="catchment_context" placeholder="List any relevant catchment context information." aria-label="Catchment context" rows="3">${rowData.catchment_context || ''}</textarea></td>
+            <td>
+                <select class="form-select form-select-sm risk-group-select" name="risk_group" aria-label="Risk group">
+                    ${createSelectOptions(riskGroups, rowData.risk_group || [])}
+                </select>
+                <input type="text" class="form-control form-control-sm other-input" style="display:none;" placeholder="Custom Risk Group" value="${rowData.custom_risk_group || ''}" aria-label="Custom risk group">
+            </td>
+            <td><textarea class="form-control form-control-sm" name="risk" placeholder="Describe the risk created by the interaction of activities and vulnerabilities." aria-label="Risk description" rows="3">${rowData.risk || ''}</textarea></td>
+        `;
+
+        const activityGroupSelect = newRow.querySelector('.activity-group-select');
+        const subGroupSelect = newRow.querySelector('.sub-group-select');
+        const riskGroupSelect = newRow.querySelector('.risk-group-select');
+
+        // Initialize multi-selects (if using a library like Bootstrap-select or similar)
+        // For basic HTML multi-select, no special init needed, but keep in mind for future styling
+
+        // Event Listeners for dynamic behavior
+        activityGroupSelect.addEventListener('change', () => filterSubgroups(activityGroupSelect, subGroupSelect, newRow.querySelector('input[placeholder="Custom Group"]')));
+        subGroupSelect.addEventListener('change', () => handleOtherOption(subGroupSelect, newRow.querySelector('input[placeholder="Custom Sub-Group"]')));
+        riskGroupSelect.addEventListener('change', () => handleOtherOption(riskGroupSelect, newRow.querySelector('input[placeholder="Custom Risk Group"]')));
+        handleOtherOption(activityGroupSelect, newRow.querySelector('input[placeholder="Custom Group"]'));
+
+        // Initial filtering and 'Other' handling for loaded data
+        filterSubgroups(activityGroupSelect, subGroupSelect, newRow.querySelector('input[placeholder="Custom Group"]'), rowData.sub_group || []);
+        // The line below is now redundant because filterSubgroups calls handleOtherOption for the sub-group.
+        // handleOtherOption(subGroupSelect, newRow.querySelector('input[placeholder="Custom Sub-Group"]'));
+        handleOtherOption(riskGroupSelect, newRow.querySelector('input[placeholder="Custom Risk Group"]'));
+
+        return newRow;
+    }
+
+    function filterSubgroups(activityGroupSelect, subGroupSelect, customGroupInput, initialSubgroups = []) {
+        const selectedGroup = activityGroupSelect.value;
+        const customSubGroupInput = subGroupSelect.nextElementSibling;
+        let availableSubgroups = new Set();
+        let showOtherForSubgroup = false;
+
+        if (selectedGroup && selectedGroup !== 'Other') {
+            (subgroupMappings[selectedGroup] || []).forEach(sub => availableSubgroups.add(sub));
+            showOtherForSubgroup = true; // Show 'Other' for sub-groups if a parent is selected
+        }
+
+        subGroupSelect.innerHTML = createSelectOptions(Array.from(availableSubgroups).sort(), initialSubgroups, showOtherForSubgroup);
+
+        handleOtherOption(activityGroupSelect, customGroupInput); // Handle custom input for activity group
+        handleOtherOption(subGroupSelect, customSubGroupInput); // Handle custom input for sub-group
+    }
+
+    function handleOtherOption(selectElement, otherInput) {
+        const selectedValue = selectElement.value;
+        if (selectedValue === 'Other') {
+            otherInput.style.display = 'block';
+            otherInput.setAttribute('required', 'required');
+        } else {
+            otherInput.style.display = 'none';
+            otherInput.removeAttribute('required');
+            otherInput.value = ''; // Clear custom value when 'Other' is deselected
+        }
+    }
+
+    function collectTableData() {
+        const data = [];
+        tableBody.querySelectorAll('tr').forEach(row => {
+            const rowData = {};
+            rowData.row_id = parseInt(row.dataset.rowId);
+            rowData.land_unit_no = row.querySelector('[name="land_unit_no"]').value;
+            
+            const activityGroupSelect = row.querySelector('[name="activity_group"]'); // This is now single-select
+            rowData.activity_group = activityGroupSelect.value;
+            const customActivityGroupInput = activityGroupSelect.nextElementSibling; // The 'Other' text input
+            if (rowData.activity_group === 'Other' && customActivityGroupInput.value) {
+                rowData.custom_activity_group = customActivityGroupInput.value;
+            }
+
+            const subGroupSelect = row.querySelector('[name="sub_group"]');
+            rowData.sub_group = subGroupSelect.value;
+            const customSubGroupInput = subGroupSelect.nextElementSibling;
+            if (rowData.sub_group === 'Other' && customSubGroupInput.value) {
+                rowData.custom_sub_group = customSubGroupInput.value;
+            }
+
+            rowData.activity_description = row.querySelector('[name="activity_description"]').value;
+            rowData.inherent_vulnerabilities = row.querySelector('[name="inherent_vulnerabilities"]').value;
+            rowData.catchment_context = row.querySelector('[name="catchment_context"]').value;
+            
+            const riskGroupSelect = row.querySelector('[name="risk_group"]');
+            rowData.risk_group = riskGroupSelect.value;
+            const customRiskGroupInput = riskGroupSelect.nextElementSibling;
+            if (rowData.risk_group === 'Other' && customRiskGroupInput.value) {
+                rowData.custom_risk_group = customRiskGroupInput.value;
+            }
+
+            rowData.risk = row.querySelector('[name="risk"]').value;
+            data.push(rowData);
+        });
+        return data;
+    }
+
+    function loadTableData(initialData) {
+        tableBody.innerHTML = ''; // Clear existing rows
+        rowCounter = 0; // Reset counter for loading
+
+        if (initialData && initialData.length > 0) {
+            initialData.forEach(rowData => addRow(rowData));
+        } else {
+            // Add 3 empty rows if no initial data
+            for (let i = 0; i < 3; i++) {
+                addRow();
+            }
+        }
+    }
+
+    // Event Listeners
+    addRowBtn.addEventListener('click', () => addRow());
+
+    removeSelectedRowsBtn.addEventListener('click', () => {
+        Array.from(tableBody.querySelectorAll('.row-select-checkbox:checked')).forEach(checkbox => {
+            checkbox.closest('tr').remove();
+        });
+        // Re-number rows after removal
+        tableBody.querySelectorAll('tr').forEach((row, index) => {
+            row.querySelector('td:nth-child(2)').textContent = index + 1;
+            row.dataset.rowId = index + 1;
+            row.querySelector('[name="land_unit_no"]').value = index + 1; // Update land unit no.
+        });
+        rowCounter = tableBody.querySelectorAll('tr').length; // Reset counter
+    });
+
+    selectAllRowsCheckbox.addEventListener('change', function() {
+        tableBody.querySelectorAll('.row-select-checkbox').forEach(checkbox => {
+            checkbox.checked = this.checked; // Set checked state based on selectAllRowsCheckbox
+        });
+    });
+
+    riskForm.addEventListener('submit', function() {
+        hiddenInput.value = JSON.stringify(collectTableData());
+    });
+
+    // AI Generation Button
+    /*
+    // Functionality temporarily disabled
+    // if (generateBtn) {
+    //     generateBtn.addEventListener('click', function() {
+    //         loadingSpinner.style.display = 'block';
+    //         tableBody.innerHTML = ''; // Clear table while loading
+
+    //         fetch(`/doc_generator/api/populate-risk-table/${planId}/`) // Call the dedicated endpoint for the risk table
+    //             .then(response => {
+    //                 if (!response.ok) {
+    //                     throw new Error(`HTTP error! status: ${response.status}`);
+    //                 }
+    //                 return response.json();
+    //             })
+    //             .then(data => {
+    //                 if (data.error) {
+    //                     throw new Error(data.error);
+    //                 }
+    //                 // The endpoint returns an array of objects for the table
+    //                 const aiGeneratedTableData = data; 
+    //                 loadTableData(aiGeneratedTableData);
+    //             })
+    //             .catch(error => {
+    //                 console.error('Error generating risk analysis:', error);
+    //                 alert(`An error occurred: ${error.message}`);
+    //                 const errorRow = tableBody.insertRow();
+    //                 errorRow.innerHTML = `<td colspan="10" class="text-center text-danger">Failed to generate risk analysis: ${error.message}</td>`;
+    //             })
+    //             .finally(() => {
+    //                 loadingSpinner.style.display = 'none';
+    //             });
+    //     });
+    // }
+    */
+
+    // Initial load of data
+    const initialData = {{ plan.risk_management_data|default:'[]'|safe }};
+    loadTableData(initialData);
+});
+</script>
+{% endblock %}

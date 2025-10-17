@@ -1,0 +1,51 @@
+[
+  {
+    "LawaId": "LAWA-100080",
+    "SiteName": "Lower Hutt (Phil Evans Reserve)",
+    "Lat": -41.212606999999934,
+    "Long": 174.92087600000002,
+    "Region": "Greater Wellington"
+  },
+  {
+    "LawaId": "LAWA-100083",
+    "SiteName": "Masterton East (Herbert Street)",
+    "Lat": -40.959213999999974,
+    "Long": 175.65317800000003,
+    "Region": "Greater Wellington"
+  },
+  {
+    "LawaId": "LAWA-100084",
+    "SiteName": "Masterton West (Pownall Street)",
+    "Lat": -40.952368999999976,
+    "Long": 175.64653900000008,
+    "Region": "Greater Wellington"
+  },
+  {
+    "LawaId": "LAWA-100132",
+    "SiteName": "Upper Hutt (Savage Park)",
+    "Lat": -41.121542999999974,
+    "Long": 175.0703450000001,
+    "Region": "Greater Wellington"
+  },
+  {
+    "LawaId": "LAWA-100136",
+    "SiteName": "Wainuiomata (Moohan Street)",
+    "Lat": -41.26769399999995,
+    "Long": 174.95373800000004,
+    "Region": "Greater Wellington"
+  },
+  {
+    "LawaId": "LAWA-100141",
+    "SiteName": "Wellington Central (Corner V)",
+    "Lat": -41.29404499999998,
+    "Long": 174.77312200000006,
+    "Region": "Greater Wellington"
+  },
+  {
+    "LawaId": "LAWA-100142",
+    "SiteName": "Wellington Central (Willis Street)",
+    "Lat": -41.29362199999997,
+    "Long": 174.77191800000003,
+    "Region": "Greater Wellington"
+  }
+]

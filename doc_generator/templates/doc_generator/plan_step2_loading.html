@@ -44,7 +44,7 @@
 {% block extra_js %}
 <script>
 (function() {
-    const statusUrl = "{% url 'doc_generator:api_check_plan_status' pk=plan.pk %}";
+    const statusUrl = "{% url 'doc_generator:check_plan_status' pk=plan.pk %}";
     const loadingIndicator = document.getElementById('loading-indicator');
     const errorIndicator = document.getElementById('error-indicator');
     const progressLogEl = document.getElementById('progress-log');

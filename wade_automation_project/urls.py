@@ -27,6 +27,7 @@ urlpatterns = [
     # By providing a tuple of (URLconf_module, app_namespace), we explicitly
     # tell Django how to route and reverse URLs for the 'doc_generator' app.
     path('doc-generator/', include(('doc_generator.urls', 'doc_generator'))),
+    path('django-rq/', include('django_rq.urls')),
 ]
 
 if settings.DEBUG:

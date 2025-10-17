@@ -1,0 +1,112 @@
+{% extends 'wade_automation/base.html' %}
+{% load static %}
+
+{% block title %}Step 4: Generating Vulnerability Summary{% endblock %}
+
+{% block content %}
+<main class="page-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <h1 class="mb-4">Generating Vulnerability Analysis</h1>
+                <p class="lead mb-4">Please wait while we analyze the geospatial data and generate your vulnerability summary. This may take a minute or two.</p>
+                
+                <div class="d-flex justify-content-center align-items-center mb-4">
+                    <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+
+                <div id="progress-container" class="text-start">
+                    <!-- Progress updates will be inserted here by JavaScript -->
+                </div>
+
+                <div id="error-container" class="alert alert-danger mt-4" style="display: none;">
+                    <h4>An Error Occurred</h4>
+                    <p id="error-message"></p>
+                    <a href="{% url 'doc_generator:plan_wizard_map_vulnerabilities' pk=plan.pk %}" class="btn btn-secondary">Go Back</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const planId = {{ plan.pk }};
+    const startUrl = `{% url 'doc_generator:api_generate_vulnerability_analysis_v2' pk=plan.pk %}`;
+    const statusUrl = `{% url 'doc_generator:api_check_vulnerability_analysis_status' pk=plan.pk %}`;
+    const finalUrl = `{% url 'doc_generator:water_quality_summary' pk=plan.pk %}`;
+
+    const progressContainer = document.getElementById('progress-container');
+    const errorContainer = document.getElementById('error-container');
+    const errorMessage = document.getElementById('error-message');
+
+    let jobId = null;
+
+    // 1. Start the analysis job
+    fetch(startUrl, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to start the analysis job.');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.job_id) {
+            jobId = data.job_id;
+            // 2. Start polling for the result
+            pollStatus();
+        } else {
+            throw new Error('Did not receive a job ID from the server.');
+        }
+    })
+    .catch(error => {
+        console.error('Error starting job:', error);
+        errorMessage.textContent = 'Could not start the analysis process. Please try again.';
+        errorContainer.style.display = 'block';
+    });
+
+    // 3. Polling function
+    function pollStatus() {
+        const interval = setInterval(() => {
+            fetch(`${statusUrl}?job_id=${jobId}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Update progress on the screen
+                    if (data.progress && Array.isArray(data.progress)) {
+                        progressContainer.innerHTML = data.progress.map(p => `<div class="alert alert-info">${p.message}</div>`).join('');
+                    }
+
+                    if (data.status === 'finished') {
+                        clearInterval(interval);
+                        // The job is done, redirect to the summary page.
+                        // The view will handle rendering the final data.
+                        window.location.href = finalUrl;
+                    } else if (data.status === 'failed') {
+                        clearInterval(interval);
+                        console.error('Job failed:', data.message);
+                        errorMessage.textContent = data.message || 'The analysis task failed. Please check the server logs for details.';
+                        errorContainer.style.display = 'block';
+                    }
+                    // If status is 'pending', do nothing and wait for the next poll.
+                })
+                .catch(error => {
+                    clearInterval(interval);
+                    console.error('Error polling status:', error);
+                    errorMessage.textContent = 'An error occurred while checking the analysis status. Please check your connection and try again.';
+                    errorContainer.style.display = 'block';
+                });
+        }, 5000); // Poll every 5 seconds
+    }
+});
+</script>
+{% endblock %}

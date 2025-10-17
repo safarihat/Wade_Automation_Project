@@ -8,24 +8,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # It's good practice to do this at the top of the file.
 from dotenv import load_dotenv
 load_dotenv()
-
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-# Load from environment variable, with a fallback for development.
-# For production, ALWAYS set a unique, secret key in your environment.
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-your-secret-key')
-
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
-
 ALLOWED_HOSTS = ['*'] # Added for development
-
-
-# Application definition
-
 INSTALLED_APPS = [
     # Django built-in apps
     'django.contrib.admin',
@@ -38,7 +23,8 @@ INSTALLED_APPS = [
     # Third-party apps
     'crispy_forms',
     'crispy_bootstrap5',
-    'django_celery_results',
+    'django_rq',
+
     # Local apps
     'wade_automation',
     'doc_generator',
@@ -198,39 +184,7 @@ DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'webmaster@localhost')
 ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', 'admin@example.com')
 
 
-# --- Celery Configuration ---
 
-# --- Production Best Practices ---
-# 1. Message Broker: For production, use a robust, managed message broker like RabbitMQ or a managed Redis service.
-# 2. Monitoring: Use a tool like Flower to monitor your Celery workers and tasks.
-#    - To install: pip install flower
-#    - To run: celery -A wade_automation_project flower --port=5555
-# 3. Logging: Configure dedicated logging for Celery to a file for easier debugging.
-#    - This can be configured in the LOGGING setting below.
-
-# Use Redis for both development and production for reliability.
-# The 'sqla+sqlite' broker is unreliable, especially with eventlet.
-REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
-
-CELERY_BROKER_URL = REDIS_URL
-CELERY_RESULT_BACKEND = REDIS_URL
-
-CELERY_TIMEZONE = TIME_ZONE # Use Django's timezone
-
-# Store extended task metadata (e.g., arguments, start time, etc.)
-CELERY_RESULT_EXTENDED = True 
-
-# This setting silences a deprecation warning and ensures connection retries on startup.
-CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
-
-# --- Task Time Limits ---
-# It's a best practice to set both soft and hard time limits to prevent tasks from hanging.
-# A soft time limit raises an exception that the task can catch to clean up.
-# A hard time limit forcefully terminates the task.
-# NOTE: These are global defaults. They can be overridden on a per-task basis,
-# which is often a better approach for tasks with different expected runtimes.
-CELERY_TASK_TIME_LIMIT = 600  # Hard time limit of 10 minutes
-CELERY_TASK_SOFT_TIME_LIMIT = 540 # Soft time limit of 9 minutes
 
 # Disable ChromaDB telemetry
 CHROMA_TELEMETRY_ENABLED = os.environ.get('CHROMA_TELEMETRY_ENABLED', 'False') == 'True'
@@ -270,6 +224,25 @@ CACHES = {
 
 # --- Custom Application Settings ---
 LLM_CACHE_TTL_SECONDS = int(os.environ.get('LLM_CACHE_TTL_SECONDS', 60 * 60 * 4)) # Default to 4 hours
+
+# --- RQ Configuration ---
+RQ_QUEUES = {
+    'default': {
+        'URL': os.environ.get('REDIS_URL', 'redis://localhost:6379/0'),
+        'DEFAULT_TIMEOUT': 360,
+        'DEFAULT_RESULT_TTL': 3600,
+    },
+    'high': {
+        'URL': os.environ.get('REDIS_URL', 'redis://localhost:6379/0'),
+        'DEFAULT_TIMEOUT': 500,
+        'DEFAULT_RESULT_TTL': 3600,
+    },
+}
+
+# This setting is being used by other parts of the application (like geospatial_utils)
+# to connect to Redis. We define it here to prevent the AttributeError.
+# It should point to the same Redis instance as the RQ queues and Cache.
+REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
 
 # Defines the Groq model for the VulnerabilityService. Default to the fastest model for general use.
 # For high-quality analysis, override with 'llama-3.2-90b-text' in your environment.
@@ -320,6 +293,10 @@ LOGGING = {
             'handlers': ['console', 'file'],
             'level': 'INFO',
             'propagate': False,
+        },
+        'root': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
         },
     },
 }

@@ -1,0 +1,3705 @@
+[
+  {
+    "LawaId": "HRC-00061",
+    "SiteName": "Whanganui at Wades Landing",
+    "Lat": -39.111639999999966,
+    "Long": 175.06128000000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100249",
+    "SiteName": "Whanganui at u/s Taumarunui STP",
+    "Lat": -38.89344499999993,
+    "Long": 175.24916800000005,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-10024",
+    "SiteName": "Whanganui at Town Bridge",
+    "Lat": -39.93533999999994,
+    "Long": 175.05595000000005,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00005",
+    "SiteName": "Kahuterawa at Johnstons Rata",
+    "Lat": -39.76939999999996,
+    "Long": 175.16185000000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00132",
+    "SiteName": "Whanganui at Te Porere",
+    "Lat": -39.058659999999975,
+    "Long": 175.5787200000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00062",
+    "SiteName": "Whanganui at Te Maire",
+    "Lat": -38.94250999999997,
+    "Long": 175.18891000000008,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00090",
+    "SiteName": "Kai-Iwi at Handley Road",
+    "Lat": -39.47960999999998,
+    "Long": 175.04452000000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "NRWQN-00019",
+    "SiteName": "Whanganui @ Paetawa",
+    "Lat": -39.78687999999994,
+    "Long": 175.14255000000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100552",
+    "SiteName": "Whanganui at Mosquito Point",
+    "Lat": -39.86050807999993,
+    "Long": 175.1081964000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100556",
+    "SiteName": "Whanganui at Matapuna",
+    "Lat": -38.882000079999955,
+    "Long": 175.30573040000002,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100560",
+    "SiteName": "Whanganui at Cobham Pontoons",
+    "Lat": -39.93298887999998,
+    "Long": 175.05833240000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00063",
+    "SiteName": "Whanganui at Cherry Grove",
+    "Lat": -38.891629999999964,
+    "Long": 175.25534000000005,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00071",
+    "SiteName": "Whangaehu at u/s Winstone Pulp",
+    "Lat": -39.46328999999997,
+    "Long": 175.58116000000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00131",
+    "SiteName": "Whangaehu at Tukino Repeater",
+    "Lat": -39.26783999999998,
+    "Long": 175.6538200000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101970",
+    "SiteName": "Whangaehu at Titoki",
+    "Lat": -39.58372799999995,
+    "Long": 175.5114860000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00130",
+    "SiteName": "Whangaehu at Kowhai St Mangamahu",
+    "Lat": -39.823309999999935,
+    "Long": 175.35804000000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100244",
+    "SiteName": "Kiwitea at Strathspey Farm",
+    "Lat": -39.92576999999994,
+    "Long": 175.27568000000008,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00092",
+    "SiteName": "Makino at Boness Road",
+    "Lat": -39.50105999999994,
+    "Long": 175.46276000000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-00673",
+    "SiteName": "Whangaehu at Fields Track",
+    "Lat": -39.62139380999997,
+    "Long": 175.42227460000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101963",
+    "SiteName": "Whangaehu at d/s Winstone Pulp",
+    "Lat": -39.46611581999997,
+    "Long": 175.57545430000005,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00007",
+    "SiteName": "Makotuku at Raetihi",
+    "Lat": -39.715539999999976,
+    "Long": 175.42034000000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100559",
+    "SiteName": "Whakapapa at Owhango",
+    "Lat": -38.99674134999998,
+    "Long": 175.39863160000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100260",
+    "SiteName": "Waitarere",
+    "Lat": -40.56286659999995,
+    "Long": 175.25411840000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00072",
+    "SiteName": "Waitangi at u/s Waiouru STP",
+    "Lat": -39.461499999999944,
+    "Long": 175.65899000000002,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101962",
+    "SiteName": "Waitangi at d/s Waiouru STP",
+    "Lat": -39.46242276999993,
+    "Long": 175.6578585000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-10015",
+    "SiteName": "Wairarawa Stream at Waiterere Beach",
+    "Lat": -40.54721999999998,
+    "Long": 175.19518000000005,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100538",
+    "SiteName": "Wainui at Herbertville",
+    "Lat": -40.489633699999956,
+    "Long": 176.55858760000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-10027",
+    "SiteName": "Waikawa Estuary at Footbridge",
+    "Lat": -40.68769999999995,
+    "Long": 175.14849000000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-102307",
+    "SiteName": "Waikawa at Waikawa Campsite",
+    "Lat": -40.72152699999998,
+    "Long": 175.24719800000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101961",
+    "SiteName": "Waikawa at u/s Manakau Confluence",
+    "Lat": -40.69158467999995,
+    "Long": 175.18334560000005,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00011",
+    "SiteName": "Manakau at S.H.1 Bridge",
+    "Lat": -40.707739999999944,
+    "Long": 175.23359000000005,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00057",
+    "SiteName": "Waikawa Stream at Huritini",
+    "Lat": -40.68651999999997,
+    "Long": 175.16542000000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101964",
+    "SiteName": "Manga-atua at Hopelands Rd",
+    "Lat": -40.435555799999975,
+    "Long": 176.2917056000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-00670",
+    "SiteName": "Waihi at Falls",
+    "Lat": -40.43749408999997,
+    "Long": 176.25524510000002,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00128",
+    "SiteName": "Upper Mangahao at No.1 Dam",
+    "Lat": -40.625269999999944,
+    "Long": 175.47797000000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00087",
+    "SiteName": "Unnamed Trib of Waipu at us Ratana STP",
+    "Lat": -40.04012999999998,
+    "Long": 175.1684600000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101960",
+    "SiteName": "Unnamed Trib of Waipu at ds Ratana STP",
+    "Lat": -40.03985771999993,
+    "Long": 175.1677423000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00085",
+    "SiteName": "Tutaenui Stream at u/s Marton STP",
+    "Lat": -40.10550999999998,
+    "Long": 175.3873400000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101959",
+    "SiteName": "Tutaenui Stream at d/s Marton STP",
+    "Lat": -40.106383249999965,
+    "Long": 175.38854470000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101969",
+    "SiteName": "Tutaenui at Ribby Farm",
+    "Lat": -40.00113552999994,
+    "Long": 175.39862200000005,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101966",
+    "SiteName": "Tutaenui at Hammond St",
+    "Lat": -40.06776371999996,
+    "Long": 175.38248740000006,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00353",
+    "SiteName": "Turitea at No1 Dairy",
+    "Lat": -40.38547999999997,
+    "Long": 175.60685000000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00127",
+    "SiteName": "Turakina at Ruanui",
+    "Lat": -39.620919999999956,
+    "Long": 175.62440000000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00110",
+    "SiteName": "Mangaone at Milson Line",
+    "Lat": -40.07410999999996,
+    "Long": 175.13629000000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00020",
+    "SiteName": "Mangapapa at Troup Rd",
+    "Lat": -39.71959999999996,
+    "Long": 175.58746000000008,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00354",
+    "SiteName": "Turakina at Mouth",
+    "Lat": -40.48728999999997,
+    "Long": 175.52598000000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00125",
+    "SiteName": "Turakina at Koeke Airstrip",
+    "Lat": -39.476159999999936,
+    "Long": 175.5035600000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00054",
+    "SiteName": "Tokomaru River at Horseshoe bend",
+    "Lat": -39.49619999999993,
+    "Long": 175.45767000000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00022",
+    "SiteName": "Mangatainoka at Larsons Road",
+    "Lat": -40.388679999999965,
+    "Long": 175.88875000000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00352",
+    "SiteName": "Tokiahuru at Karioi",
+    "Lat": -40.458819999999946,
+    "Long": 175.89412000000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00026",
+    "SiteName": "Mangatoro at Mangahei Road",
+    "Lat": -40.467109999999934,
+    "Long": 175.92279000000008,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00051",
+    "SiteName": "Tiraumea u/s Manawatu Confluence",
+    "Lat": -40.67858999999993,
+    "Long": 175.86099000000002,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00124",
+    "SiteName": "Tiraumea at Ohehua Repeater",
+    "Lat": -40.54575999999997,
+    "Long": 175.1954300000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00093",
+    "SiteName": "Mangawhero at Ore Ore",
+    "Lat": -40.688399999999945,
+    "Long": 175.14229000000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00123",
+    "SiteName": "Tiraumea at Alfredton",
+    "Lat": -39.96242898999998,
+    "Long": 175.0148091000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-10017",
+    "SiteName": "Tasman Sea at Waitarere Beach",
+    "Lat": -39.86718499999995,
+    "Long": 174.83333600000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-10023",
+    "SiteName": "Tasman Sea at Waikawa Beach",
+    "Lat": -40.07525999999996,
+    "Long": 175.13331000000005,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100551",
+    "SiteName": "Tasman Sea at South Beach",
+    "Lat": -39.88587999999993,
+    "Long": 174.89984000000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-102243",
+    "SiteName": "Tasman Sea at Ototoka Beach",
+    "Lat": -40.59381999999994,
+    "Long": 175.18028000000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00356",
+    "SiteName": "Tasman Sea at Koitiata Beach",
+    "Lat": -40.366949999999974,
+    "Long": 175.22764000000006,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-10022",
+    "SiteName": "Tasman Sea at Kai Iwi Beach",
+    "Lat": -40.45861999999994,
+    "Long": 175.21579000000008,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-10021",
+    "SiteName": "Tasman Sea at Hokio Beach",
+    "Lat": -39.93918999999994,
+    "Long": 174.97657000000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-10020",
+    "SiteName": "Tasman Sea at Himatangi Beach",
+    "Lat": -40.165179999999964,
+    "Long": 176.0636300000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-10019",
+    "SiteName": "Tasman Sea at Foxton Beach",
+    "Lat": -40.12271999999996,
+    "Long": 176.03354000000002,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-10018",
+    "SiteName": "Tasman Sea at Castlecliff Beach",
+    "Lat": -40.24534999999997,
+    "Long": 176.06491000000005,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00028",
+    "SiteName": "Mangawhero at Pakihi Rd Bridge",
+    "Lat": -40.23445399999997,
+    "Long": 176.06793500000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00049",
+    "SiteName": "Tamaki at Tamaki Reserve",
+    "Lat": -40.38547914999998,
+    "Long": 175.26981460000002,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00027",
+    "SiteName": "Mangawhero at Raupiu Road",
+    "Lat": -40.280019969999955,
+    "Long": 175.76292720000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100245",
+    "SiteName": "Tamaki at Hartridges",
+    "Lat": -40.66428547999993,
+    "Long": 175.19741893000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100259",
+    "SiteName": "Sexton Land Co",
+    "Lat": -40.322869999999966,
+    "Long": 175.99543000000006,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100258",
+    "SiteName": "Saddle Road",
+    "Lat": -40.29884623999993,
+    "Long": 175.22708660000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00031",
+    "SiteName": "Ohau at Haines Property",
+    "Lat": -39.934199999999976,
+    "Long": 175.6388300000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100548",
+    "SiteName": "Rangitikei Estuary at River Mouth",
+    "Lat": -40.18950694999995,
+    "Long": 175.37737630000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-10014",
+    "SiteName": "Rangitikei River at Vinegar Hill",
+    "Lat": -40.18951999999996,
+    "Long": 175.37738000000002,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101958",
+    "SiteName": "Rangitikei at us Riverlands STP",
+    "Lat": -39.75434175999993,
+    "Long": 175.83556080000005,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00069",
+    "SiteName": "Rangitikei at u/s Bulls STP",
+    "Lat": -39.62764999999996,
+    "Long": 176.04425000000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100558",
+    "SiteName": "Rangitikei at Toe Toe Bridge",
+    "Lat": -40.07956999999993,
+    "Long": 175.46384000000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00094",
+    "SiteName": "Ohau at Rongomatane",
+    "Lat": -40.295559999999966,
+    "Long": 175.27557000000002,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00032",
+    "SiteName": "Ohura at Tokorima",
+    "Lat": -39.80941999999993,
+    "Long": 175.80811000000006,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00035",
+    "SiteName": "Oroua at Almadale Slackline",
+    "Lat": -40.125039999999956,
+    "Long": 175.44437000000005,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00035",
+    "SiteName": "Oroua at Almadale Slackline",
+    "Lat": -39.50795999999997,
+    "Long": 176.00287000000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "NRWQN-00018",
+    "SiteName": "Rangitikei at Kakariki",
+    "Lat": -40.19549244999996,
+    "Long": 175.3493926000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00122",
+    "SiteName": "Rangitikei at Erewhon Station",
+    "Lat": -40.18653199999994,
+    "Long": 175.3926610000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101957",
+    "SiteName": "Rangitikei at d/s Riverlands",
+    "Lat": -40.133159999999975,
+    "Long": 175.48576000000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100547",
+    "SiteName": "Rangitikei at Bulls",
+    "Lat": -40.13317893999994,
+    "Long": 175.48458100000005,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00070",
+    "SiteName": "Rangitawa Stream at us Halcombe oxpond",
+    "Lat": -40.61240259999994,
+    "Long": 175.2644272000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101956",
+    "SiteName": "Rangitawa Stream at ds Halcombe oxpond",
+    "Lat": -40.02873999999997,
+    "Long": 175.48075000000006,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101955",
+    "SiteName": "Queen Street Drain at L Horowhenua",
+    "Lat": -39.94659999999993,
+    "Long": 175.56907000000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00121",
+    "SiteName": "Porewa Catchment at Tututotara",
+    "Lat": -40.07708999999994,
+    "Long": 175.45319000000006,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00068",
+    "SiteName": "Porewa at u/s Hunterville STP",
+    "Lat": -39.946971539999936,
+    "Long": 175.5699621000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00042",
+    "SiteName": "Porewa at Onepuhi",
+    "Lat": -40.54635390999994,
+    "Long": 176.1945707000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101954",
+    "SiteName": "Porewa at d/s Hunterville STP",
+    "Lat": -40.548988839999936,
+    "Long": 176.1976800000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00067",
+    "SiteName": "Pongaroa at u/s Pongaroa STP",
+    "Lat": -40.12373999999994,
+    "Long": 175.8528100000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101953",
+    "SiteName": "Pongaroa at d/s Pongaroa STP",
+    "Lat": -40.209089579999954,
+    "Long": 175.79064160000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-10013",
+    "SiteName": "Pohangina River at Totara Reserve",
+    "Lat": -40.05215999999996,
+    "Long": 175.94009000000005,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100543",
+    "SiteName": "Pohangina at Raumai",
+    "Lat": -40.089849999999956,
+    "Long": 176.01565000000005,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00041",
+    "SiteName": "Pohangina at Piripiri",
+    "Lat": -40.22456999999997,
+    "Long": 175.78300000000002,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00120",
+    "SiteName": "Pohangina at Makawakawa Divide",
+    "Lat": -40.06831999999997,
+    "Long": 175.97716000000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00037",
+    "SiteName": "Oruakeretaki at S.H.2 Napier",
+    "Lat": -40.18291999999997,
+    "Long": 175.86470000000008,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00119",
+    "SiteName": "Pohangina at Delaware Ridge",
+    "Lat": -40.21494999999993,
+    "Long": 175.41119000000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00118",
+    "SiteName": "Pohangina at Alphabet Hut",
+    "Lat": -40.21583998999995,
+    "Long": 175.4112216000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00073",
+    "SiteName": "Piakatutu at u/s Sanson STP",
+    "Lat": -40.608029999999985,
+    "Long": 175.2792300000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101952",
+    "SiteName": "Piakatutu at d/s Sanson STP",
+    "Lat": -39.93984999999998,
+    "Long": 175.70578000000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00039",
+    "SiteName": "Patiki Stream at Kawiu Road",
+    "Lat": -40.49771599999997,
+    "Long": 176.55830800000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00117",
+    "SiteName": "Pakihikura at Pakihikura Airstrip",
+    "Lat": -40.630789999999934,
+    "Long": 176.30245000000002,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100537",
+    "SiteName": "Pacific Ocean at Herbertville Beach",
+    "Lat": -39.865587619999985,
+    "Long": 174.83184290000008,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00038",
+    "SiteName": "Owahanga at Branscombe Bridge",
+    "Lat": -40.25341999999995,
+    "Long": 176.0323400000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100671",
+    "SiteName": "Ototoka at Beach Rd",
+    "Lat": -40.26133507999998,
+    "Long": 176.03975330000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00040",
+    "SiteName": "Pohangina at Mais Reach",
+    "Lat": -40.063925119999965,
+    "Long": 175.7928277000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101951",
+    "SiteName": "Oruakeretaki at d/s PPCS Oringi STP",
+    "Lat": -40.06213999999994,
+    "Long": 175.79276000000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101950",
+    "SiteName": "Oroua tributary at d/s Kimbolton STP",
+    "Lat": -40.22834999999998,
+    "Long": 175.58212000000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00088",
+    "SiteName": "Oroua Trib at U/S Kimbolton STP",
+    "Lat": -40.26252999999997,
+    "Long": 175.54461000000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-10012",
+    "SiteName": "Oroua River at Timoana Park",
+    "Lat": -40.23194999999998,
+    "Long": 175.58226000000002,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00079",
+    "SiteName": "Oroua at U/S Feilding STP",
+    "Lat": -39.890229999999974,
+    "Long": 175.9635300000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00078",
+    "SiteName": "Oroua at U/S AFFCO Feilding",
+    "Lat": -40.39286599999997,
+    "Long": 175.43515800000011,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00116",
+    "SiteName": "Oroua at Rangiwahia",
+    "Lat": -40.04274996999993,
+    "Long": 175.81565080000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100248",
+    "SiteName": "Oroua at Mangawhata",
+    "Lat": -40.20923273999995,
+    "Long": 175.62245070000006,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100542",
+    "SiteName": "Oroua at Londons Ford",
+    "Lat": -40.26349517999995,
+    "Long": 175.54111790000002,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100541",
+    "SiteName": "Oroua at Feilding Rd Br",
+    "Lat": -40.237426839999955,
+    "Long": 175.57894240000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101949",
+    "SiteName": "Oroua at d/s Feilding STP",
+    "Lat": -40.06839441999995,
+    "Long": 175.8008324000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101948",
+    "SiteName": "Oroua at d/s AFFCO Feilding",
+    "Lat": -40.275649999999985,
+    "Long": 175.52158000000009,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100540",
+    "SiteName": "Oroua at Bartletts Ford",
+    "Lat": -39.93806999999998,
+    "Long": 175.9258000000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00034",
+    "SiteName": "Oroua at Awahuri Bridge",
+    "Lat": -40.17340999999993,
+    "Long": 175.6599000000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00036",
+    "SiteName": "Oroua at Apiti Gorge Bridge",
+    "Lat": -40.17340999999993,
+    "Long": 175.6599000000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00045",
+    "SiteName": "Rangitikei at Mangaweka",
+    "Lat": -38.862229999999954,
+    "Long": 175.23823000000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00043",
+    "SiteName": "Rangitikei at McKelvies",
+    "Lat": -38.890991929999984,
+    "Long": 175.25454500000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00033",
+    "SiteName": "Ongarue at Taringamotu",
+    "Lat": -40.32755191999996,
+    "Long": 175.32456830000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100555",
+    "SiteName": "Ongarue at Cherry Grove",
+    "Lat": -38.91749999999996,
+    "Long": 175.0323800000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00342",
+    "SiteName": "Omanuka Lagoon Composite",
+    "Lat": -38.91103099999998,
+    "Long": 175.04142000000002,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00044",
+    "SiteName": "Rangitikei at Onepuhi",
+    "Lat": -40.65475449999997,
+    "Long": 175.36076200000002,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101968",
+    "SiteName": "Ohura at Ohura River Road",
+    "Lat": -40.670660459999965,
+    "Long": 175.24064310000006,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101947",
+    "SiteName": "Ohau at u/s Makahika Confluence",
+    "Lat": -40.66343999999998,
+    "Long": 175.3326800000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100544",
+    "SiteName": "Ohau at State Highway Bridge",
+    "Lat": -40.67258328999998,
+    "Long": 175.2798464000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00046",
+    "SiteName": "Rangitikei at Pukeokahu",
+    "Lat": -40.666305729999976,
+    "Long": 175.3164458000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-10011",
+    "SiteName": "Ohau at Muhunoa East Rd",
+    "Lat": -40.66428999999994,
+    "Long": 175.19784000000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-10010",
+    "SiteName": "Ohau at Kimberley Rd",
+    "Lat": -40.66334999999998,
+    "Long": 175.33740000000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00031",
+    "SiteName": "Ohau at Haines Property",
+    "Lat": -40.64685099999997,
+    "Long": 175.69451500000002,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00030",
+    "SiteName": "Ohau at Gladstone Reserve",
+    "Lat": -39.88666999999998,
+    "Long": 174.9012600000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100247",
+    "SiteName": "Ngatahaka Stream u/s Makakahi Confluence",
+    "Lat": -39.583759999999984,
+    "Long": 175.86064700000009,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00089",
+    "SiteName": "Mowhanau Stream at Footbridge",
+    "Lat": -40.37053463999996,
+    "Long": 175.24167540000008,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100546",
+    "SiteName": "Moawhango at Moawhango",
+    "Lat": -40.37036470999993,
+    "Long": 175.24161090000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100257",
+    "SiteName": "MDC Himatangi Shallow",
+    "Lat": -39.943239999999946,
+    "Long": 175.16506000000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100256",
+    "SiteName": "MDC Himatangi Deep",
+    "Lat": -39.91668752999993,
+    "Long": 175.0904882000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00115",
+    "SiteName": "Matarawa at Matarawa Valley",
+    "Lat": -39.40900999999997,
+    "Long": 175.38394000000005,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101965",
+    "SiteName": "Matarawa at City Branch",
+    "Lat": -39.41460920999998,
+    "Long": 175.39726200000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00064",
+    "SiteName": "Mangawhero at u/s Ohakune STP",
+    "Lat": -39.700279999999964,
+    "Long": 175.33113000000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100553",
+    "SiteName": "Mangawhero at SH49",
+    "Lat": -39.63177489999998,
+    "Long": 175.31512040000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00047",
+    "SiteName": "Raparapawai at Jackson Rd",
+    "Lat": -39.43099999999998,
+    "Long": 175.32311000000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100554",
+    "SiteName": "Mangawhero at Raukawa Falls Camp",
+    "Lat": -39.700279999999964,
+    "Long": 175.33113000000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00048",
+    "SiteName": "Tamaki at Stephensons",
+    "Lat": -39.406427519999966,
+    "Long": 175.3780399000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00095",
+    "SiteName": "Tamaki at Water Supply Weir",
+    "Lat": -39.40169999999995,
+    "Long": 175.41228000000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-00674",
+    "SiteName": "Mangawhero at ds Maungarongo Pa",
+    "Lat": -39.408126169999946,
+    "Long": 175.38274360000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00029",
+    "SiteName": "Mangawhero at DOC Headquarters",
+    "Lat": -39.57795999999996,
+    "Long": 175.2745500000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101944",
+    "SiteName": "Mangawhero at d/s Ohakune STP",
+    "Lat": -39.78995999999995,
+    "Long": 175.26296000000002,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00114",
+    "SiteName": "Mangawhero at Bangonie",
+    "Lat": -39.84029199999998,
+    "Long": 175.89118000000008,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00113",
+    "SiteName": "Mangawhero at Aberfeldy",
+    "Lat": -40.24467999999996,
+    "Long": 176.1895300000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-102242",
+    "SiteName": "Mangawharariki at Ruahine Dress Circle",
+    "Lat": -40.17907563999995,
+    "Long": 176.1985486000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00050",
+    "SiteName": "Tiraumea at Ngaturi",
+    "Lat": -40.224714769999935,
+    "Long": 176.10169870000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00351",
+    "SiteName": "Mangatewainui at Hardies",
+    "Lat": -40.240849999999966,
+    "Long": 176.0988000000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101943",
+    "SiteName": "Mangatera at u/s T.D.C. Ox Ponds",
+    "Lat": -40.224549999999965,
+    "Long": 176.1015900000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00025",
+    "SiteName": "Mangatera at u/s Manawatu confluence",
+    "Lat": -40.22644298999995,
+    "Long": 176.10174230000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00075",
+    "SiteName": "Mangatera at Dannevirke",
+    "Lat": -40.40262999999993,
+    "Long": 175.88269000000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101942",
+    "SiteName": "Mangatera at d/s Dannevirke STP",
+    "Lat": -40.439439999999934,
+    "Long": 175.84022000000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00344",
+    "SiteName": "Mangatainoka at u/s Tiraumea Confluence",
+    "Lat": -40.47565999999995,
+    "Long": 175.79573000000005,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00083",
+    "SiteName": "Mangatainoka at u/s Pahiatua STP",
+    "Lat": -40.680519999999945,
+    "Long": 175.54746000000011,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00343",
+    "SiteName": "Mangatainoka at Scarborough Konini Rd",
+    "Lat": -40.44956999999994,
+    "Long": 175.83121000000006,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00021",
+    "SiteName": "Mangatainoka at Putara",
+    "Lat": -40.64035999999993,
+    "Long": 175.61099000000002,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00023",
+    "SiteName": "Mangatainoka at Pahiatua Town Bridge",
+    "Lat": -40.56594999999993,
+    "Long": 175.71206000000006,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00053",
+    "SiteName": "Tokiahuru at Junction",
+    "Lat": -40.57962999999995,
+    "Long": 175.6665200000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00350",
+    "SiteName": "Mangatainoka at Hukanui",
+    "Lat": -40.438474919999976,
+    "Long": 175.8425347000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00112",
+    "SiteName": "Mangatainoka at Hillwood Hukanui",
+    "Lat": -40.41887135999997,
+    "Long": 175.8700050000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101941",
+    "SiteName": "Mangatainoka at d/s Pahiatua STP",
+    "Lat": -40.42267999999996,
+    "Long": 175.86191000000008,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101940",
+    "SiteName": "Mangatainoka at d/s DB Breweries",
+    "Lat": -40.08063999999996,
+    "Long": 176.2229000000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00024",
+    "SiteName": "Mangatainoka at Brewery - S.H.2 Bridge",
+    "Lat": -40.08422576999993,
+    "Long": 176.2230681000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00086",
+    "SiteName": "Mangarangiora Trib at US Norsewood STP",
+    "Lat": -40.115507589999936,
+    "Long": 176.2708977000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101939",
+    "SiteName": "Mangarangiora trib at ds Norsewood STP",
+    "Lat": -40.115878039999984,
+    "Long": 176.2708569,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101938",
+    "SiteName": "Mangarangiora at u/s Ormondville STP",
+    "Lat": -40.341929999999934,
+    "Long": 175.84788000000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101937",
+    "SiteName": "Mangarangiora at d/s Ormondville STP",
+    "Lat": -39.47564599999998,
+    "Long": 175.49815200000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-103995",
+    "SiteName": "Tokiahuru at Powells Rd",
+    "Lat": -40.537729999999954,
+    "Long": 175.40034000000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00074",
+    "SiteName": "Mangaore at u/s Shannon STP",
+    "Lat": -40.536891459999936,
+    "Long": 175.3982241000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101936",
+    "SiteName": "Mangaore at d/s Shannon STP",
+    "Lat": -40.577302559999964,
+    "Long": 175.44903940000006,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100539",
+    "SiteName": "Mangaore at d/s Mangahao Power Station",
+    "Lat": -40.20109999999994,
+    "Long": 175.70917000000009,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00111",
+    "SiteName": "Mangaone at Valley Road",
+    "Lat": -40.31890999999996,
+    "Long": 175.60207000000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100246",
+    "SiteName": "Tokomaru at Riverland Farm",
+    "Lat": -40.48435499999994,
+    "Long": 175.4985210000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100557",
+    "SiteName": "Manganui o te Ao at Ruatiti Domain",
+    "Lat": -39.31354509999994,
+    "Long": 175.1987531000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00349",
+    "SiteName": "Manganui o te Ao at Ashworth",
+    "Lat": -39.30986999999993,
+    "Long": 175.20645000000002,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101935",
+    "SiteName": "Manganaonao at Ohau West Road",
+    "Lat": -40.67206704999995,
+    "Long": 175.19083620000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100561",
+    "SiteName": "Mangahao at Poplar Reserve",
+    "Lat": -40.45276431999997,
+    "Long": 175.77893810000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-10008",
+    "SiteName": "Mangahao River at Marima Domain",
+    "Lat": -40.504659999999944,
+    "Long": 175.7131300000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00109",
+    "SiteName": "Mangahao at Kakariki",
+    "Lat": -40.56000999999998,
+    "Long": 175.61849000000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00019",
+    "SiteName": "Mangahao at Ballance",
+    "Lat": -40.436109999999985,
+    "Long": 175.79173000000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00108",
+    "SiteName": "Mangaetoroa at Scarrows",
+    "Lat": -39.42217999999997,
+    "Long": 175.22289000000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00065",
+    "SiteName": "Mangaehuehu at u/s Rangataua STP",
+    "Lat": -39.43073999999996,
+    "Long": 175.46372000000008,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101934",
+    "SiteName": "Mangaehuehu at d/s Rangataua STP",
+    "Lat": -39.43163635999997,
+    "Long": 175.4637507000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00076",
+    "SiteName": "Mangaatua at u/s Woodville STP",
+    "Lat": -40.34448999999995,
+    "Long": 175.8538900000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00055",
+    "SiteName": "Turakina at ONeills Bridge",
+    "Lat": -40.33154099999996,
+    "Long": 175.9182300000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101933",
+    "SiteName": "Mangaatua at d/s Woodville STP",
+    "Lat": -40.02571999999998,
+    "Long": 175.23333000000002,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-10007",
+    "SiteName": "Manawatu River @ Ashurst Domain",
+    "Lat": -40.34454029999995,
+    "Long": 175.85153460000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-10006",
+    "SiteName": "Manawatu River @ Albert Street",
+    "Lat": -40.30350999999996,
+    "Long": 175.7603600000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00012",
+    "SiteName": "Manawatu at Whirokino",
+    "Lat": -40.37116999999995,
+    "Long": 175.64178000000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00018",
+    "SiteName": "Manawatu at Weber Road",
+    "Lat": -40.51408199999997,
+    "Long": 175.27790600000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00081",
+    "SiteName": "Manawatu at us Fonterra Longburn",
+    "Lat": -40.23946999999998,
+    "Long": 176.11638000000005,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00017",
+    "SiteName": "Manawatu at Upper Gorge",
+    "Lat": -40.398319999999956,
+    "Long": 175.55681000000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00082",
+    "SiteName": "Manawatu at u/s PPCS Shannon",
+    "Lat": -40.331849999999974,
+    "Long": 175.81803000000002,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00080",
+    "SiteName": "Manawatu at u/s PNCC STP",
+    "Lat": -40.526029999999935,
+    "Long": 175.39992000000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00015",
+    "SiteName": "Manawatu at Teachers College",
+    "Lat": -40.38428899999997,
+    "Long": 175.5946100000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00013",
+    "SiteName": "Manawatu at Opiki Bridge",
+    "Lat": -40.37328999999994,
+    "Long": 175.62773000000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00014",
+    "SiteName": "Manawatu at Ngawapurua Bridge",
+    "Lat": -40.43534999999997,
+    "Long": 175.46978000000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00107",
+    "SiteName": "Manawatu at Moutoa",
+    "Lat": -40.38684999999998,
+    "Long": 175.88985000000002,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00016",
+    "SiteName": "Manawatu at Hopelands",
+    "Lat": -40.491439999999955,
+    "Long": 175.37252000000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-10025",
+    "SiteName": "Manawatu at Foxton",
+    "Lat": -40.358859999999936,
+    "Long": 175.9628600000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-00669",
+    "SiteName": "Manawatu at Fitzherbert",
+    "Lat": -40.47211999999996,
+    "Long": 175.23720000000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101932",
+    "SiteName": "Manawatu at ds Fonterra Longburn",
+    "Lat": -40.37246877999996,
+    "Long": 175.62416400000006,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101931",
+    "SiteName": "Manawatu at d/s PNCC STP",
+    "Lat": -40.40465477999993,
+    "Long": 175.55469290000008,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00106",
+    "SiteName": "Manawatu at Apiti Track",
+    "Lat": -40.394007459999955,
+    "Long": 175.58347230000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00126",
+    "SiteName": "Turakina at Otairi",
+    "Lat": -39.85447999999997,
+    "Long": 175.49660000000006,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101930",
+    "SiteName": "Manakau at Cemetery",
+    "Lat": -40.04499999999996,
+    "Long": 176.14264000000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00010",
+    "SiteName": "Makuri at Tuscan Hills",
+    "Lat": -40.72437999999994,
+    "Long": 175.21165000000008,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00105",
+    "SiteName": "Makuri at Bee 4 Trig",
+    "Lat": -40.69068445999994,
+    "Long": 175.18331620000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00009",
+    "SiteName": "Makotuku at SH49A",
+    "Lat": -40.52365999999995,
+    "Long": 175.93115000000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-00672",
+    "SiteName": "Makotuku at Raetihi Motor Camp",
+    "Lat": -40.56088999999997,
+    "Long": 176.05918000000008,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101967",
+    "SiteName": "Waihi at S.H.52",
+    "Lat": -39.37148999999994,
+    "Long": 175.3245700000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101929",
+    "SiteName": "Makotuku at d/s Raetihi STP",
+    "Lat": -39.43089358999998,
+    "Long": 175.28359980000005,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00066",
+    "SiteName": "Makotuku at Above Sewage Plant",
+    "Lat": -39.42101999999994,
+    "Long": 175.2821,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101928",
+    "SiteName": "Makorokio at Tirohanga Station",
+    "Lat": -39.43778317999994,
+    "Long": 175.2854268000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101927",
+    "SiteName": "Makomako Road Drain at L Horowhenua",
+    "Lat": -39.43824999999998,
+    "Long": 175.2890400000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00104",
+    "SiteName": "Makohine at Zohs Road",
+    "Lat": -40.69136884999995,
+    "Long": 175.28748930000006,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00103",
+    "SiteName": "Makino at Halcombe Road",
+    "Lat": -40.61960762999996,
+    "Long": 175.2571286000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00102",
+    "SiteName": "Makino at Cheltenham",
+    "Lat": -39.78235999999998,
+    "Long": 175.73457000000008,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00056",
+    "SiteName": "Waikawa at North Manakau Road",
+    "Lat": -40.194339999999954,
+    "Long": 175.53147,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101926",
+    "SiteName": "Makaretu Above Ohau Confluence",
+    "Lat": -40.11537999999996,
+    "Long": 175.63650000000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00077",
+    "SiteName": "Makakahi at u/s Eketahuna STP",
+    "Lat": -40.257379999999955,
+    "Long": 175.53266000000008,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00077",
+    "SiteName": "Makakahi at u/s Eketahuna STP",
+    "Lat": -40.661296479999976,
+    "Long": 175.34916420000002,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00008",
+    "SiteName": "Makakahi at Hamua",
+    "Lat": -40.651749999999936,
+    "Long": 175.70370000000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00348",
+    "SiteName": "Makakahi at end Kaiparoro Road",
+    "Lat": -40.651749999999936,
+    "Long": 175.70370000000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101925",
+    "SiteName": "Makakahi at d/s Eketahuna STP",
+    "Lat": -40.565169999999966,
+    "Long": 175.74511000000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101924",
+    "SiteName": "Makahika Above Ohau Confluence",
+    "Lat": -40.71342999999996,
+    "Long": 175.60673000000008,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00337",
+    "SiteName": "Lake Wiritoa Composite",
+    "Lat": -40.63255910999993,
+    "Long": 175.7147450000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-10005",
+    "SiteName": "Lake Wiritoa",
+    "Lat": -40.655847619999975,
+    "Long": 175.3513385000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-102308",
+    "SiteName": "Lake William (Composite)",
+    "Lat": -39.97365999999994,
+    "Long": 175.0899700000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00329",
+    "SiteName": "Lake Westmere (Composite)",
+    "Lat": -39.97346999999996,
+    "Long": 175.08990000000006,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00335",
+    "SiteName": "Lake Pauri Composite",
+    "Lat": -40.122893999999974,
+    "Long": 175.3110670000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00341",
+    "SiteName": "Lake Koputara (Composite)",
+    "Lat": -39.895814979999955,
+    "Long": 174.99860210000008,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00333",
+    "SiteName": "Lake Horowhenua Composite",
+    "Lat": -39.97832999999997,
+    "Long": 175.1008700000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00317",
+    "SiteName": "Lake Horowhenua at Domain",
+    "Lat": -40.39996999999994,
+    "Long": 175.26226000000008,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00339",
+    "SiteName": "Lake Herbert (Composite)",
+    "Lat": -40.60967999999997,
+    "Long": 175.25502000000006,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00332",
+    "SiteName": "Lake Heaton (Composite)",
+    "Lat": -40.60821426999996,
+    "Long": 175.26488830000005,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00331",
+    "SiteName": "Lake Dudding (Composite)",
+    "Lat": -40.13618999999994,
+    "Long": 175.29685000000006,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-10004",
+    "SiteName": "Lake Dudding",
+    "Lat": -40.106739999999945,
+    "Long": 175.2888200000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100250",
+    "SiteName": "Lake Alice (Composite)",
+    "Lat": -40.10003999999998,
+    "Long": 175.27992000000006,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101923",
+    "SiteName": "L Horowhenua Inflow at Lindsay Road",
+    "Lat": -40.09959999999995,
+    "Long": 175.2791800000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101922",
+    "SiteName": "L Horowhenua Inflow at Hokio Sand Rd",
+    "Lat": -40.13409999999993,
+    "Long": 175.33197000000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101921",
+    "SiteName": "L Horowhenua Inflow at culv d/s Queen St",
+    "Lat": -40.58654364999995,
+    "Long": 175.26843420000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00006",
+    "SiteName": "Kumeti at Te Rehunga",
+    "Lat": -40.619883209999955,
+    "Long": 175.23742000000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00101",
+    "SiteName": "Kumeti at Rua Roa",
+    "Lat": -40.61066463999998,
+    "Long": 175.26623600000005,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101920",
+    "SiteName": "Kuku at N. Johnstone Farm Bridge",
+    "Lat": -40.219709999999964,
+    "Long": 176.01202000000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00347",
+    "SiteName": "Koputaroa at Tavistock Rd",
+    "Lat": -40.189419999999984,
+    "Long": 176.03300000000002,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-103993 ",
+    "SiteName": "Wainui at Herbertville Road Br",
+    "Lat": -40.673302079999985,
+    "Long": 175.19694590000006,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00346",
+    "SiteName": "Kiwitea at Kimbolton Rd",
+    "Lat": -40.596679999999935,
+    "Long": 175.33744000000002,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00091",
+    "SiteName": "Kiwitea at Haynes Line",
+    "Lat": -40.15766499999995,
+    "Long": 175.639314,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00100",
+    "SiteName": "Kawhatau Catchment at Upper Kawhatau",
+    "Lat": -40.21089999999998,
+    "Long": 175.59674000000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-10003",
+    "SiteName": "Kaikokopu Stream at Himitangi Beach",
+    "Lat": -40.08875999999998,
+    "Long": 175.65775000000008,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100549",
+    "SiteName": "Kai Iwi Stream at Archers Bridge",
+    "Lat": -39.76606999999996,
+    "Long": 176.02471000000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-103879",
+    "SiteName": "Waitangi at Tangiwai",
+    "Lat": -40.36997999999994,
+    "Long": 175.22944000000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00099",
+    "SiteName": "Kahuterawa at Scotts Road",
+    "Lat": -39.88433440999995,
+    "Long": 174.89723830000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00345",
+    "SiteName": "Kahuterawa at Keebles Farm",
+    "Lat": -39.88036411999997,
+    "Long": 174.90107820000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00129",
+    "SiteName": "Whangaehu at Aranui",
+    "Lat": -40.486959999999954,
+    "Long": 175.58143000000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-10001",
+    "SiteName": "Kahuterawa at end Kahuterawa Rd",
+    "Lat": -40.393129999999985,
+    "Long": 175.5910100000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100255",
+    "SiteName": "Hyde Park Bore 2",
+    "Lat": -40.44906999999995,
+    "Long": 175.62164000000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00355",
+    "SiteName": "Hokowhitu Lagoon at The Chalet",
+    "Lat": -40.46957100999998,
+    "Long": 175.61105610000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-10026",
+    "SiteName": "Hokio Estuary at Muaupoko St Bridge",
+    "Lat": -40.11359046999996,
+    "Long": 175.205371,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00004",
+    "SiteName": "Hokio at Lake Horowhenua",
+    "Lat": -40.367129999999975,
+    "Long": 175.62953000000005,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100254",
+    "SiteName": "HDC Foxton Beach 3",
+    "Lat": -40.59442999999993,
+    "Long": 175.18333000000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100253",
+    "SiteName": "HDC Foxton Beach 1",
+    "Lat": -40.60499999999996,
+    "Long": 175.23608000000002,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00002",
+    "SiteName": "Hautapu at US Rangitikei River Conf",
+    "Lat": -40.47127654999997,
+    "Long": 175.2413107000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100545",
+    "SiteName": "Hautapu at Papakai Road Bridge",
+    "Lat": -40.469628229999955,
+    "Long": 175.2412911,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101919",
+    "SiteName": "Hautapu at d/s Taihape STP",
+    "Lat": -39.75375999999994,
+    "Long": 175.83617000000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00003",
+    "SiteName": "Hautapu at Alabasters",
+    "Lat": -39.67214390999993,
+    "Long": 175.80266660000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00098",
+    "SiteName": "Forest Rd Drain at Drop Structure",
+    "Lat": -39.68303098999996,
+    "Long": 175.81691100000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100252",
+    "SiteName": "Butlers",
+    "Lat": -39.656879999999944,
+    "Long": 175.78086000000008,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00001",
+    "SiteName": "Arawhata Drain at Hokio Beach Road",
+    "Lat": -40.25232999999997,
+    "Long": 175.25612000000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100251",
+    "SiteName": "Amons",
+    "Lat": -40.65644870999995,
+    "Long": 175.25428900000009,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100535",
+    "SiteName": "Akitio Estuary at Coast Rd Bridge",
+    "Lat": -40.62189999999998,
+    "Long": 175.24728000000005,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100536",
+    "SiteName": "Akitio Beach at Surf Club",
+    "Lat": -40.28050078999996,
+    "Long": 175.2333383,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00097",
+    "SiteName": "Akitio at Toi Flat",
+    "Lat": -40.59936658999993,
+    "Long": 176.42266070000005,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100028",
+    "SiteName": "Air Quality at Taumarunui",
+    "Lat": -40.616742759999966,
+    "Long": 176.41409050000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-100002",
+    "SiteName": "Air Quality at Taihape",
+    "Lat": -40.332569999999976,
+    "Long": 176.26904000000002,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00315",
+    "SiteName": "793007",
+    "Lat": -38.88617499999998,
+    "Long": 175.27104600000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00314",
+    "SiteName": "792013",
+    "Lat": -39.677799999999934,
+    "Long": 175.8008400000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101980",
+    "SiteName": "790127",
+    "Lat": -39.986369959999934,
+    "Long": 175.3971715,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00313",
+    "SiteName": "790095",
+    "Lat": -39.95299702999995,
+    "Long": 175.26602920000005,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101979",
+    "SiteName": "790087",
+    "Lat": -39.90137250999993,
+    "Long": 175.01062790000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00312",
+    "SiteName": "790083",
+    "Lat": -39.928579139999954,
+    "Long": 175.03113880000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00311",
+    "SiteName": "790075",
+    "Lat": -39.947867309999936,
+    "Long": 175.00843940000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00310",
+    "SiteName": "790069",
+    "Lat": -39.95117585999998,
+    "Long": 175.02713440000002,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00309",
+    "SiteName": "790065",
+    "Lat": -39.89872812999994,
+    "Long": 175.08756520000009,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00308",
+    "SiteName": "790041",
+    "Lat": -39.93416924999997,
+    "Long": 175.02077270000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00306",
+    "SiteName": "790011",
+    "Lat": -39.938505919999955,
+    "Long": 175.0302663000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00305",
+    "SiteName": "790007",
+    "Lat": -39.98149089999998,
+    "Long": 175.09480440000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00304",
+    "SiteName": "790003",
+    "Lat": -39.89915117999993,
+    "Long": 175.0138780000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00303",
+    "SiteName": "699013",
+    "Lat": -39.95440217999993,
+    "Long": 175.04830520000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00302",
+    "SiteName": "699011",
+    "Lat": -39.926694699999985,
+    "Long": 175.03576340000006,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00133",
+    "SiteName": "209005",
+    "Lat": -39.869244529999946,
+    "Long": 174.9194433,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00300",
+    "SiteName": "430005",
+    "Lat": -39.88161546999993,
+    "Long": 174.93382850000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00299",
+    "SiteName": "420075",
+    "Lat": -39.87231830999997,
+    "Long": 174.8973129000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101978",
+    "SiteName": "372140",
+    "Lat": -40.299422909999976,
+    "Long": 176.03084980000006,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00135",
+    "SiteName": "301019",
+    "Lat": -40.26828973999994,
+    "Long": 176.0153388000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00141",
+    "SiteName": "312001",
+    "Lat": -40.71070576999995,
+    "Long": 175.2150468000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101295",
+    "SiteName": "312020",
+    "Lat": -40.71758921999998,
+    "Long": 175.21641160000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00297",
+    "SiteName": "363251",
+    "Lat": -40.71748179999997,
+    "Long": 175.2079189000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101296",
+    "SiteName": "315027",
+    "Lat": -40.70802030999994,
+    "Long": 175.20804440000006,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101311",
+    "SiteName": "363041",
+    "Lat": -40.630704209999976,
+    "Long": 175.30313250000006,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00296",
+    "SiteName": "362951",
+    "Lat": -40.61934867999997,
+    "Long": 175.32748530000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00154",
+    "SiteName": "316037",
+    "Lat": -40.60436383999996,
+    "Long": 175.30158690000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00295",
+    "SiteName": "362711",
+    "Lat": -40.62337392999996,
+    "Long": 175.2638624000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00294",
+    "SiteName": "362661",
+    "Lat": -40.69542736999995,
+    "Long": 175.26605100000006,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00293",
+    "SiteName": "362551",
+    "Lat": -40.64860540999996,
+    "Long": 175.2635335000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00292",
+    "SiteName": "362541",
+    "Lat": -40.65070664999996,
+    "Long": 175.24822790000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00291",
+    "SiteName": "362521",
+    "Lat": -40.60536314999996,
+    "Long": 175.21715410000002,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00290",
+    "SiteName": "362511",
+    "Lat": -40.69622579999998,
+    "Long": 175.2237196000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00289",
+    "SiteName": "362331",
+    "Lat": -40.66647169999993,
+    "Long": 175.27123700000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00288",
+    "SiteName": "362101",
+    "Lat": -40.67900604999994,
+    "Long": 175.22906320000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00287",
+    "SiteName": "362033",
+    "Lat": -40.62429255999996,
+    "Long": 175.2165990000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00286",
+    "SiteName": "362017",
+    "Lat": -40.69521131999994,
+    "Long": 175.22960380000006,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00285",
+    "SiteName": "362007",
+    "Lat": -40.62323448999996,
+    "Long": 175.27095180000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00284",
+    "SiteName": "362005",
+    "Lat": -40.60061050999997,
+    "Long": 175.27609430000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00283",
+    "SiteName": "362003",
+    "Lat": -40.67342103999994,
+    "Long": 175.2383427000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-102712",
+    "SiteName": "319004",
+    "Lat": -40.67342103999994,
+    "Long": 175.2383427000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00282",
+    "SiteName": "361041",
+    "Lat": -40.66768896999997,
+    "Long": 175.20857280000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00281",
+    "SiteName": "361003",
+    "Lat": -40.65664338999994,
+    "Long": 175.22118250000005,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101297",
+    "SiteName": "324067",
+    "Lat": -40.65195626999997,
+    "Long": 175.18321350000008,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101977",
+    "SiteName": "357103",
+    "Lat": -40.65195626999997,
+    "Long": 175.18321350000008,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00280",
+    "SiteName": "354011",
+    "Lat": -40.51743633999996,
+    "Long": 175.75594000000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00279",
+    "SiteName": "354005",
+    "Lat": -40.52275013999997,
+    "Long": 175.74809360000006,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00278",
+    "SiteName": "354003",
+    "Lat": -40.513174799999945,
+    "Long": 175.41123950000008,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-102713",
+    "SiteName": "332039",
+    "Lat": -40.53950446999994,
+    "Long": 175.40155740000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-102714",
+    "SiteName": "332065",
+    "Lat": -40.54546093999994,
+    "Long": 175.41830500000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101299",
+    "SiteName": "334091",
+    "Lat": -40.58816927999993,
+    "Long": 175.35721220000005,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101300",
+    "SiteName": "336114",
+    "Lat": -40.566032339999936,
+    "Long": 175.32212620000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00276",
+    "SiteName": "352411",
+    "Lat": -40.583933739999964,
+    "Long": 175.36027620000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00240",
+    "SiteName": "338005",
+    "Lat": -40.557381229999976,
+    "Long": 175.3458171000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00275",
+    "SiteName": "352311",
+    "Lat": -40.56395360999994,
+    "Long": 175.26185450000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00274",
+    "SiteName": "352271",
+    "Lat": -40.55652331999994,
+    "Long": 175.21293920000005,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00273",
+    "SiteName": "352131",
+    "Lat": -40.55679084999997,
+    "Long": 175.21318410000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00272",
+    "SiteName": "352111",
+    "Lat": -40.57406523999998,
+    "Long": 175.2515625000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00244",
+    "SiteName": "339001",
+    "Lat": -40.58620565999996,
+    "Long": 175.27560470000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00271",
+    "SiteName": "352051",
+    "Lat": -40.58791483999994,
+    "Long": 175.23430220000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00270",
+    "SiteName": "352007",
+    "Lat": -40.59123681999995,
+    "Long": 175.27439220000008,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00246",
+    "SiteName": "342051",
+    "Lat": -40.53024621999998,
+    "Long": 175.2807898000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00269",
+    "SiteName": "348061",
+    "Lat": -40.57406523999998,
+    "Long": 175.2515625000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00268",
+    "SiteName": "348021",
+    "Lat": -40.431155829999966,
+    "Long": 175.86355490000005,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00267",
+    "SiteName": "348009",
+    "Lat": -40.42247717999993,
+    "Long": 175.8701344000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00266",
+    "SiteName": "348007",
+    "Lat": -40.444486309999945,
+    "Long": 175.8180000000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00265",
+    "SiteName": "348005",
+    "Lat": -40.42340656999994,
+    "Long": 175.86899490000008,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00264",
+    "SiteName": "348003",
+    "Lat": -40.45540280999995,
+    "Long": 175.81373860000008,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101301",
+    "SiteName": "347031",
+    "Lat": -40.45540280999995,
+    "Long": 175.81373860000008,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00263",
+    "SiteName": "346031",
+    "Lat": -40.41234129999998,
+    "Long": 175.87913350000008,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00262",
+    "SiteName": "345151",
+    "Lat": -40.469394619999946,
+    "Long": 175.78145050000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00261",
+    "SiteName": "345111",
+    "Lat": -40.40169573999998,
+    "Long": 175.64649110000005,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00260",
+    "SiteName": "345101",
+    "Lat": -40.460465829999976,
+    "Long": 175.5166882000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101976",
+    "SiteName": "345071",
+    "Lat": -40.40981941999996,
+    "Long": 175.52540240000008,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00259",
+    "SiteName": "345041",
+    "Lat": -40.44067881999996,
+    "Long": 175.55604190000008,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00258",
+    "SiteName": "345031",
+    "Lat": -40.40663011999993,
+    "Long": 175.5253540000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00257",
+    "SiteName": "345021",
+    "Lat": -40.40403878999996,
+    "Long": 175.5829374000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00256",
+    "SiteName": "345011",
+    "Lat": -40.41014875999997,
+    "Long": 175.55134640000006,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00255",
+    "SiteName": "345009",
+    "Lat": -40.449044879999974,
+    "Long": 175.50328760000002,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00254",
+    "SiteName": "345001",
+    "Lat": -40.40853290999996,
+    "Long": 175.50178060000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00253",
+    "SiteName": "344051",
+    "Lat": -40.43877371999997,
+    "Long": 175.56068640000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00252",
+    "SiteName": "344041",
+    "Lat": -40.41009656999995,
+    "Long": 175.55370190000008,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00251",
+    "SiteName": "344007",
+    "Lat": -40.416941519999966,
+    "Long": 175.48794740000005,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00250",
+    "SiteName": "344001",
+    "Lat": -40.457208969999954,
+    "Long": 175.41630800000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00249",
+    "SiteName": "343171",
+    "Lat": -40.44375751999996,
+    "Long": 175.45591960000002,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00248",
+    "SiteName": "343101",
+    "Lat": -40.473191079999935,
+    "Long": 175.42750080000008,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00247",
+    "SiteName": "342091",
+    "Lat": -40.40050840999993,
+    "Long": 175.32588350000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-102715",
+    "SiteName": "347056",
+    "Lat": -40.40854984999993,
+    "Long": 175.3733072000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00245",
+    "SiteName": "342001",
+    "Lat": -40.486036759999934,
+    "Long": 175.28400710000005,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101302",
+    "SiteName": "348134",
+    "Lat": -40.47800388999997,
+    "Long": 175.28019430000006,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00243",
+    "SiteName": "338061",
+    "Lat": -40.45436106999995,
+    "Long": 175.29118570000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00242",
+    "SiteName": "338051",
+    "Lat": -40.33653043999993,
+    "Long": 175.99012170000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00241",
+    "SiteName": "338011",
+    "Lat": -40.371777419999944,
+    "Long": 175.8797588000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101303",
+    "SiteName": "352099",
+    "Lat": -40.35761004999995,
+    "Long": 175.8697313,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00239",
+    "SiteName": "337041",
+    "Lat": -40.32592956999997,
+    "Long": 175.87544910000008,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00238",
+    "SiteName": "337031",
+    "Lat": -40.37212912999996,
+    "Long": 175.86563620000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00237",
+    "SiteName": "337021",
+    "Lat": -40.317772839999975,
+    "Long": 175.72913110000002,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00236",
+    "SiteName": "337013",
+    "Lat": -40.32232955999996,
+    "Long": 175.7269609000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00235",
+    "SiteName": "337005",
+    "Lat": -40.32896421999993,
+    "Long": 175.71310070000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00234",
+    "SiteName": "337003",
+    "Lat": -40.318169689999934,
+    "Long": 175.75033630000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00233",
+    "SiteName": "337001",
+    "Lat": -40.31634122999998,
+    "Long": 175.75143900000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00232",
+    "SiteName": "336651",
+    "Lat": -40.31368829999997,
+    "Long": 175.71130960000005,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00231",
+    "SiteName": "336641",
+    "Lat": -40.30542644999997,
+    "Long": 175.75570210000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00230",
+    "SiteName": "336581",
+    "Lat": -40.32326915999994,
+    "Long": 175.68697210000005,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00229",
+    "SiteName": "336571",
+    "Lat": -40.325804999999946,
+    "Long": 175.6941369000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00228",
+    "SiteName": "336541",
+    "Lat": -40.32910796999994,
+    "Long": 175.66836710000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00227",
+    "SiteName": "336511",
+    "Lat": -40.37635431999996,
+    "Long": 175.6513867000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00226",
+    "SiteName": "336481",
+    "Lat": -40.337698639999985,
+    "Long": 175.64751200000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00225",
+    "SiteName": "336441",
+    "Lat": -40.35193985999996,
+    "Long": 175.6551376000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00224",
+    "SiteName": "336431",
+    "Lat": -40.35480304999993,
+    "Long": 175.64818360000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00223",
+    "SiteName": "336421",
+    "Lat": -40.378088469999966,
+    "Long": 175.61493130000008,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00222",
+    "SiteName": "336401",
+    "Lat": -40.34236558999993,
+    "Long": 175.6794897000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00221",
+    "SiteName": "336371",
+    "Lat": -40.336717239999984,
+    "Long": 175.6510059000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00220",
+    "SiteName": "336333",
+    "Lat": -40.337754949999976,
+    "Long": 175.68401660000006,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101975",
+    "SiteName": "336321",
+    "Lat": -40.34973131999993,
+    "Long": 175.67271610000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00219",
+    "SiteName": "336301",
+    "Lat": -40.30679253999995,
+    "Long": 175.65924610000002,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00218",
+    "SiteName": "336271",
+    "Lat": -40.32232796999995,
+    "Long": 175.69253820000006,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00217",
+    "SiteName": "336203",
+    "Lat": -40.34848724999995,
+    "Long": 175.60907250000002,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00216",
+    "SiteName": "336181",
+    "Lat": -40.37116925999993,
+    "Long": 175.64175820000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00215",
+    "SiteName": "336141",
+    "Lat": -40.323076829999934,
+    "Long": 175.69520520000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00214",
+    "SiteName": "336121",
+    "Lat": -40.35911453999995,
+    "Long": 175.65659800000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101304",
+    "SiteName": "352312",
+    "Lat": -40.34179284999993,
+    "Long": 175.66533620000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00213",
+    "SiteName": "336113",
+    "Lat": -40.380022389999965,
+    "Long": 175.6091153000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00212",
+    "SiteName": "336071",
+    "Lat": -40.34988395999994,
+    "Long": 175.65714100000002,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00211",
+    "SiteName": "336023",
+    "Lat": -40.36107758999998,
+    "Long": 175.64960800000006,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00210",
+    "SiteName": "336019",
+    "Lat": -40.37737496999995,
+    "Long": 175.60665640000002,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00209",
+    "SiteName": "336017",
+    "Lat": -40.33581733999995,
+    "Long": 175.6898268000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00208",
+    "SiteName": "336013",
+    "Lat": -40.38434784999998,
+    "Long": 175.65641430000005,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00207",
+    "SiteName": "336009",
+    "Lat": -40.328944269999965,
+    "Long": 175.67542470000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00206",
+    "SiteName": "336007",
+    "Lat": -40.333961949999946,
+    "Long": 175.69210770000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00205",
+    "SiteName": "336001",
+    "Lat": -40.336554579999984,
+    "Long": 175.65806440000006,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00204",
+    "SiteName": "335391",
+    "Lat": -40.319503459999964,
+    "Long": 175.69388530000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00203",
+    "SiteName": "335371",
+    "Lat": -40.32473337999994,
+    "Long": 175.62345800000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00202",
+    "SiteName": "335361",
+    "Lat": -40.31030666999993,
+    "Long": 175.5840558000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00201",
+    "SiteName": "335351",
+    "Lat": -40.33900189999997,
+    "Long": 175.54983070000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00200",
+    "SiteName": "335331",
+    "Lat": -40.381690779999985,
+    "Long": 175.5750111000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00199",
+    "SiteName": "335311",
+    "Lat": -40.38234497999997,
+    "Long": 175.54558020000002,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00198",
+    "SiteName": "335171",
+    "Lat": -40.39116512999993,
+    "Long": 175.55416230000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00197",
+    "SiteName": "335161",
+    "Lat": -40.37671394999995,
+    "Long": 175.5960275000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00196",
+    "SiteName": "335071",
+    "Lat": -40.374657329999934,
+    "Long": 175.52644010000006,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00195",
+    "SiteName": "335051",
+    "Lat": -40.316520999999966,
+    "Long": 175.54780360000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00194",
+    "SiteName": "335041",
+    "Lat": -40.350496559999954,
+    "Long": 175.55968710000002,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101305",
+    "SiteName": "353015",
+    "Lat": -40.39456650999995,
+    "Long": 175.52247340000008,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00193",
+    "SiteName": "334041",
+    "Lat": -40.32565384999998,
+    "Long": 175.54226240000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00192",
+    "SiteName": "334021",
+    "Lat": -40.37502370999994,
+    "Long": 175.48430270000006,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00191",
+    "SiteName": "334001",
+    "Lat": -40.36250384999994,
+    "Long": 175.42115360000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101946",
+    "SiteName": "333238",
+    "Lat": -40.35284309999997,
+    "Long": 175.49382390000005,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00190",
+    "SiteName": "333035",
+    "Lat": -40.31148031999993,
+    "Long": 175.48993990000008,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00189",
+    "SiteName": "333005",
+    "Lat": -40.322318999999936,
+    "Long": 175.37651400000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00188",
+    "SiteName": "333003",
+    "Lat": -40.32126593999993,
+    "Long": 175.36787750000008,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101298",
+    "SiteName": "332025",
+    "Lat": -40.33864516999995,
+    "Long": 175.31079440000008,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00187",
+    "SiteName": "332009",
+    "Lat": -40.33864516999995,
+    "Long": 175.31079440000008,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00186",
+    "SiteName": "327039",
+    "Lat": -40.30089819999995,
+    "Long": 175.25839510000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00185",
+    "SiteName": "327037",
+    "Lat": -40.36802108999996,
+    "Long": 175.28353300000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00184",
+    "SiteName": "327001",
+    "Lat": -40.281492999999955,
+    "Long": 175.7330422000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00183",
+    "SiteName": "326321",
+    "Lat": -40.21072658999998,
+    "Long": 175.7214149,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00182",
+    "SiteName": "326211",
+    "Lat": -40.28336964999994,
+    "Long": 175.7359772000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00181",
+    "SiteName": "326201",
+    "Lat": -40.26344493999994,
+    "Long": 175.66342070000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00180",
+    "SiteName": "326191",
+    "Lat": -40.22137688999993,
+    "Long": 175.65118400000006,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00179",
+    "SiteName": "326181",
+    "Lat": -40.278346899999974,
+    "Long": 175.60283210000011,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00178",
+    "SiteName": "326061",
+    "Lat": -40.28366870999997,
+    "Long": 175.60656700000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00177",
+    "SiteName": "326011",
+    "Lat": -40.29800693999994,
+    "Long": 175.64948560000005,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00176",
+    "SiteName": "325361",
+    "Lat": -40.28212616999997,
+    "Long": 175.63474410000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00175",
+    "SiteName": "325351",
+    "Lat": -40.28474616999995,
+    "Long": 175.6383760000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00174",
+    "SiteName": "325261",
+    "Lat": -40.24050513999998,
+    "Long": 175.56257270000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00173",
+    "SiteName": "325251",
+    "Lat": -40.25877954999993,
+    "Long": 175.591493,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00172",
+    "SiteName": "325221",
+    "Lat": -40.27315624999994,
+    "Long": 175.5120525000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00171",
+    "SiteName": "325211",
+    "Lat": -40.20121386999995,
+    "Long": 175.58693600000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00170",
+    "SiteName": "325141",
+    "Lat": -40.23370369999998,
+    "Long": 175.5846527000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00169",
+    "SiteName": "325081",
+    "Lat": -40.240906019999954,
+    "Long": 175.58492830000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00168",
+    "SiteName": "325071",
+    "Lat": -40.251855829999954,
+    "Long": 175.53830760000005,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00167",
+    "SiteName": "325047",
+    "Lat": -40.28457708999997,
+    "Long": 175.52541970000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00166",
+    "SiteName": "325031",
+    "Lat": -40.287773469999934,
+    "Long": 175.58436970000002,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00165",
+    "SiteName": "325023",
+    "Lat": -40.241090509999935,
+    "Long": 175.57670460000008,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00164",
+    "SiteName": "325019",
+    "Lat": -40.293016499999965,
+    "Long": 175.5916307000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00163",
+    "SiteName": "325009",
+    "Lat": -40.27138129999997,
+    "Long": 175.51081010000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00162",
+    "SiteName": "325007",
+    "Lat": -40.24003211999997,
+    "Long": 175.5837190000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00161",
+    "SiteName": "325003",
+    "Lat": -40.234098279999955,
+    "Long": 175.5670325000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00160",
+    "SiteName": "324071",
+    "Lat": -40.20338310999995,
+    "Long": 175.5705667000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101306",
+    "SiteName": "353121",
+    "Lat": -40.22461612999996,
+    "Long": 175.50672070000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00159",
+    "SiteName": "324061",
+    "Lat": -40.29300528999994,
+    "Long": 175.4268942000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00158",
+    "SiteName": "324003",
+    "Lat": -40.217122409999945,
+    "Long": 175.4267781000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00157",
+    "SiteName": "324000",
+    "Lat": -40.202363359999936,
+    "Long": 175.49414390000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00156",
+    "SiteName": "323015",
+    "Lat": -40.208743039999945,
+    "Long": 175.4062375000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00155",
+    "SiteName": "323001",
+    "Lat": -40.21056835999997,
+    "Long": 175.40512730000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-102306",
+    "SiteName": "322015",
+    "Lat": -40.22441494999998,
+    "Long": 175.3010038000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101307",
+    "SiteName": "353251",
+    "Lat": -40.29800187999996,
+    "Long": 175.35999970000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00153",
+    "SiteName": "316031",
+    "Lat": -40.24903791999998,
+    "Long": 175.2797753000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00152",
+    "SiteName": "316019",
+    "Lat": -40.17960242999993,
+    "Long": 175.6260516000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00151",
+    "SiteName": "316017",
+    "Lat": -40.16408271999995,
+    "Long": 175.63484540000002,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00277",
+    "SiteName": "353291",
+    "Lat": -40.12794156999996,
+    "Long": 175.67804750000005,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00150",
+    "SiteName": "313053",
+    "Lat": -40.12794156999996,
+    "Long": 175.67804750000005,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00149",
+    "SiteName": "313013",
+    "Lat": -40.184066349999966,
+    "Long": 175.58612890000006,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00148",
+    "SiteName": "313001",
+    "Lat": -40.16710322999995,
+    "Long": 175.31657410000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101974",
+    "SiteName": "312046",
+    "Lat": -40.16735911999996,
+    "Long": 175.31550230000005,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101973",
+    "SiteName": "312045",
+    "Lat": -40.19593446999994,
+    "Long": 175.32823220000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00147",
+    "SiteName": "312035",
+    "Lat": -40.133164799999975,
+    "Long": 175.24889000000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101308",
+    "SiteName": "357109",
+    "Lat": -40.19341855999994,
+    "Long": 175.22889140000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00146",
+    "SiteName": "312015",
+    "Lat": -40.12707612999998,
+    "Long": 175.22415720000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00145",
+    "SiteName": "312009",
+    "Lat": -40.131047559999956,
+    "Long": 175.29256870000006,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00144",
+    "SiteName": "312007",
+    "Lat": -40.12821194999998,
+    "Long": 175.2906849000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00143",
+    "SiteName": "312006",
+    "Lat": -40.12733494999998,
+    "Long": 175.2894814000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00142",
+    "SiteName": "312004",
+    "Lat": -40.142898109999976,
+    "Long": 175.23130630000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101309",
+    "SiteName": "362001",
+    "Lat": -40.133170149999955,
+    "Long": 175.24893870000005,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00140",
+    "SiteName": "306007",
+    "Lat": -40.11719416999995,
+    "Long": 175.20933250000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101972",
+    "SiteName": "304019",
+    "Lat": -40.187066209999955,
+    "Long": 175.27623440000002,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00139",
+    "SiteName": "303017",
+    "Lat": -40.061249379999936,
+    "Long": 175.63754560000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00138",
+    "SiteName": "302026",
+    "Lat": -40.05741306999994,
+    "Long": 175.47180580000008,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00137",
+    "SiteName": "302009",
+    "Lat": -40.03306752999998,
+    "Long": 175.34105040000009,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00136",
+    "SiteName": "302003",
+    "Lat": -40.053144369999984,
+    "Long": 175.28986700000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101971",
+    "SiteName": "301045",
+    "Lat": -40.00686247999994,
+    "Long": 175.27603390000002,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101310",
+    "SiteName": "362921",
+    "Lat": -40.06832018999995,
+    "Long": 175.22063570000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00134",
+    "SiteName": "301011",
+    "Lat": -40.06781032999993,
+    "Long": 175.1524515000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101312",
+    "SiteName": "363112",
+    "Lat": -40.06992825999998,
+    "Long": 175.17658560000007,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101313",
+    "SiteName": "372003",
+    "Lat": -40.07054071999994,
+    "Long": 175.1515138000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101314",
+    "SiteName": "372034",
+    "Lat": -39.91053121999994,
+    "Long": 174.9814560000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-101315",
+    "SiteName": "372136",
+    "Lat": -39.10786299999995,
+    "Long": 175.0704290000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-102716",
+    "SiteName": "402001",
+    "Lat": -39.47749699999997,
+    "Long": 175.57723700000008,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-102717",
+    "SiteName": "421013",
+    "Lat": -40.476455999999985,
+    "Long": 175.28034600000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-102718",
+    "SiteName": "430008",
+    "Lat": -40.45327099999997,
+    "Long": 176.5167060000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00301",
+    "SiteName": "698011",
+    "Lat": -40.17938699999996,
+    "Long": 175.989143,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-102708",
+    "SiteName": "Lake Kohata (composite)",
+    "Lat": -40.30889899999994,
+    "Long": 175.25552300000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-102709",
+    "SiteName": "Lake Koitiata (composite)",
+    "Lat": -40.367898999999966,
+    "Long": 175.2885510000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-102710",
+    "SiteName": "Lake Waipu (composite) ",
+    "Lat": -40.46536199999997,
+    "Long": 175.78339900000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-102711",
+    "SiteName": "Pukepuke Lagoon (composite)",
+    "Lat": -40.076259999999934,
+    "Long": 176.21814900000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-102837 ",
+    "SiteName": "Kaitoke at Vector Gas Line",
+    "Lat": -40.23987899999997,
+    "Long": 176.11853900000006,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-102838 ",
+    "SiteName": "Koitiata at Beamish Rd",
+    "Lat": -40.30001599999997,
+    "Long": 176.01981200000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-102839",
+    "SiteName": "Whitebait Creek at Edinburgh Terrace",
+    "Lat": -39.97201199999995,
+    "Long": 175.08062700000005,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-102841",
+    "SiteName": "Whakapapa at Footbridge",
+    "Lat": -40.118619999999964,
+    "Long": 175.1959290000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-103501",
+    "SiteName": "Mangateitei at Moore Street",
+    "Lat": -40.04401599999994,
+    "Long": 175.15623300000004,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-103504",
+    "SiteName": "Retaruke at Whanganui Confluence",
+    "Lat": -40.341511999999966,
+    "Long": 175.26573800000006,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00096",
+    "SiteName": "Whangaehu at Karioi",
+    "Lat": -39.970024999999964,
+    "Long": 175.03123700000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-103969",
+    "SiteName": "Foxton Loop at Harbour St Boat Ramp",
+    "Lat": -40.10615299999995,
+    "Long": 175.17380100000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-103988",
+    "SiteName": "Kaikokopu Stream at us Himatangi Town",
+    "Lat": -40.46753599999994,
+    "Long": 175.24180400000012,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-103989",
+    "SiteName": "Mangatepopo at d/s Intake",
+    "Lat": -39.114517999999975,
+    "Long": 175.4581790000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-103990",
+    "SiteName": "Moawhango at Waiouru",
+    "Lat": -39.417911999999944,
+    "Long": 175.3936010000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-103991",
+    "SiteName": "Oruakeretaki at Ruahine Foothills",
+    "Lat": -40.37182399999995,
+    "Long": 175.24679000000003,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-103992",
+    "SiteName": "Owahanga at Owahanga Station",
+    "Lat": -39.051755999999955,
+    "Long": 175.55220300000008,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "LAWA-103994",
+    "SiteName": "Whanganui at Downstream Intake",
+    "Lat": -39.43530499999997,
+    "Long": 175.7753600000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00058",
+    "SiteName": "Whangaehu at Kauangaroa",
+    "Lat": -40.205326999999954,
+    "Long": 175.9434920000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00060",
+    "SiteName": "Whanganui at Pipiriki",
+    "Lat": -40.633696999999984,
+    "Long": 176.3095370000001,
+    "Region": "Horizons"
+  },
+  {
+    "LawaId": "HRC-00059",
+    "SiteName": "Whanganui at Te Rewa",
+    "Lat": -39.02751999999998,
+    "Long": 175.60066400000005,
+    "Region": "Horizons"
+  }
+]

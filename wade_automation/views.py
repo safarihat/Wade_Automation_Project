@@ -58,8 +58,14 @@ def contact(request):
 
 
 def home(request):
+    from django.urls import reverse
     form = AuthenticationForm()
-    return render(request, 'wade_automation/home.html', {'form': form})
+    # The error indicates a template is looking for a "create plan" URL.
+    # The correct entry point for the plan creation wizard is 'plan_wizard_start'.
+    # We'll pass this URL to the template context to fix the NoReverseMatch error.
+    create_plan_url = reverse('doc_generator:plan_wizard_start')
+    context = {'form': form, 'create_plan_url': create_plan_url}
+    return render(request, 'wade_automation/home.html', context)
 
 def about(request):
     return render(request, 'wade_automation/about.html')
